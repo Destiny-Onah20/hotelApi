@@ -1,7 +1,8 @@
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 import { mailInterface } from "../interfaces/mailInterface";
-// import hdb from "express-handlebars";
+import handlebars from "handlebars";
+import fs from "fs";
 dotenv.config();
 
 
@@ -9,6 +10,7 @@ dotenv.config();
 export default class mailSender {
   private static instance: mailSender
   private transporter: nodemailer.Transporter
+  private template: handlebars.TemplateDelegate<any>;
 
   static getInstance() {
     if (!mailSender.instance) {
@@ -16,6 +18,9 @@ export default class mailSender {
     }
     return mailSender.instance
   };
+  // public emailTemplate = fs.readFileSync('emailTemplate.hbs', 'utf8');
+
+
   async createConnection() {
     this.transporter = nodemailer.createTransport({
       service: process.env.SERVICE,
@@ -39,7 +44,6 @@ export default class mailSender {
       subject: Option.subject,
       text: Option.message
     }
-    console.log(mailOption);
     await this.transporter.sendMail(mailOption);
 
   }

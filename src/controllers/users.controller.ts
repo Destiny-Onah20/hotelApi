@@ -9,53 +9,54 @@ import mailSender from "../middlewares/mailService";
 
 export const registerUser: RequestHandler = async (req, res) => {
   try {
-    const { fullname, password, email, phoneNumber } = req.body;
-    const newEmail = await User.findOne({ where: { email: email } });
-    if (newEmail) {
+    const { fullname, email, password, phoneNumber } = req.body;
+    const unusedEmail = await User.findOne({ where: { email: email } });
+    if (unusedEmail) {
       return res.status(400).json({
-        message: "Email already taken."
+        message: "Wmail already taken!"
       })
     }
     const saltPassword = await bcrypt.genSalt(10);
     const hassPassword = await bcrypt.hash(password, saltPassword);
-    type userAttributes = {
-      fullname: string;
-      email: string;
-      password: string;
+    interface UserAttribute {
+      fullname: string,
+      password: string,
+      email: string,
       phoneNumber: number
-    }
-    const userData: userAttributes = {
+    };
+    const data: UserAttribute = {
       fullname,
       email,
       password: hassPassword,
       phoneNumber
     };
-    const userToCreate = new User(userData);
+    const userToCreate = new User(data);
     const generateToken = Jwt.sign({
-      isAdmin: userToCreate.phoneNumber,
-      id: userToCreate.id
+      id: userToCreate.id,
+      fullname: userToCreate.fullname
     }, <string>process.env.JWT_TOK, {
       expiresIn: "1d"
     });
     userToCreate.token = generateToken;
-    const verify = `${req.protocol}://${req.get("host")}/api/change/${userToCreate.id}`;
-    const message = `Hello cheif ${userToCreate.fullname} Kindly use the link to change your password  ${verify}`;
+    await userToCreate.save();
+    const verifyAccountRoute = `${req.protocol}://${req.get("host")}/api/v1/verify/${userToCreate.id}`;
+    const message = `Hello cheif ${userToCreate.fullname} Kindly use the link to verify your account  ${verifyAccountRoute}`;
     const mailservice = new mailSender();
     mailservice.createConnection();
     mailservice.mail({
       from: process.env.EMAIL,
       email: userToCreate.email,
-      subject: "Kindly verify email.",
+      subject: "Kindly verify!",
       message
-    })
-    await userToCreate.save();
-    return res.status(201).json({
-      message: "Registration successful.",
+    });
+    res.status(201).json({
+      message: "Created Successfully.",
       data: userToCreate
     })
   } catch (error: any) {
     return res.status(500).json({
-      message: error.message
+      message: error.message,
+
     })
   }
 }; 

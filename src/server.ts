@@ -16,4 +16,3 @@ sequelize.authenticate().then(() => {
   logger.error(error.message)
 });
 
-logger.info("HELLO MAN");

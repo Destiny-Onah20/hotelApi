@@ -29,6 +29,28 @@ export const validates = (schema: ZodType<AdminAttributes>): RequestHandler => (
   }
 };
 
+type adminLogin = {
+  password: string;
+  email: string
+}
+
+export const loginValidate = (schema: ZodType<adminLogin>): RequestHandler => (req, res, next) => {
+  try {
+    schemaObj.parse({
+      body: req.body,
+      query: req.query,
+      params: req.params
+    });
+    schema.parse(req.body);
+
+    next()
+  } catch (error: any) {
+    return res.status(500).json({
+      message: error.message
+    })
+  }
+};
+
 type userAttribute = {
   fullname: string;
   password: string;
