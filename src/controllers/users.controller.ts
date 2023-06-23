@@ -13,12 +13,12 @@ export const registerUser: RequestHandler = async (req, res) => {
     const unusedEmail = await User.findOne({ where: { email: email } });
     if (unusedEmail) {
       return res.status(400).json({
-        message: "Wmail already taken!"
+        message: "Email already taken!"
       })
     }
     const saltPassword = await bcrypt.genSalt(10);
     const hassPassword = await bcrypt.hash(password, saltPassword);
-    interface UserAttribute {
+    type UserAttribute = {
       fullname: string,
       password: string,
       email: string,
@@ -38,7 +38,6 @@ export const registerUser: RequestHandler = async (req, res) => {
       expiresIn: "1d"
     });
     userToCreate.token = generateToken;
-    await userToCreate.save();
     const verifyAccountRoute = `${req.protocol}://${req.get("host")}/api/v1/verify/${userToCreate.id}`;
     const message = `Hello cheif ${userToCreate.fullname} Kindly use the link to verify your account  ${verifyAccountRoute}`;
     const mailservice = new mailSender();
@@ -49,6 +48,7 @@ export const registerUser: RequestHandler = async (req, res) => {
       subject: "Kindly verify!",
       message
     });
+    await userToCreate.save();
     res.status(201).json({
       message: "Created Successfully.",
       data: userToCreate
@@ -56,7 +56,43 @@ export const registerUser: RequestHandler = async (req, res) => {
   } catch (error: any) {
     return res.status(500).json({
       message: error.message,
-
+      status: "Failed"
     })
   }
-}; 
+};
+
+
+export const loginUser: RequestHandler = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const authEmail = await User.findOne({ where: { email: email } });
+    if (!authEmail) {
+      return res.status(400).json({
+        message: "Email or password doesn't match!"
+      })
+    }
+    const authPassword = await bcrypt.compare(password, authEmail.password);
+    if (!authPassword) {
+      return res.status(400).json({
+        message: "Email or password doesn't match!"
+      })
+    }
+    const generateToken = Jwt.sign({
+      id: authEmail.id,
+      fullname: authEmail.fullname
+    }, <string>process.env.JWT_TOK, {
+      expiresIn: "1d"
+    });
+    authEmail.token = generateToken;
+    await authEmail.save();
+    return res.status(200).json({
+      message: "Loggin Success!",
+      data: authEmail
+    })
+  } catch (error: any) {
+    return res.status(500).json({
+      message: error.message,
+      status: "Failed"
+    })
+  }
+}
