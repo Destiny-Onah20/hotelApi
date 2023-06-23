@@ -95,4 +95,38 @@ export const loginUser: RequestHandler = async (req, res) => {
       status: "Failed"
     })
   }
+};
+
+export const verifyUser: RequestHandler = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const authUser = await User.findOne({ where: { id: userId } });
+    if (!authUser) {
+      return res.status(400).json({
+        message: "This user does not exists."
+      })
+    }
+    await User.update({
+      verify: true
+    }, { where: { id: userId } });
+    return res.status(200).json({
+      message: "Account verified"
+    })
+  } catch (error: any) {
+    return res.status(500).json({
+      message: error.message,
+      status: "Failed"
+    })
+  }
+};
+
+export const forgottenPassword: RequestHandler = async (req, res) => {
+  try {
+
+  } catch (error: any) {
+    return res.status(500).json({
+      message: error.message,
+      status: "Failed"
+    })
+  }
 }
