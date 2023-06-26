@@ -3,6 +3,8 @@ import User from "../models/user.admin";
 import dotenv from "dotenv";
 dotenv.config();
 import bcrypt from "bcrypt";
+import { Strategy as facebookStrategy } from "passport-facebook";
+import passport from "passport";
 import Jwt from "jsonwebtoken";
 import mailSender from "../middlewares/mailService";
 
@@ -186,4 +188,69 @@ export const changePasswordUser: RequestHandler = async (req, res) => {
       status: "Failed"
     })
   }
-}
+};
+
+
+export const facebookSignUp: RequestHandler = async (req, res) => {
+  try {
+    passport.use(new facebookStrategy({
+      clientID: <string>process.env.FACE_APP_ID,
+      clientSecret: <string>process.env.FACE_APP_SEC,
+      callbackURL: "http://localhost:2000/auth/facebook/"
+    }, async function (accessToken, refreshToken, profile, callback) {
+      try {
+
+        let newEmail = await User.findOne({ where: { email: profile.emails?.[0].value } });
+        if (newEmail) {
+          return res.status(400).json({
+            message: "U already have an account!"
+          })
+        };
+        const userPhoneNumber = profile._json?.phone?.number;
+        const saltPassword = await bcrypt.genSalt(10);
+        const hassPassword = await bcrypt.hash("", saltPassword);
+        type UserAttribute = {
+          fullname: string,
+          password: string,
+          email: string,
+          phoneNumber: number
+        };
+        const data: UserAttribute = {
+          fullname: profile.displayName,
+          email: <string>profile.emails?.[0].value,
+          password: hassPassword,
+          phoneNumber: userPhoneNumber
+        };
+        const userToCreate = new User(data);
+        const generateToken = Jwt.sign({
+          id: userToCreate.id,
+          fullname: userToCreate.fullname
+        }, <string>process.env.JWT_TOK, {
+          expiresIn: "1d"
+        });
+        userToCreate.token = generateToken;
+        newEmail = await userToCreate.save();
+        if (profile.emails && profile.emails.length > 0) {
+          const verifyAccountRoute = `${req.protocol}://${req.get("host")}/api/v1/verify/${userToCreate.id}`;
+          const message = `Hello cheif ${userToCreate.fullname} Kindly use the link to verify your account  ${verifyAccountRoute}`;
+          const mailservice = new mailSender();
+          mailservice.createConnection();
+          mailservice.mail({
+            from: process.env.EMAIL,
+            email: userToCreate.email,
+            subject: "Kindly verify!",
+            message
+          });
+        }
+        return callback(null, newEmail);
+      } catch (error: any) {
+        return callback(error)
+      }
+    }));
+  } catch (error: any) {
+    return res.status(500).json({
+      message: error.message,
+      status: "Failed"
+    })
+  }
+};
