@@ -13,6 +13,9 @@ userRoute.route("/user/login").post(loginValidate(adminLogin), loginUser);
 userRoute.route("/user/auth/facebook").get(passport.authenticate("facebook", { scope: ["email"] }), facebookSignUp)
 userRoute.route("/user/verify/:userId").patch(verifyUser);
 userRoute.route("/user/forgot").post(forgottenPassword)
-userRoute.route("/user/change/:userId").patch(changePasswordUser)
+userRoute.route("/user/change/:userId").patch(changePasswordUser);
+userRoute.route("/").get((req, res) => {
+  res.send(`<a href="http://localhost:1800/api/v1/user/auth/facebook">Login with your facebook account</a>`)
+})
 
 export default userRoute;
