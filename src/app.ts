@@ -7,15 +7,18 @@ import expressSession from "express-session";
 
 const app = express();
 
-app.use(express.json());
+
 app.use(passport.initialize());
+app.use(passport.session())
+app.use(express.json());
 app.use(express.urlencoded({
   extended: true
 }));
 app.use(expressSession({
   secret: "ijfb3bfhir",
   resave: false,
-  saveUninitialized: false
+  saveUninitialized: false,
+  cookie: { secure: true }
 }));
 passport.serializeUser((user, callback) => {
   callback(null, user)

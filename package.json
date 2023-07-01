@@ -2,10 +2,11 @@
   "name": "hotelapi",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start:dist": "tsc -w",
+    "start:run": "nodemon dist/server.js",
+    "start": "concurrently npm:start:*"
   },
   "keywords": [
     "hotel",
@@ -28,9 +29,12 @@
   "dependencies": {
     "@types/express-session": "^1.17.7",
     "bcrypt": "^5.1.0",
+    "concurrently": "^8.2.0",
     "dotenv": "^16.1.4",
     "express": "^4.18.2",
     "express-session": "^1.17.3",
+    "firebase": "^9.23.0",
+    "firebase-admin": "^11.9.0",
     "handlebars": "^4.7.7",
     "jsonwebtoken": "^9.0.0",
     "mysql2": "^3.3.5",
@@ -38,7 +42,7 @@
     "passport": "^0.6.0",
     "passport-facebook": "^3.0.0",
     "passport-google-oauth20": "^2.0.0",
-    "sequelize": "^6.32.0",
+    "sequelize": "^6.32.1",
     "winston": "^3.9.0",
     "zod": "^3.21.4"
   }

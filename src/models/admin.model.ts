@@ -3,10 +3,11 @@ import { DataTypes, Model, Optional } from "sequelize";
 import { AdminAttribute } from "../interfaces/admin.interface";
 import logger from "../utils/logger";
 import User from "./user.admin"
+import Hotel from "../models/hotel.model";
 
 type optionalAttributes = Optional<AdminAttribute, "id" | "createdAt" | "updatedAt" | "isAdmin" | "token" | "verify">
 
-class Admin extends Model<AdminAttribute, optionalAttributes> {
+class Admin extends Model<AdminAttribute, optionalAttributes> implements AdminAttribute {
   public id!: number;
   public hotelName!: string;
   public password!: string;
@@ -17,6 +18,9 @@ class Admin extends Model<AdminAttribute, optionalAttributes> {
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 
+  public static associate(models: any): void {
+    Admin.hasMany(models.Hotel, { foreignKey: "adminId", as: "hotels" });
+  }
 };
 
 
@@ -62,13 +66,15 @@ Admin.init({
   }
 }, {
   sequelize,
-  tableName: "admin"
+  tableName: "admins"
 });
 
-// Admin.sync({ force: true }).then(() => {
-//   logger.info("Table created successfully.")
-// }).catch((error) => {
-//   logger.error(error.message)
-// });
+
+Admin.hasMany(Hotel, { foreignKey: "adminId", as: "hotels" });
+Admin.sync({ force: true }).then(() => {
+  logger.info("Table created successfully.")
+}).catch((error) => {
+  logger.error(error.message)
+});
 
 export default Admin;

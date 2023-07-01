@@ -3,7 +3,7 @@ export interface AdminAttribute {
   hotelName: string,
   password: string,
   email: string,
-  isAdmin: number,
+  isAdmin: boolean,
   verify: boolean,
   token: string,
   updatedAt: Date,
