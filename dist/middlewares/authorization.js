@@ -19,8 +19,8 @@ const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const authID = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const userId = req.params.userId;
-        const validUser = yield admin_model_1.default.findOne({ where: { id: userId } });
+        const adminId = req.params.adminId;
+        const validUser = yield admin_model_1.default.findOne({ where: { id: adminId } });
         if (!validUser) {
             return res.status(401).json({
                 message: "This id does not exists!"

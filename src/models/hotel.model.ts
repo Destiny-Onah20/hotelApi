@@ -4,7 +4,7 @@ import { hotelAttributes } from "../interfaces/hotel.interface";
 import Admin from "./admin.model";
 import logger from "../utils/logger";
 
-type HotelCreationAttributes = Optional<hotelAttributes, "id">
+type HotelCreationAttributes = Optional<hotelAttributes, "id" | "updatedAt" | "createdAt">
 
 class Hotel extends Model<hotelAttributes, HotelCreationAttributes> implements hotelAttributes {
   public id!: number;
@@ -19,17 +19,17 @@ class Hotel extends Model<hotelAttributes, HotelCreationAttributes> implements h
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
   public adminId!: number;
-  public admin?: any;
+  public imageId!: string;
   public getAdmin!: BelongsToGetAssociationMixin<Admin>;
-  // public static associate(models: any): void {
-  //   Hotel.belongsTo(models.Admin, { as: "admin", foreignKey: "adminId" })
-  // }
+  public static associate(models: any): void {
+    Hotel.belongsTo(models.Admin, { as: "admin", foreignKey: "adminId" })
+  }
 
 };
 
 Hotel.init({
   id: {
-    type: DataTypes.INTEGER.UNSIGNED,
+    type: DataTypes.INTEGER,
     allowNull: false,
     autoIncrement: true,
     primaryKey: true
@@ -52,7 +52,6 @@ Hotel.init({
   },
   email: {
     type: DataTypes.STRING,
-    unique: true,
     allowNull: false
   },
   city: {
@@ -71,11 +70,14 @@ Hotel.init({
     type: DataTypes.DATE,
     allowNull: false
   },
+  imageId: {
+    type: DataTypes.STRING,
+  },
   adminId: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: Admin,
+      model: "admins",
       key: "id"
     }
   }
@@ -84,13 +86,13 @@ Hotel.init({
   tableName: "hotels"
 });
 
-Hotel.belongsTo(Admin, { foreignKey: "adminId", as: "admin" });
-
-Hotel.sync().then(() => {
-  logger.info("Table created.")
-}).catch((err) => {
-  logger.error(err.message)
-});
+Hotel.belongsTo(Admin, { foreignKey: "adminId" });
+Admin.hasMany(Hotel, { foreignKey: "adminId" })
+// Hotel.sync().then(() => {
+//   logger.info("Table created.")
+// }).catch((err) => {
+//   logger.error(err.message)
+// });
 
 
 

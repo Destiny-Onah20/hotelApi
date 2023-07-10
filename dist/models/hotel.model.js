@@ -6,13 +6,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const config_1 = __importDefault(require("../config/config"));
 const sequelize_1 = require("sequelize");
 const admin_model_1 = __importDefault(require("./admin.model"));
-const logger_1 = __importDefault(require("../utils/logger"));
 class Hotel extends sequelize_1.Model {
+    static associate(models) {
+        Hotel.belongsTo(models.Admin, { as: "admin", foreignKey: "adminId" });
+    }
 }
 ;
 Hotel.init({
     id: {
-        type: sequelize_1.DataTypes.INTEGER.UNSIGNED,
+        type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
         autoIncrement: true,
         primaryKey: true
@@ -35,7 +37,6 @@ Hotel.init({
     },
     email: {
         type: sequelize_1.DataTypes.STRING,
-        unique: true,
         allowNull: false
     },
     city: {
@@ -54,11 +55,14 @@ Hotel.init({
         type: sequelize_1.DataTypes.DATE,
         allowNull: false
     },
+    imageId: {
+        type: sequelize_1.DataTypes.STRING,
+    },
     adminId: {
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: admin_model_1.default,
+            model: "admins",
             key: "id"
         }
     }
@@ -66,10 +70,11 @@ Hotel.init({
     sequelize: config_1.default,
     tableName: "hotels"
 });
-Hotel.belongsTo(admin_model_1.default, { foreignKey: "adminId", as: "admin" });
-Hotel.sync().then(() => {
-    logger_1.default.info("Table created.");
-}).catch((err) => {
-    logger_1.default.error(err.message);
-});
+Hotel.belongsTo(admin_model_1.default, { foreignKey: "adminId" });
+admin_model_1.default.hasMany(Hotel, { foreignKey: "adminId" });
+// Hotel.sync().then(() => {
+//   logger.info("Table created.")
+// }).catch((err) => {
+//   logger.error(err.message)
+// });
 exports.default = Hotel;

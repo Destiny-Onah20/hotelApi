@@ -1,4 +1,3 @@
-import Admin from "../models/admin.model";
 export interface hotelAttributes {
   id: number,
   hotelName: string,
@@ -6,7 +5,7 @@ export interface hotelAttributes {
   description: string,
   website: string,
   adminId: number,
-  admin?: any;
+  imageId: string,
   email: string,
   city: string,
   state: string,

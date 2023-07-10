@@ -3,7 +3,7 @@ import { DataTypes, Model, Optional } from "sequelize";
 import { AdminAttribute } from "../interfaces/admin.interface";
 import logger from "../utils/logger";
 import User from "./user.admin"
-import Hotel from "../models/hotel.model";
+import Hotel from "./hotel.model";
 
 type optionalAttributes = Optional<AdminAttribute, "id" | "createdAt" | "updatedAt" | "isAdmin" | "token" | "verify">
 
@@ -26,7 +26,7 @@ class Admin extends Model<AdminAttribute, optionalAttributes> implements AdminAt
 
 Admin.init({
   id: {
-    type: DataTypes.INTEGER.UNSIGNED,
+    type: DataTypes.INTEGER,
     allowNull: false,
     primaryKey: true,
     autoIncrement: true
@@ -70,11 +70,10 @@ Admin.init({
 });
 
 
-Admin.hasMany(Hotel, { foreignKey: "adminId", as: "hotels" });
-Admin.sync({ force: true }).then(() => {
-  logger.info("Table created successfully.")
-}).catch((error) => {
-  logger.error(error.message)
-});
+// Admin.sync().then(() => {
+//   logger.info("Table created successfully.")
+// }).catch((error) => {
+//   logger.error(error.message)
+// });
 
 export default Admin;
