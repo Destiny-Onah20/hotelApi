@@ -5,6 +5,7 @@ dotenv.config();
 import bcrypt from "bcrypt";
 import Jwt from "jsonwebtoken";
 import mailSender from "../middlewares/mailService";
+import Hotel from "../models/hotel.model";
 
 
 export const registerAdmin: RequestHandler = async (req, res): Promise<object> => {
@@ -139,3 +140,24 @@ export const changePassword: RequestHandler = async (req, res) => {
 };
 
 
+export const allAdminHotels: RequestHandler = async (req, res) => {
+  try {
+    const adminId = req.params.adminId;
+    const adminDetails = await Admin.findByPk(adminId, {
+      include: [Hotel]
+    });
+    if (!adminDetails) {
+      return res.status(404).json({
+        mesage: `Manager with this id: ${adminId} not found!`
+      })
+    } else {
+      return res.status(200).json({
+        data: adminDetails
+      })
+    }
+  } catch (error: any) {
+    return res.status(500).json({
+      message: error.message
+    })
+  }
+};

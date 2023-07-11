@@ -20,7 +20,7 @@ const registerHotel = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     var _a;
     try {
         const adminId = req.params.adminId;
-        const { hotelName, address, description, website, email, city, state } = req.body;
+        const { hotelName, address, description, website, totalRooms, email, city, state } = req.body;
         const validAdmin = yield admin_model_1.default.findOne({ where: { id: adminId } });
         if (!validAdmin) {
             return res.status(400).json({
@@ -46,6 +46,7 @@ const registerHotel = (req, res) => __awaiter(void 0, void 0, void 0, function* 
                     email,
                     city,
                     state,
+                    totalRooms,
                     imageId: result.secure_url,
                     adminId: Number(adminId)
                 };
@@ -114,7 +115,7 @@ const updateHotel = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     try {
         const hotelId = req.params.hotelId;
         const adminId = req.params.adminId;
-        const { hotelName, address, description, website, email, city, state } = req.body;
+        const { hotelName, address, description, website, email, totalRooms, city, state } = req.body;
         const hotelToUpdate = yield hotel_model_1.default.findOne({ where: { id: hotelId } });
         if ((hotelToUpdate === null || hotelToUpdate === void 0 ? void 0 : hotelToUpdate.adminId) !== parseInt(adminId)) {
             return res.status(401).json({
@@ -135,12 +136,12 @@ const updateHotel = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 email,
                 city,
                 state,
+                totalRooms,
                 imageId: result.secure_url
             };
-            const updated = yield hotel_model_1.default.update(updateData, { where: { id: hotelId } });
+            yield hotel_model_1.default.update(updateData, { where: { id: hotelId } });
             return res.status(200).json({
-                message: "Updated Successfully!",
-                data: updated
+                message: "Updated Successfully!"
             });
         }
     }

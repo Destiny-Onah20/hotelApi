@@ -65,6 +65,10 @@ Hotel.init({
             model: "admins",
             key: "id"
         }
+    },
+    totalRooms: {
+        type: sequelize_1.DataTypes.INTEGER,
+        allowNull: false
     }
 }, {
     sequelize: config_1.default,
@@ -72,7 +76,7 @@ Hotel.init({
 });
 Hotel.belongsTo(admin_model_1.default, { foreignKey: "adminId" });
 admin_model_1.default.hasMany(Hotel, { foreignKey: "adminId" });
-// Hotel.sync().then(() => {
+// Hotel.sync({ alter: true }).then(() => {
 //   logger.info("Table created.")
 // }).catch((err) => {
 //   logger.error(err.message)

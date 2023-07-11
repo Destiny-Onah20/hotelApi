@@ -20,6 +20,7 @@ class Hotel extends Model<hotelAttributes, HotelCreationAttributes> implements h
   public readonly updatedAt!: Date;
   public adminId!: number;
   public imageId!: string;
+  public totalRooms!: number;
   public getAdmin!: BelongsToGetAssociationMixin<Admin>;
   public static associate(models: any): void {
     Hotel.belongsTo(models.Admin, { as: "admin", foreignKey: "adminId" })
@@ -80,6 +81,10 @@ Hotel.init({
       model: "admins",
       key: "id"
     }
+  },
+  totalRooms: {
+    type: DataTypes.INTEGER,
+    allowNull: false
   }
 }, {
   sequelize,
@@ -88,7 +93,7 @@ Hotel.init({
 
 Hotel.belongsTo(Admin, { foreignKey: "adminId" });
 Admin.hasMany(Hotel, { foreignKey: "adminId" })
-// Hotel.sync().then(() => {
+// Hotel.sync({ alter: true }).then(() => {
 //   logger.info("Table created.")
 // }).catch((err) => {
 //   logger.error(err.message)

@@ -4,6 +4,7 @@ import adminRoute from "./routers/admin.route";
 import userRoute from "./routers/user.route";
 import fileUpload from "express-fileupload";
 import hotelRoute from "./routers/hotel.route";
+import roomRoute from "./routers/rooms.router";
 
 const app = express();
 
@@ -17,7 +18,8 @@ app.use(express.urlencoded({
 
 app.use("/api/v1", adminRoute);
 app.use("/api/v1", userRoute);
-app.use("/api/v1", hotelRoute)
+app.use("/api/v1", hotelRoute);
+app.use("/api/v1", roomRoute)
 
 
 export default app;

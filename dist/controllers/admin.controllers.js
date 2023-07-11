@@ -12,13 +12,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.changePassword = exports.forgetPassword = exports.loginAdmin = exports.registerAdmin = void 0;
+exports.allAdminHotels = exports.changePassword = exports.forgetPassword = exports.loginAdmin = exports.registerAdmin = void 0;
 const admin_model_1 = __importDefault(require("../models/admin.model"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const mailService_1 = __importDefault(require("../middlewares/mailService"));
+const hotel_model_1 = __importDefault(require("../models/hotel.model"));
 const registerAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { hotelName, password, email } = req.body;
@@ -147,3 +148,27 @@ const changePassword = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.changePassword = changePassword;
+const allAdminHotels = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const adminId = req.params.adminId;
+        const adminDetails = yield admin_model_1.default.findByPk(adminId, {
+            include: [hotel_model_1.default]
+        });
+        if (!adminDetails) {
+            return res.status(404).json({
+                mesage: `Manager with this id: ${adminId} not found!`
+            });
+        }
+        else {
+            return res.status(200).json({
+                data: adminDetails
+            });
+        }
+    }
+    catch (error) {
+        return res.status(500).json({
+            message: error.message
+        });
+    }
+});
+exports.allAdminHotels = allAdminHotels;
