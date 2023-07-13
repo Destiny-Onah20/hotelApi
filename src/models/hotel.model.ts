@@ -1,5 +1,6 @@
 import sequelize from "../config/config";
 import { Model, Optional, DataTypes, BelongsToGetAssociationMixin } from "sequelize";
+import { Op } from "sequelize";
 import { hotelAttributes } from "../interfaces/hotel.interface";
 import Admin from "./admin.model";
 import logger from "../utils/logger";
@@ -20,12 +21,30 @@ class Hotel extends Model<hotelAttributes, HotelCreationAttributes> implements h
   public readonly updatedAt!: Date;
   public adminId!: number;
   public imageId!: string;
+  public cloudId!: string;
   public totalRooms!: number;
   public getAdmin!: BelongsToGetAssociationMixin<Admin>;
   public static associate(models: any): void {
-    Hotel.belongsTo(models.Admin, { as: "admin", foreignKey: "adminId" })
+    Hotel.belongsTo(models.Admin, { as: "admin", foreignKey: "adminId" });
   }
-
+  public static search(query: string): Promise<Hotel[]> {
+    return Hotel.findAll({
+      where: {
+        [Op.or]: [
+          {
+            hotelName: {
+              [Op.like]: `%${query}%`,
+            },
+          },
+          {
+            state: {
+              [Op.like]: `%${query}%`,
+            },
+          },
+        ],
+      },
+    })
+  }
 };
 
 Hotel.init({
@@ -72,6 +91,9 @@ Hotel.init({
     allowNull: false
   },
   imageId: {
+    type: DataTypes.STRING,
+  },
+  cloudId: {
     type: DataTypes.STRING,
   },
   adminId: {

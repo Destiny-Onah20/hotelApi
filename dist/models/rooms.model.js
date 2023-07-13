@@ -32,6 +32,10 @@ Room.init({
         type: sequelize_1.DataTypes.STRING,
         allowNull: false
     },
+    booked: {
+        type: sequelize_1.DataTypes.BOOLEAN,
+        defaultValue: false
+    },
     hotelId: {
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
@@ -58,7 +62,7 @@ Room.init({
 });
 Room.belongsTo(hotel_model_1.default, { foreignKey: "hotelId" });
 hotel_model_1.default.hasMany(Room, { foreignKey: "hotelId" });
-// Room.sync({ force: true }).then(() => {
+// Room.sync({ alter: true }).then(() => {
 //   logger.info("Room table created!");
 // }).catch((error) => {
 //   logger.error(error.mesage);

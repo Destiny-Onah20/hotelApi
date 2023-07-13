@@ -3,6 +3,7 @@ import { RequestHandler } from "express";
 import { UploadedFile } from 'express-fileupload';
 import Admin from "../models/admin.model";
 import Cloudinary from "../utils/cloudinary";
+import Room from "../models/rooms.model";
 
 
 
@@ -32,6 +33,7 @@ export const registerHotel: RequestHandler = async (req, res) => {
           website: string,
           adminId: number,
           imageId: string,
+          cloudId: string,
           email: string,
           city: string,
           state: string,
@@ -47,6 +49,7 @@ export const registerHotel: RequestHandler = async (req, res) => {
           state,
           totalRooms,
           imageId: result.secure_url,
+          cloudId: result.public_id,
           adminId: Number(adminId)
         };
         const createHotel = await Hotel.create(data);
@@ -86,14 +89,16 @@ export const allHotels: RequestHandler = async (req, res) => {
 export const hotelDetails: RequestHandler = async (req, res) => {
   try {
     const hotelId = req.params.hotelId;
-    const hotelInDB = await Hotel.findAll({ where: { id: hotelId } });
-    if (hotelInDB.length == 0) {
+    const hotelInDB = await Hotel.findByPk(hotelId, {
+      include: [Room]
+    });
+    if (!hotelInDB) {
       return res.status(404).json({
         message: `No hotel with this id: ${hotelId}`
       })
     } else {
       return res.status(200).json({
-        message: `Here is ${hotelInDB[0].hotelName}`,
+        message: `Here is ${hotelInDB.hotelName}`,
         data: hotelInDB
       })
     }
@@ -155,3 +160,43 @@ export const updateHotel: RequestHandler = async (req, res) => {
 };
 
 
+export const HotelsbySearch: RequestHandler = async (req, res) => {
+  try {
+    const { location } = req.body
+    const theSearch = await Hotel.findAll({ where: { state: location } });
+    if (!theSearch) {
+      return res.status(404).json({
+        message: "No Hotel found!"
+      })
+    }
+    return res.status(200).json({
+      message: theSearch
+    })
+  } catch (error: any) {
+    return res.status(500).json({
+      message: error.message
+    })
+  }
+};
+
+export const searchForHotelOrCity: RequestHandler = async (req, res) => {
+  try {
+    const { searchTerm } = req.body;
+    const result = await Hotel.search(searchTerm);
+    const available = await Room.findAll({ where: { booked: false } })
+    if (result.length === 0 || available.length === 0) {
+      return res.status(404).json({
+        message: "NO result found!"
+      })
+    } else {
+      return res.status(200).json({
+        message: `Heres your result for the search! ${searchTerm}`,
+        data: result
+      })
+    }
+  } catch (error: any) {
+    return res.status(500).json({
+      message: error.mesage
+    })
+  }
+};

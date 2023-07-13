@@ -4,17 +4,18 @@ import Admin from "./admin.model";
 import Hotel from "./hotel.model";
 import roomAttributes from "../interfaces/rooms.interface";
 import logger from "../utils/logger";
-type optionalHotelAttributes = Optional<roomAttributes, "id" | "createdAt" | "updatedAt">
+type optionalHotelAttributes = Optional<roomAttributes, "id" | "createdAt" | "updatedAt" | "booked">
 class Room extends Model<roomAttributes, optionalHotelAttributes> implements roomAttributes {
   public id!: number;
-  public roomNumber: number;
-  public roomDescription: string;
-  public price: number;
-  public image: string;
-  public hotelId: number;
-  public adminId: number;
-  public readonly createdAt: Date;
-  public readonly updatedAt: Date;
+  public roomNumber!: number;
+  public roomDescription!: string;
+  public price!: number;
+  public image!: string;
+  public hotelId!: number;
+  public booked!: boolean;
+  public adminId!: number;
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
 };
 
 
@@ -40,6 +41,10 @@ Room.init({
   image: {
     type: DataTypes.STRING,
     allowNull: false
+  },
+  booked: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
   },
   hotelId: {
     type: DataTypes.INTEGER,
@@ -69,7 +74,7 @@ Room.init({
 Room.belongsTo(Hotel, { foreignKey: "hotelId" });
 Hotel.hasMany(Room, { foreignKey: "hotelId" })
 
-// Room.sync({ force: true }).then(() => {
+// Room.sync({ alter: true }).then(() => {
 //   logger.info("Room table created!");
 // }).catch((error) => {
 //   logger.error(error.mesage);

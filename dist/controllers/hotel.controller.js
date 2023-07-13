@@ -12,10 +12,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateHotel = exports.hotelDetails = exports.allHotels = exports.registerHotel = void 0;
+exports.searchForHotelOrCity = exports.HotelsbySearch = exports.updateHotel = exports.hotelDetails = exports.allHotels = exports.registerHotel = void 0;
 const hotel_model_1 = __importDefault(require("../models/hotel.model"));
 const admin_model_1 = __importDefault(require("../models/admin.model"));
 const cloudinary_1 = __importDefault(require("../utils/cloudinary"));
+const rooms_model_1 = __importDefault(require("../models/rooms.model"));
 const registerHotel = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
@@ -48,6 +49,7 @@ const registerHotel = (req, res) => __awaiter(void 0, void 0, void 0, function* 
                     state,
                     totalRooms,
                     imageId: result.secure_url,
+                    cloudId: result.public_id,
                     adminId: Number(adminId)
                 };
                 const createHotel = yield hotel_model_1.default.create(data);
@@ -90,15 +92,17 @@ exports.allHotels = allHotels;
 const hotelDetails = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const hotelId = req.params.hotelId;
-        const hotelInDB = yield hotel_model_1.default.findAll({ where: { id: hotelId } });
-        if (hotelInDB.length == 0) {
+        const hotelInDB = yield hotel_model_1.default.findByPk(hotelId, {
+            include: [rooms_model_1.default]
+        });
+        if (!hotelInDB) {
             return res.status(404).json({
                 message: `No hotel with this id: ${hotelId}`
             });
         }
         else {
             return res.status(200).json({
-                message: `Here is ${hotelInDB[0].hotelName}`,
+                message: `Here is ${hotelInDB.hotelName}`,
                 data: hotelInDB
             });
         }
@@ -152,3 +156,47 @@ const updateHotel = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.updateHotel = updateHotel;
+const HotelsbySearch = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { location } = req.body;
+        const theSearch = yield hotel_model_1.default.findAll({ where: { state: location } });
+        if (!theSearch) {
+            return res.status(404).json({
+                message: "No Hotel found!"
+            });
+        }
+        return res.status(200).json({
+            message: theSearch
+        });
+    }
+    catch (error) {
+        return res.status(500).json({
+            message: error.message
+        });
+    }
+});
+exports.HotelsbySearch = HotelsbySearch;
+const searchForHotelOrCity = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { searchTerm } = req.body;
+        const result = yield hotel_model_1.default.search(searchTerm);
+        const available = yield rooms_model_1.default.findAll({ where: { booked: false } });
+        if (result.length === 0 || available.length === 0) {
+            return res.status(404).json({
+                message: "NO result found!"
+            });
+        }
+        else {
+            return res.status(200).json({
+                message: `Heres your result for the search! ${searchTerm}`,
+                data: result
+            });
+        }
+    }
+    catch (error) {
+        return res.status(500).json({
+            message: error.mesage
+        });
+    }
+});
+exports.searchForHotelOrCity = searchForHotelOrCity;

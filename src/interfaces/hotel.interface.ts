@@ -6,6 +6,7 @@ export interface hotelAttributes {
   website: string,
   adminId: number,
   imageId: string,
+  cloudId: string,
   email: string,
   totalRooms: number;
   city: string,

@@ -161,3 +161,5 @@ export const allAdminHotels: RequestHandler = async (req, res) => {
     })
   }
 };
+
+

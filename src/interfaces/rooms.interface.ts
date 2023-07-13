@@ -4,6 +4,7 @@ interface roomAttributes {
   roomDescription: string;
   price: number;
   image: string;
+  booked: boolean;
   hotelId: number;
   adminId: number;
   createdAt: Date;

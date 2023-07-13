@@ -9,4 +9,5 @@ hotelRoute.route("/hotel/register/:adminId").post(authorization_1.authID, hotel_
 hotelRoute.route("/hotel/update/:adminId/:hotelId").patch(authorization_1.authID, hotel_controller_1.updateHotel);
 hotelRoute.route("/hotel/hotels").get(hotel_controller_1.allHotels);
 hotelRoute.route("/hotel/hotels/:hotelId").get(hotel_controller_1.hotelDetails);
+hotelRoute.route("/hotel/search").post(hotel_controller_1.searchForHotelOrCity);
 exports.default = hotelRoute;

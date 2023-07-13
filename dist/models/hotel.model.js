@@ -5,10 +5,29 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const config_1 = __importDefault(require("../config/config"));
 const sequelize_1 = require("sequelize");
+const sequelize_2 = require("sequelize");
 const admin_model_1 = __importDefault(require("./admin.model"));
 class Hotel extends sequelize_1.Model {
     static associate(models) {
         Hotel.belongsTo(models.Admin, { as: "admin", foreignKey: "adminId" });
+    }
+    static search(query) {
+        return Hotel.findAll({
+            where: {
+                [sequelize_2.Op.or]: [
+                    {
+                        hotelName: {
+                            [sequelize_2.Op.like]: `%${query}%`,
+                        },
+                    },
+                    {
+                        state: {
+                            [sequelize_2.Op.like]: `%${query}%`,
+                        },
+                    },
+                ],
+            },
+        });
     }
 }
 ;
@@ -56,6 +75,9 @@ Hotel.init({
         allowNull: false
     },
     imageId: {
+        type: sequelize_1.DataTypes.STRING,
+    },
+    cloudId: {
         type: sequelize_1.DataTypes.STRING,
     },
     adminId: {

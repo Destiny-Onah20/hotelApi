@@ -12,15 +12,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.registerRoom = void 0;
+exports.luxuryRooms = exports.fourStarRooms = exports.cheapHotelRooms = exports.allRooms = exports.registerRoom = void 0;
 const rooms_model_1 = __importDefault(require("../models/rooms.model"));
 const cloudinary_1 = __importDefault(require("../utils/cloudinary"));
 const hotel_model_1 = __importDefault(require("../models/hotel.model"));
+const sequelize_1 = require("sequelize");
 const registerRoom = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
         const hotelId = req.params.hotelId;
-        const adminId = req.params.hotelId;
+        const adminId = req.params.adminId;
         const { roomNumber, roomDescription, price } = req.body;
         const hotelExists = yield hotel_model_1.default.findOne({ where: { id: hotelId } });
         if (!hotelExists) {
@@ -71,3 +72,102 @@ const registerRoom = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.registerRoom = registerRoom;
+const allRooms = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const all = yield rooms_model_1.default.findAll();
+        if (all.length === 0) {
+            return res.status(404).json({
+                message: "Sorry no rooms available for the moment!"
+            });
+        }
+        else {
+            return res.status(200).json({
+                messge: "All rooms : " + all.length,
+                data: all
+            });
+        }
+    }
+    catch (error) {
+        return res.status(500).json({
+            message: error.mesage
+        });
+    }
+});
+exports.allRooms = allRooms;
+const cheapHotelRooms = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const cheapRoom = yield rooms_model_1.default.findAll({
+            where: {
+                price: {
+                    [sequelize_1.Op.lte]: 20000
+                }
+            }
+        });
+        if (cheapRoom.length === 0) {
+            return res.status(404).json({
+                message: "No room found!"
+            });
+        }
+        else {
+            return res.status(200).json({
+                data: cheapRoom
+            });
+        }
+    }
+    catch (error) {
+        return res.status(500).json({
+            message: error.mesage
+        });
+    }
+});
+exports.cheapHotelRooms = cheapHotelRooms;
+const fourStarRooms = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const niceRoom = yield rooms_model_1.default.findAll({
+            where: {
+                price: { [sequelize_1.Op.gte]: 20001 }
+            }
+        });
+        if (niceRoom.length === 0) {
+            return res.status(404).json({
+                message: "No room found!"
+            });
+        }
+        return res.status(200).json({
+            message: "All 4 star rooms " + niceRoom.length,
+            data: niceRoom
+        });
+    }
+    catch (error) {
+        return res.status(500).json({
+            message: error.mesage
+        });
+    }
+});
+exports.fourStarRooms = fourStarRooms;
+const luxuryRooms = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const luxury = yield rooms_model_1.default.findAll({
+            where: {
+                price: { [sequelize_1.Op.gte]: 80000 }
+            }
+        });
+        if (luxury.length === 0) {
+            return res.status(400).json({
+                message: "No Expensive rooms for now!"
+            });
+        }
+        else {
+            return res.status(200).json({
+                message: "All Luxury rooms " + luxury.length,
+                data: luxury
+            });
+        }
+    }
+    catch (error) {
+        return res.status(500).json({
+            message: error.mesage
+        });
+    }
+});
+exports.luxuryRooms = luxuryRooms;
