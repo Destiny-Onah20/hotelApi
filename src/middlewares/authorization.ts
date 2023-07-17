@@ -15,7 +15,7 @@ export const authID: RequestHandler = async (req, res, next) => {
       })
     }
     const authenticToken = validUser.token;
-    await jwt.verify(authenticToken, <string>process.env.JWT_TOK, (error, payload) => {
+    jwt.verify(authenticToken, <string>process.env.JWT_TOK, (error, payload) => {
       if (error) {
         return error.message
       } else {
@@ -30,13 +30,24 @@ export const authID: RequestHandler = async (req, res, next) => {
   }
 };
 
-export const authorizedAdmin: RequestHandler = async (req, res, next) => {
+export const authorizedUser: RequestHandler = async (req, res, next) => {
   try {
-    authID(req, res, () => {
-      if (req.user) {
-
+    const userId = req.params.userId;
+    const validUser = await User.findOne({ where: { id: userId } });
+    if (!validUser) {
+      return res.status(401).json({
+        message: "This id does not exists!"
+      })
+    }
+    const authenticToken = validUser.token;
+    jwt.verify(authenticToken, <string>process.env.JWT_TOK, (error, payload) => {
+      if (error) {
+        return error.message
+      } else {
+        req.user = payload;
+        next();
       }
-    })
+    });
   } catch (error: any) {
     return res.status(500).json({
       message: error.message

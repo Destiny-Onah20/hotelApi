@@ -41,6 +41,16 @@ class Hotel extends Model<hotelAttributes, HotelCreationAttributes> implements h
               [Op.like]: `%${query}%`,
             },
           },
+          {
+            address: {
+              [Op.like]: `%${query}%`,
+            },
+          },
+          {
+            city: {
+              [Op.like]: `%${query}%`,
+            },
+          },
         ],
       },
     })

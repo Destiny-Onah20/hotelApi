@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.searchForHotelOrCity = exports.HotelsbySearch = exports.updateHotel = exports.hotelDetails = exports.allHotels = exports.registerHotel = void 0;
+exports.searchFunction = exports.HotelsbySearch = exports.updateHotel = exports.hotelDetails = exports.allHotels = exports.registerHotel = void 0;
 const hotel_model_1 = __importDefault(require("../models/hotel.model"));
 const admin_model_1 = __importDefault(require("../models/admin.model"));
 const cloudinary_1 = __importDefault(require("../utils/cloudinary"));
@@ -176,19 +176,19 @@ const HotelsbySearch = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.HotelsbySearch = HotelsbySearch;
-const searchForHotelOrCity = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const searchFunction = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { searchTerm } = req.body;
-        const result = yield hotel_model_1.default.search(searchTerm);
+        const { searchValue } = req.body;
+        const result = yield hotel_model_1.default.search(searchValue);
         const available = yield rooms_model_1.default.findAll({ where: { booked: false } });
-        if (result.length === 0 || available.length === 0) {
+        if (result.length === 0 && available.length === 0) {
             return res.status(404).json({
                 message: "NO result found!"
             });
         }
         else {
             return res.status(200).json({
-                message: `Heres your result for the search! ${searchTerm}`,
+                message: `Heres your result for the search! ${searchValue} ` + result.length,
                 data: result
             });
         }
@@ -199,4 +199,4 @@ const searchForHotelOrCity = (req, res) => __awaiter(void 0, void 0, void 0, fun
         });
     }
 });
-exports.searchForHotelOrCity = searchForHotelOrCity;
+exports.searchFunction = searchFunction;

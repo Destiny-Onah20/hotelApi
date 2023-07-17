@@ -92,7 +92,8 @@ export const cheapHotelRooms: RequestHandler = async (req, res) => {
       where: {
         price: {
           [Op.lte]: 20000
-        }
+        },
+        booked: false
       }
     });
     if (cheapRoom.length === 0) {
@@ -115,7 +116,8 @@ export const fourStarRooms: RequestHandler = async (req, res) => {
   try {
     const niceRoom = await Room.findAll({
       where: {
-        price: { [Op.gte]: 20001 }
+        price: { [Op.gte]: 20001 },
+        booked: false
       }
     });
     if (niceRoom.length === 0) {
@@ -139,7 +141,8 @@ export const luxuryRooms: RequestHandler = async (req, res) => {
     const luxury = await Room.findAll(
       {
         where: {
-          price: { [Op.gte]: 80000 }
+          price: { [Op.gte]: 80000 },
+          booked: false
         }
       });
     if (luxury.length === 0) {

@@ -100,7 +100,8 @@ const cheapHotelRooms = (req, res) => __awaiter(void 0, void 0, void 0, function
             where: {
                 price: {
                     [sequelize_1.Op.lte]: 20000
-                }
+                },
+                booked: false
             }
         });
         if (cheapRoom.length === 0) {
@@ -125,7 +126,8 @@ const fourStarRooms = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     try {
         const niceRoom = yield rooms_model_1.default.findAll({
             where: {
-                price: { [sequelize_1.Op.gte]: 20001 }
+                price: { [sequelize_1.Op.gte]: 20001 },
+                booked: false
             }
         });
         if (niceRoom.length === 0) {
@@ -149,7 +151,8 @@ const luxuryRooms = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     try {
         const luxury = yield rooms_model_1.default.findAll({
             where: {
-                price: { [sequelize_1.Op.gte]: 80000 }
+                price: { [sequelize_1.Op.gte]: 80000 },
+                booked: false
             }
         });
         if (luxury.length === 0) {

@@ -179,18 +179,18 @@ export const HotelsbySearch: RequestHandler = async (req, res) => {
   }
 };
 
-export const searchForHotelOrCity: RequestHandler = async (req, res) => {
+export const searchFunction: RequestHandler = async (req, res) => {
   try {
-    const { searchTerm } = req.body;
-    const result = await Hotel.search(searchTerm);
+    const { searchValue } = req.body;
+    const result = await Hotel.search(searchValue);
     const available = await Room.findAll({ where: { booked: false } })
-    if (result.length === 0 || available.length === 0) {
+    if (result.length === 0 && available.length === 0) {
       return res.status(404).json({
         message: "NO result found!"
       })
     } else {
       return res.status(200).json({
-        message: `Heres your result for the search! ${searchTerm}`,
+        message: `Heres your result for the search! ${searchValue} ` + result.length,
         data: result
       })
     }

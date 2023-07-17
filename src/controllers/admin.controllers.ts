@@ -6,6 +6,7 @@ import bcrypt from "bcrypt";
 import Jwt from "jsonwebtoken";
 import mailSender from "../middlewares/mailService";
 import Hotel from "../models/hotel.model";
+import Room from "../models/rooms.model";
 
 
 export const registerAdmin: RequestHandler = async (req, res): Promise<object> => {

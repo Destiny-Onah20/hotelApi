@@ -25,6 +25,16 @@ class Hotel extends sequelize_1.Model {
                             [sequelize_2.Op.like]: `%${query}%`,
                         },
                     },
+                    {
+                        address: {
+                            [sequelize_2.Op.like]: `%${query}%`,
+                        },
+                    },
+                    {
+                        city: {
+                            [sequelize_2.Op.like]: `%${query}%`,
+                        },
+                    },
                 ],
             },
         });
