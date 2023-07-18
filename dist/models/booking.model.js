@@ -40,6 +40,14 @@ Booking.init({
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false
     },
+    adminId: {
+        type: sequelize_1.DataTypes.INTEGER,
+        allowNull: false
+    },
+    message: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: false
+    },
     createdAt: {
         type: sequelize_1.DataTypes.DATE,
         allowNull: false
@@ -54,7 +62,7 @@ Booking.init({
 });
 Booking.associate({ Room: rooms_model_1.default });
 rooms_model_1.default.hasMany(Booking, { foreignKey: "roomId" });
-// Booking.sync().then(() => {
+// Booking.sync({ alter: true }).then(() => {
 //   logger.info("Booking Table created!")
 // }).catch((error) => {
 //   logger.error(error.mesage)

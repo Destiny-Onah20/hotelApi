@@ -1,11 +1,14 @@
 import express from "express";
 import passport from "passport";
+import fileUpload from "express-fileupload";
+import { Server } from "socket.io";
+import http from "http";
 import adminRoute from "./routers/admin.route";
 import userRoute from "./routers/user.route";
-import fileUpload from "express-fileupload";
 import hotelRoute from "./routers/hotel.route";
 import roomRoute from "./routers/rooms.router";
 import bookRoute from "./routers/booking.route";
+import logger from "./utils/logger";
 
 const app = express();
 
@@ -17,11 +20,22 @@ app.use(express.urlencoded({
   extended: true
 }));
 
+const server = http.createServer();
+export const io = new Server(server);
+
+io.on("connection", (socket) => {
+  logger.info("A user connected!");
+  socket.on("disconnect", () => {
+    logger.info("A user disconnected!")
+  })
+});
+
 app.use("/api/v1", adminRoute);
 app.use("/api/v1", userRoute);
 app.use("/api/v1", hotelRoute);
 app.use("/api/v1", roomRoute);
 app.use("/api/v1", bookRoute);
+
 
 
 export default app;

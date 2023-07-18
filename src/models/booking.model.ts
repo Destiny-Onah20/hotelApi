@@ -1,6 +1,7 @@
 import { Model, DataTypes, Optional } from "sequelize";
 import sequelize from "../config/config";
 import Room from "./rooms.model";
+import User from "./user.admin";
 import logger from "../utils/logger";
 
 
@@ -9,6 +10,8 @@ interface bookingAttributes {
   checkIn: Date;
   checkOut: Date;
   roomId: number;
+  message: string;
+  adminId: number;
   userId: number;
   createdAt: Date;
   updatedAt: Date
@@ -23,6 +26,8 @@ class Booking extends Model<bookingAttributes, optionalBookingAttributes> implem
   public roomId!: number;
   public userId!: number;
   public readonly createdAt!: Date;
+  public message!: string;
+  public adminId!: number;
   public readonly updatedAt!: Date;
   public static associate(models: any): void {
     Booking.belongsTo(models.Room, { foreignKey: "roomId" })
@@ -56,6 +61,14 @@ Booking.init({
     type: DataTypes.INTEGER,
     allowNull: false
   },
+  adminId: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  },
+  message: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
   createdAt: {
     type: DataTypes.DATE,
     allowNull: false
@@ -72,7 +85,7 @@ Booking.init({
 Booking.associate({ Room });
 Room.hasMany(Booking, { foreignKey: "roomId" });
 
-// Booking.sync().then(() => {
+// Booking.sync({ alter: true }).then(() => {
 //   logger.info("Booking Table created!")
 // }).catch((error) => {
 //   logger.error(error.mesage)

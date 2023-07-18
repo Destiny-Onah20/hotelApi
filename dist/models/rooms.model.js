@@ -55,6 +55,14 @@ Room.init({
     updatedAt: {
         type: sequelize_1.DataTypes.DATE,
         allowNull: false
+    },
+    checkIn: {
+        type: sequelize_1.DataTypes.DATE,
+        allowNull: true
+    },
+    checkOut: {
+        type: sequelize_1.DataTypes.DATE,
+        allowNull: true
     }
 }, {
     sequelize: config_1.default,

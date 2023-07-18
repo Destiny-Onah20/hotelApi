@@ -21,6 +21,7 @@
     "@types/jsonwebtoken": "^9.0.2",
     "@types/multer": "^1.4.7",
     "@types/node": "^20.3.1",
+    "@types/node-cron": "^3.0.8",
     "@types/nodemailer": "^6.4.8",
     "@types/passport": "^1.0.12",
     "@types/passport-facebook": "^2.1.11",
@@ -43,11 +44,13 @@
     "jsonwebtoken": "^9.0.0",
     "multer": "^1.4.5-lts.1",
     "mysql2": "^3.3.5",
+    "node-cron": "^3.0.2",
     "nodemailer": "^6.9.3",
     "passport": "^0.6.0",
     "passport-facebook": "^3.0.0",
     "passport-google-oauth20": "^2.0.0",
     "sequelize": "^6.32.1",
+    "socket.io": "^4.7.1",
     "winston": "^3.9.0",
     "zod": "^3.21.4"
   }

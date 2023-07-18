@@ -4,7 +4,7 @@ import Admin from "./admin.model";
 import Hotel from "./hotel.model";
 import roomAttributes from "../interfaces/rooms.interface";
 import logger from "../utils/logger";
-type optionalHotelAttributes = Optional<roomAttributes, "id" | "createdAt" | "updatedAt" | "booked">
+type optionalHotelAttributes = Optional<roomAttributes, "id" | "createdAt" | "updatedAt" | "booked" | "checkOut" | "checkIn">
 class Room extends Model<roomAttributes, optionalHotelAttributes> implements roomAttributes {
   public id!: number;
   public roomNumber!: number;
@@ -13,6 +13,8 @@ class Room extends Model<roomAttributes, optionalHotelAttributes> implements roo
   public image!: string;
   public hotelId!: number;
   public booked!: boolean;
+  public checkIn!: Date | null;
+  public checkOut!: Date | null;
   public adminId!: number;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -65,6 +67,14 @@ Room.init({
   updatedAt: {
     type: DataTypes.DATE,
     allowNull: false
+  },
+  checkIn: {
+    type: DataTypes.DATE,
+    allowNull: true
+  },
+  checkOut: {
+    type: DataTypes.DATE,
+    allowNull: true
   }
 }, {
   sequelize,

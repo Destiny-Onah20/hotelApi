@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.allAdminHotels = exports.changePassword = exports.forgetPassword = exports.loginAdmin = exports.registerAdmin = void 0;
+exports.getAllRoomsByAdmin = exports.allAdminHotels = exports.changePassword = exports.forgetPassword = exports.loginAdmin = exports.registerAdmin = void 0;
 const admin_model_1 = __importDefault(require("../models/admin.model"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
@@ -20,6 +20,7 @@ const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const mailService_1 = __importDefault(require("../middlewares/mailService"));
 const hotel_model_1 = __importDefault(require("../models/hotel.model"));
+const rooms_model_1 = __importDefault(require("../models/rooms.model"));
 const registerAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { hotelName, password, email } = req.body;
@@ -172,3 +173,29 @@ const allAdminHotels = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.allAdminHotels = allAdminHotels;
+const getAllRoomsByAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { adminId } = req.params;
+        const theAdminRoom = yield hotel_model_1.default.findAll({
+            where: {
+                adminId
+            },
+            include: [rooms_model_1.default]
+        });
+        if (!theAdminRoom) {
+            return res.status(404).json({
+                message: 'No room Found!'
+            });
+        }
+        return res.status(200).json({
+            message: `All rooms Registered by ${adminId} ${theAdminRoom.length} `,
+            data: theAdminRoom
+        });
+    }
+    catch (error) {
+        return res.status(500).json({
+            message: error.message
+        });
+    }
+});
+exports.getAllRoomsByAdmin = getAllRoomsByAdmin;

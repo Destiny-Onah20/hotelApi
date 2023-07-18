@@ -6,6 +6,8 @@ interface roomAttributes {
   image: string;
   booked: boolean;
   hotelId: number;
+  checkIn: Date | null;
+  checkOut: Date | null;
   adminId: number;
   createdAt: Date;
   updatedAt: Date

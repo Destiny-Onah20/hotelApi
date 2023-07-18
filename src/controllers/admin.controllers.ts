@@ -164,3 +164,27 @@ export const allAdminHotels: RequestHandler = async (req, res) => {
 };
 
 
+export const getAllRoomsByAdmin: RequestHandler = async (req, res) => {
+  try {
+    const { adminId } = req.params;
+    const theAdminRoom = await Hotel.findAll({
+      where: {
+        adminId
+      },
+      include: [Room]
+    });
+    if (!theAdminRoom) {
+      return res.status(404).json({
+        message: 'No room Found!'
+      })
+    }
+    return res.status(200).json({
+      message: `All rooms Registered by ${adminId} ${theAdminRoom.length} `,
+      data: theAdminRoom
+    })
+  } catch (error: any) {
+    return res.status(500).json({
+      message: error.message
+    })
+  }
+};

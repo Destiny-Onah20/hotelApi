@@ -11,6 +11,8 @@ adminRoute.route("/manager/register").post(validates(adminSchema), registerAdmin
 adminRoute.route("/manager/login").post(loginValidate(adminLogin), loginAdmin);
 adminRoute.route("/manager/forgotten").post(forgetPassword);
 adminRoute.route("/manager/change/:adminId").patch(changePassword);
-adminRoute.route("/manager/details/:adminId").get(authID, allAdminHotels)
+adminRoute.route("/manager/details/:adminId").get(authID, allAdminHotels);
+adminRoute.route("/manager/rooms/:adminId").get(authID, allAdminHotels);
+
 
 export default adminRoute;
