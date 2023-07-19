@@ -180,7 +180,7 @@ const getAllRoomsByAdmin = (req, res) => __awaiter(void 0, void 0, void 0, funct
             where: {
                 adminId
             },
-            include: [rooms_model_1.default]
+            include: [{ model: rooms_model_1.default, as: "rooms" }]
         });
         if (!theAdminRoom) {
             return res.status(404).json({

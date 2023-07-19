@@ -143,7 +143,7 @@ export const updateHotel: RequestHandler = async (req, res) => {
         website,
         email,
         city,
-        state,
+        state: state.toLowerCase(),
         totalRooms,
         imageId: result.secure_url
       };
@@ -160,17 +160,70 @@ export const updateHotel: RequestHandler = async (req, res) => {
 };
 
 
-export const HotelsbySearch: RequestHandler = async (req, res) => {
+export const hotelsInLagos: RequestHandler = async (req, res) => {
   try {
-    const { location } = req.body
-    const theSearch = await Hotel.findAll({ where: { state: location } });
-    if (!theSearch) {
+    const lagos = await Hotel.findAll({ where: { state: "lagos" } });
+    if (!lagos) {
       return res.status(404).json({
         message: "No Hotel found!"
       })
     }
     return res.status(200).json({
-      message: theSearch
+      message: lagos
+    })
+  } catch (error: any) {
+    return res.status(500).json({
+      message: error.message
+    })
+  }
+};
+
+export const hotelsInAbuja: RequestHandler = async (req, res) => {
+  try {
+    const abuja = await Hotel.findAll({ where: { state: "abuja" } });
+    if (abuja.length === 0) {
+      return res.status(404).json({
+        message: "No Hotel found!"
+      })
+    }
+    return res.status(200).json({
+      message: abuja
+    })
+  } catch (error: any) {
+    return res.status(500).json({
+      message: error.message
+    })
+  }
+};
+
+export const hotelsInKano: RequestHandler = async (req, res) => {
+  try {
+    const kano = await Hotel.findAll({ where: { state: "kano" } });
+    if (kano.length === 0) {
+      return res.status(404).json({
+        message: "No Hotel found!"
+      })
+    }
+    return res.status(200).json({
+      message: kano
+    })
+  } catch (error: any) {
+    return res.status(500).json({
+      message: error.message
+    })
+  }
+};
+
+export const hotelsInCalabar: RequestHandler = async (req, res) => {
+  try {
+    const calabar = await Hotel.findAll({ where: { city: "calabar" } });
+    if (calabar.length === 0) {
+      return res.status(404).json({
+        message: "No Hotel found!"
+      })
+    }
+    return res.status(200).json({
+      message: calabar
     })
   } catch (error: any) {
     return res.status(500).json({
@@ -200,3 +253,4 @@ export const searchFunction: RequestHandler = async (req, res) => {
     })
   }
 };
+

@@ -171,7 +171,7 @@ export const getAllRoomsByAdmin: RequestHandler = async (req, res) => {
       where: {
         adminId
       },
-      include: [Room]
+      include: [{ model: Room, as: "rooms" }]
     });
     if (!theAdminRoom) {
       return res.status(404).json({

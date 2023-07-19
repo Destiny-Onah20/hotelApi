@@ -3,6 +3,7 @@ import sequelize from "../config/config";
 import Room from "./rooms.model";
 import User from "./user.admin";
 import logger from "../utils/logger";
+import Admin from "./admin.model";
 
 
 interface bookingAttributes {
@@ -83,7 +84,7 @@ Booking.init({
 });
 
 Booking.associate({ Room });
-Room.hasMany(Booking, { foreignKey: "roomId" });
+Booking.belongsTo(Admin, { foreignKey: "adminId" })
 
 // Booking.sync({ alter: true }).then(() => {
 //   logger.info("Booking Table created!")

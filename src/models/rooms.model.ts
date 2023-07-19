@@ -81,7 +81,7 @@ Room.init({
   tableName: "rooms"
 });
 
-Room.belongsTo(Hotel, { foreignKey: "hotelId" });
+Room.belongsTo(Hotel, { foreignKey: "hotelId" as "rooms" });
 Hotel.hasMany(Room, { foreignKey: "hotelId" })
 
 // Room.sync({ alter: true }).then(() => {

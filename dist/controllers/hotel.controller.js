@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.searchFunction = exports.HotelsbySearch = exports.updateHotel = exports.hotelDetails = exports.allHotels = exports.registerHotel = void 0;
+exports.searchFunction = exports.hotelsInCalabar = exports.hotelsInKano = exports.hotelsInAbuja = exports.hotelsInLagos = exports.updateHotel = exports.hotelDetails = exports.allHotels = exports.registerHotel = void 0;
 const hotel_model_1 = __importDefault(require("../models/hotel.model"));
 const admin_model_1 = __importDefault(require("../models/admin.model"));
 const cloudinary_1 = __importDefault(require("../utils/cloudinary"));
@@ -139,7 +139,7 @@ const updateHotel = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 website,
                 email,
                 city,
-                state,
+                state: state.toLowerCase(),
                 totalRooms,
                 imageId: result.secure_url
             };
@@ -156,17 +156,16 @@ const updateHotel = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.updateHotel = updateHotel;
-const HotelsbySearch = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const hotelsInLagos = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { location } = req.body;
-        const theSearch = yield hotel_model_1.default.findAll({ where: { state: location } });
-        if (!theSearch) {
+        const lagos = yield hotel_model_1.default.findAll({ where: { state: "lagos" } });
+        if (!lagos) {
             return res.status(404).json({
                 message: "No Hotel found!"
             });
         }
         return res.status(200).json({
-            message: theSearch
+            message: lagos
         });
     }
     catch (error) {
@@ -175,7 +174,64 @@ const HotelsbySearch = (req, res) => __awaiter(void 0, void 0, void 0, function*
         });
     }
 });
-exports.HotelsbySearch = HotelsbySearch;
+exports.hotelsInLagos = hotelsInLagos;
+const hotelsInAbuja = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const abuja = yield hotel_model_1.default.findAll({ where: { state: "abuja" } });
+        if (abuja.length === 0) {
+            return res.status(404).json({
+                message: "No Hotel found!"
+            });
+        }
+        return res.status(200).json({
+            message: abuja
+        });
+    }
+    catch (error) {
+        return res.status(500).json({
+            message: error.message
+        });
+    }
+});
+exports.hotelsInAbuja = hotelsInAbuja;
+const hotelsInKano = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const kano = yield hotel_model_1.default.findAll({ where: { state: "kano" } });
+        if (kano.length === 0) {
+            return res.status(404).json({
+                message: "No Hotel found!"
+            });
+        }
+        return res.status(200).json({
+            message: kano
+        });
+    }
+    catch (error) {
+        return res.status(500).json({
+            message: error.message
+        });
+    }
+});
+exports.hotelsInKano = hotelsInKano;
+const hotelsInCalabar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const calabar = yield hotel_model_1.default.findAll({ where: { city: "calabar" } });
+        if (calabar.length === 0) {
+            return res.status(404).json({
+                message: "No Hotel found!"
+            });
+        }
+        return res.status(200).json({
+            message: calabar
+        });
+    }
+    catch (error) {
+        return res.status(500).json({
+            message: error.message
+        });
+    }
+});
+exports.hotelsInCalabar = hotelsInCalabar;
 const searchFunction = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { searchValue } = req.body;
