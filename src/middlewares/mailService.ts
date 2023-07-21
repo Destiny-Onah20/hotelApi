@@ -2,6 +2,7 @@ import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 import { mailInterface } from "../interfaces/mailInterface";
 import handlebars from "handlebars";
+import smtpTransport from "nodemailer-smtp-transport";
 import fs from "fs";
 dotenv.config();
 
@@ -22,14 +23,14 @@ export default class mailSender {
 
 
   async createConnection() {
-    this.transporter = nodemailer.createTransport({
+    this.transporter = nodemailer.createTransport(smtpTransport({
       service: process.env.SERVICE,
       secure: false,
       auth: {
         user: process.env.EMAIL,
         pass: process.env.PASSWORD
       }
-    })
+    }))
     try {
       await this.transporter.verify();
       // console.log("MailSender connection established successfully.");
@@ -42,7 +43,8 @@ export default class mailSender {
       from: process.env.EMAIL,
       to: Option.email,
       subject: Option.subject,
-      text: Option.message
+      text: Option.message,
+      html: Option.html
     }
     await this.transporter.sendMail(mailOption);
 

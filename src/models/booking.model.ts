@@ -13,6 +13,8 @@ interface bookingAttributes {
   roomId: number;
   message: string;
   adminId: number;
+  price: number;
+  roomNumber: number,
   userId: number;
   createdAt: Date;
   updatedAt: Date
@@ -26,7 +28,9 @@ class Booking extends Model<bookingAttributes, optionalBookingAttributes> implem
   public checkOut!: Date;
   public roomId!: number;
   public userId!: number;
+  public roomNumber: number;
   public readonly createdAt!: Date;
+  public price!: number;
   public message!: string;
   public adminId!: number;
   public readonly updatedAt!: Date;
@@ -62,6 +66,14 @@ Booking.init({
     type: DataTypes.INTEGER,
     allowNull: false
   },
+  roomNumber: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  },
+  price: {
+    type: DataTypes.DOUBLE,
+    allowNull: false
+  },
   adminId: {
     type: DataTypes.INTEGER,
     allowNull: false
@@ -84,7 +96,7 @@ Booking.init({
 });
 
 Booking.associate({ Room });
-Booking.belongsTo(Admin, { foreignKey: "adminId" })
+Room.hasMany(Booking, { foreignKey: "roomId" });
 
 // Booking.sync({ alter: true }).then(() => {
 //   logger.info("Booking Table created!")

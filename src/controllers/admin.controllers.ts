@@ -7,6 +7,7 @@ import Jwt from "jsonwebtoken";
 import mailSender from "../middlewares/mailService";
 import Hotel from "../models/hotel.model";
 import Room from "../models/rooms.model";
+import Booking from "../models/booking.model"; "#2db9ff"
 
 
 export const registerAdmin: RequestHandler = async (req, res): Promise<object> => {
@@ -104,7 +105,8 @@ export const forgetPassword: RequestHandler = async (req, res) => {
       from: process.env.EMAIL,
       email: validEmail.email,
       subject: "Forgotten password!",
-      message
+      message,
+      html: ""
     })
     return res.status(200).json({
       message: "A link to change your password have been sent to your email, Please check!."
@@ -167,11 +169,10 @@ export const allAdminHotels: RequestHandler = async (req, res) => {
 export const getAllRoomsByAdmin: RequestHandler = async (req, res) => {
   try {
     const { adminId } = req.params;
-    const theAdminRoom = await Hotel.findAll({
+    const theAdminRoom = await Room.findAll({
       where: {
         adminId
-      },
-      include: [{ model: Room, as: "rooms" }]
+      }
     });
     if (!theAdminRoom) {
       return res.status(404).json({
@@ -185,6 +186,31 @@ export const getAllRoomsByAdmin: RequestHandler = async (req, res) => {
   } catch (error: any) {
     return res.status(500).json({
       message: error.message
+    })
+  }
+};
+
+export const allAdminRoomsBooked: RequestHandler = async (req, res) => {
+  try {
+    const { adminId } = req.params;
+    const allRooms = await Booking.findAll({
+      where: { adminId },
+      include: [Room]
+    });
+    if (allRooms.length === 0) {
+      return res.status(404).json({
+        message: `No room booked by this user: ${adminId}`
+      })
+    } else {
+      return res.status(200).json({
+        message: `all the rooms booked ${allRooms.length}`,
+        data: allRooms
+      })
+    }
+  } catch (error: any) {
+    return res.status(500).json({
+      message: error.message,
+      status: "Failed"
     })
   }
 };

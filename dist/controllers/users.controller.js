@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.facebookSignUp = exports.changePasswordUser = exports.forgottenPassword = exports.verifyUser = exports.loginUser = exports.registerUser = void 0;
+exports.roomsBookedByUser = exports.facebookSignUp = exports.changePasswordUser = exports.forgottenPassword = exports.verifyUser = exports.loginUser = exports.registerUser = void 0;
 const user_admin_1 = __importDefault(require("../models/user.admin"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
@@ -21,6 +21,9 @@ const passport_facebook_1 = require("passport-facebook");
 const passport_1 = __importDefault(require("passport"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const mailService_1 = __importDefault(require("../middlewares/mailService"));
+const booking_model_1 = __importDefault(require("../models/booking.model"));
+const rooms_model_1 = __importDefault(require("../models/rooms.model"));
+const mailGenerator_1 = __importDefault(require("../utils/mailGenerator"));
 const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { fullname, email, password, phoneNumber } = req.body;
@@ -48,14 +51,31 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         userToCreate.token = generateToken;
         yield userToCreate.save();
         const verifyAccountRoute = `${req.protocol}://${req.get("host")}/api/v1/verify/${userToCreate.id}`;
-        const message = `Hello cheif ${userToCreate.fullname} Kindly use the link to verify your account  ${verifyAccountRoute}`;
+        const emailContent = {
+            body: {
+                name: `${userToCreate.fullname}`,
+                intro: `Welcome to our site! Please verify your account by clicking the button below:`,
+                action: {
+                    instructions: 'To verify your account, please click the button below:',
+                    button: {
+                        color: '#2db9ff',
+                        text: 'Verify Account',
+                        link: verifyAccountRoute,
+                    },
+                },
+                outro: 'If you did not sign up for our site, you can ignore this email.',
+            },
+        };
+        const emailBody = mailGenerator_1.default.generate(emailContent);
+        const emailText = mailGenerator_1.default.generatePlaintext(emailContent);
         const mailservice = new mailService_1.default();
         mailservice.createConnection();
         mailservice.mail({
             from: process.env.EMAIL,
             email: userToCreate.email,
             subject: "Kindly verify!",
-            message
+            message: emailText,
+            html: emailBody
         });
         res.status(201).json({
             message: "Created Successfully.",
@@ -155,7 +175,8 @@ const forgottenPassword = (req, res) => __awaiter(void 0, void 0, void 0, functi
             from: process.env.EMAIL,
             email: validEmail.email,
             subject: "Forgotten Password!",
-            message
+            message,
+            html: ""
         });
         return res.status(200).json({
             message: "Please check your mail for forgotten password mail!"
@@ -243,7 +264,8 @@ const facebookSignUp = (req, res) => __awaiter(void 0, void 0, void 0, function*
                             from: process.env.EMAIL,
                             email: userToCreate.email,
                             subject: "Kindly verify!",
-                            message
+                            message,
+                            html: ""
                         });
                     }
                     return callback(null, newEmail);
@@ -262,3 +284,30 @@ const facebookSignUp = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.facebookSignUp = facebookSignUp;
+const roomsBookedByUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { userId } = req.params;
+        const allRooms = yield booking_model_1.default.findAll({
+            where: { userId },
+            include: [rooms_model_1.default]
+        });
+        if (allRooms.length === 0) {
+            return res.status(404).json({
+                message: `No room booked by this user: ${userId}`
+            });
+        }
+        else {
+            return res.status(200).json({
+                message: `all the rooms booked ${allRooms.length}`,
+                data: allRooms
+            });
+        }
+    }
+    catch (error) {
+        return res.status(500).json({
+            message: error.message,
+            status: "Failed"
+        });
+    }
+});
+exports.roomsBookedByUser = roomsBookedByUser;

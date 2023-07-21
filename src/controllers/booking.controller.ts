@@ -6,6 +6,10 @@ import { Op } from "sequelize";
 import logger from "../utils/logger";
 import { io } from "../app";
 import User from "../models/user.admin";
+import mailSender from "../middlewares/mailService";
+import { Content } from "mailgen";
+import generateMail from "../utils/mailGenerator";
+import juice from "juice";
 
 
 export const bookAroom: RequestHandler = async (req, res) => {
@@ -13,6 +17,7 @@ export const bookAroom: RequestHandler = async (req, res) => {
     const userId = req.params.userId;
     const roomId = req.params.roomId;
     const { checkIn, checkOut } = req.body;
+    const theUser = await User.findAll({ where: { id: userId } });
     const bookingRoom = await Room.findByPk(roomId);
     if (!bookingRoom || bookingRoom?.booked) {
       return res.status(400).json({
@@ -27,8 +32,10 @@ export const bookAroom: RequestHandler = async (req, res) => {
         message: 'Invalid checkIn or checkOut date format',
       });
     }
+    const currentDate = new Date();
+    console.log(currentDate);
 
-    if (checkInDate >= checkOutDate) {
+    if (checkInDate > checkOutDate || checkInDate < currentDate) {
       return res.status(400).json({
         message: 'Invalid date range. checkOut date should be after checkIn date!',
       });
@@ -46,6 +53,8 @@ export const bookAroom: RequestHandler = async (req, res) => {
       userId: number,
       roomId: number,
       adminId: number,
+      price: number,
+      roomNumber: number,
       message: string
     }
     const bookData: book = {
@@ -53,9 +62,13 @@ export const bookAroom: RequestHandler = async (req, res) => {
       checkOut: new Date(checkOut),
       userId: Number(userId),
       roomId: Number(roomId),
+      price: bookingRoom.price,
       message,
+      roomNumber: bookingRoom.roomNumber,
       adminId: bookingRoom.adminId
-    }
+    };
+    console.log(bookData);
+
     const bookRoom = await Booking.create(bookData);
     bookingRoom.booked = true;
     bookingRoom.checkIn = new Date(checkIn);
@@ -75,7 +88,46 @@ export const bookAroom: RequestHandler = async (req, res) => {
         logger.error(error.mesage)
       }
     };
-    notifyAdmin(bookRoom)
+    notifyAdmin(bookRoom);
+
+    //send receipt to the customers registered email!
+    const emailContent: Content = {
+      body: {
+        name: ` ${theUser[0].fullname}`,
+        intro: `Thank you for booking a room with us. Attached is your payment receipt.`,
+        table: {
+          data: [
+            { key: "Check-in:", value: bookData.checkIn.toString() },
+            { key: "Check-out:", value: bookData.checkOut.toString() },
+            { key: "Room Number:", value: bookData.roomNumber.toString() },
+            { key: "price:", value: `₦ ${bookData.price.toString()}` },
+          ],
+          columns: {
+            customWidth: {
+              key: '20%',
+              value: '80%',
+            },
+            customAlignment: {
+              key: 'left',
+              value: 'right',
+            },
+          }
+        }
+      }
+    }
+    const emailBody = generateMail.generate(emailContent);
+    console.log(emailBody);
+    const juicedBody = juice(emailBody)
+    const emailText = generateMail.generatePlaintext(emailContent);
+    const mailservice = new mailSender();
+    mailservice.createConnection();
+    mailservice.mail({
+      from: process.env.EMAIL,
+      email: theUser[0].email,
+      subject: "Receipt for payment!",
+      message: emailText,
+      html: emailBody,
+    });
     return res.status(201).json({
       mesage: "Room booked!",
       data: bookRoom

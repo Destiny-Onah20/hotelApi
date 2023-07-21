@@ -7,6 +7,10 @@ import { Strategy as facebookStrategy } from "passport-facebook";
 import passport from "passport";
 import Jwt from "jsonwebtoken";
 import mailSender from "../middlewares/mailService";
+import Booking from "../models/booking.model";
+import Room from "../models/rooms.model";
+import { Content } from "mailgen";
+import generateMail from "../utils/mailGenerator";
 
 
 export const registerUser: RequestHandler = async (req, res) => {
@@ -42,14 +46,33 @@ export const registerUser: RequestHandler = async (req, res) => {
     userToCreate.token = generateToken;
     await userToCreate.save();
     const verifyAccountRoute = `${req.protocol}://${req.get("host")}/api/v1/verify/${userToCreate.id}`;
-    const message = `Hello cheif ${userToCreate.fullname} Kindly use the link to verify your account  ${verifyAccountRoute}`;
+
+    const emailContent: Content = {
+      body: {
+        name: `${userToCreate.fullname}`,
+        intro: `Welcome to our site! Please verify your account by clicking the button below:`,
+        action: {
+          instructions: 'To verify your account, please click the button below:',
+          button: {
+            color: '#2db9ff',
+            text: 'Verify Account',
+            link: verifyAccountRoute,
+          },
+        },
+        outro: 'If you did not sign up for our site, you can ignore this email.',
+      },
+    };
+    const emailBody = generateMail.generate(emailContent);
+    const emailText = generateMail.generatePlaintext(emailContent);
+
     const mailservice = new mailSender();
     mailservice.createConnection();
     mailservice.mail({
       from: process.env.EMAIL,
       email: userToCreate.email,
       subject: "Kindly verify!",
-      message
+      message: emailText,
+      html: emailBody
     });
     res.status(201).json({
       message: "Created Successfully.",
@@ -147,7 +170,8 @@ export const forgottenPassword: RequestHandler = async (req, res) => {
       from: process.env.EMAIL,
       email: validEmail.email,
       subject: "Forgotten Password!",
-      message
+      message,
+      html: ""
     });
     return res.status(200).json({
       message: "Please check your mail for forgotten password mail!"
@@ -239,7 +263,8 @@ export const facebookSignUp: RequestHandler = async (req, res) => {
             from: process.env.EMAIL,
             email: userToCreate.email,
             subject: "Kindly verify!",
-            message
+            message,
+            html: ""
           });
         }
         return callback(null, newEmail);
@@ -247,6 +272,32 @@ export const facebookSignUp: RequestHandler = async (req, res) => {
         return callback(error)
       }
     }));
+  } catch (error: any) {
+    return res.status(500).json({
+      message: error.message,
+      status: "Failed"
+    })
+  }
+};
+
+
+export const roomsBookedByUser: RequestHandler = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const allRooms = await Booking.findAll({
+      where: { userId },
+      include: [Room]
+    });
+    if (allRooms.length === 0) {
+      return res.status(404).json({
+        message: `No room booked by this user: ${userId}`
+      })
+    } else {
+      return res.status(200).json({
+        message: `all the rooms booked ${allRooms.length}`,
+        data: allRooms
+      })
+    }
   } catch (error: any) {
     return res.status(500).json({
       message: error.message,

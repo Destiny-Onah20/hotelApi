@@ -20,11 +20,15 @@ const sequelize_1 = require("sequelize");
 const logger_1 = __importDefault(require("../utils/logger"));
 const app_1 = require("../app");
 const user_admin_1 = __importDefault(require("../models/user.admin"));
+const mailService_1 = __importDefault(require("../middlewares/mailService"));
+const mailGenerator_1 = __importDefault(require("../utils/mailGenerator"));
+const juice_1 = __importDefault(require("juice"));
 const bookAroom = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userId = req.params.userId;
         const roomId = req.params.roomId;
         const { checkIn, checkOut } = req.body;
+        const theUser = yield user_admin_1.default.findAll({ where: { id: userId } });
         const bookingRoom = yield rooms_model_1.default.findByPk(roomId);
         if (!bookingRoom || (bookingRoom === null || bookingRoom === void 0 ? void 0 : bookingRoom.booked)) {
             return res.status(400).json({
@@ -39,7 +43,9 @@ const bookAroom = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 message: 'Invalid checkIn or checkOut date format',
             });
         }
-        if (checkInDate >= checkOutDate) {
+        const currentDate = new Date();
+        console.log(currentDate);
+        if (checkInDate > checkOutDate || checkInDate < currentDate) {
             return res.status(400).json({
                 message: 'Invalid date range. checkOut date should be after checkIn date!',
             });
@@ -56,9 +62,12 @@ const bookAroom = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             checkOut: new Date(checkOut),
             userId: Number(userId),
             roomId: Number(roomId),
+            price: bookingRoom.price,
             message,
+            roomNumber: bookingRoom.roomNumber,
             adminId: bookingRoom.adminId
         };
+        console.log(bookData);
         const bookRoom = yield booking_model_1.default.create(bookData);
         bookingRoom.booked = true;
         bookingRoom.checkIn = new Date(checkIn);
@@ -81,6 +90,44 @@ const bookAroom = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             }
         });
         notifyAdmin(bookRoom);
+        //send receipt to the customers registered email!
+        const emailContent = {
+            body: {
+                name: ` ${theUser[0].fullname}`,
+                intro: `Thank you for booking a room with us. Attached is your payment receipt.`,
+                table: {
+                    data: [
+                        { key: "Check-in:", value: bookData.checkIn.toString() },
+                        { key: "Check-out:", value: bookData.checkOut.toString() },
+                        { key: "Room Number:", value: bookData.roomNumber.toString() },
+                        { key: "price:", value: `₦ ${bookData.price.toString()}` },
+                    ],
+                    columns: {
+                        customWidth: {
+                            key: '20%',
+                            value: '80%',
+                        },
+                        customAlignment: {
+                            key: 'left',
+                            value: 'right',
+                        },
+                    }
+                }
+            }
+        };
+        const emailBody = mailGenerator_1.default.generate(emailContent);
+        console.log(emailBody);
+        const juicedBody = (0, juice_1.default)(emailBody);
+        const emailText = mailGenerator_1.default.generatePlaintext(emailContent);
+        const mailservice = new mailService_1.default();
+        mailservice.createConnection();
+        mailservice.mail({
+            from: process.env.EMAIL,
+            email: theUser[0].email,
+            subject: "Receipt for payment!",
+            message: emailText,
+            html: emailBody,
+        });
         return res.status(201).json({
             mesage: "Room booked!",
             data: bookRoom

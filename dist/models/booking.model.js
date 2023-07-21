@@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_1 = require("sequelize");
 const config_1 = __importDefault(require("../config/config"));
 const rooms_model_1 = __importDefault(require("./rooms.model"));
-const admin_model_1 = __importDefault(require("./admin.model"));
 ;
 class Booking extends sequelize_1.Model {
     static associate(models) {
@@ -41,6 +40,14 @@ Booking.init({
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false
     },
+    roomNumber: {
+        type: sequelize_1.DataTypes.INTEGER,
+        allowNull: false
+    },
+    price: {
+        type: sequelize_1.DataTypes.DOUBLE,
+        allowNull: false
+    },
     adminId: {
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false
@@ -62,7 +69,7 @@ Booking.init({
     tableName: "bookings"
 });
 Booking.associate({ Room: rooms_model_1.default });
-Booking.belongsTo(admin_model_1.default, { foreignKey: "adminId" });
+rooms_model_1.default.hasMany(Booking, { foreignKey: "roomId" });
 // Booking.sync({ alter: true }).then(() => {
 //   logger.info("Booking Table created!")
 // }).catch((error) => {

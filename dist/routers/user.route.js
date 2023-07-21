@@ -9,6 +9,7 @@ const users_controller_1 = require("../controllers/users.controller");
 const user_schema_1 = require("../schemas/user.schema");
 const admin_schema_1 = require("../schemas/admin.schema");
 const passport_1 = __importDefault(require("passport"));
+const authorization_1 = require("../middlewares/authorization");
 const userRoute = (0, express_1.Router)();
 userRoute.route("/user/register").post((0, validates_1.validateUser)(user_schema_1.userSchema), users_controller_1.registerUser);
 userRoute.route("/user/login").post((0, validates_1.loginValidate)(admin_schema_1.adminLogin), users_controller_1.loginUser);
@@ -16,6 +17,7 @@ userRoute.route("/user/auth/facebook").get(passport_1.default.authenticate("face
 userRoute.route("/user/verify/:userId").patch(users_controller_1.verifyUser);
 userRoute.route("/user/forgot").post(users_controller_1.forgottenPassword);
 userRoute.route("/user/change/:userId").patch(users_controller_1.changePasswordUser);
+userRoute.route("/user/booking/:userId").get(authorization_1.authorizedUser, users_controller_1.roomsBookedByUser);
 userRoute.route("/").get((req, res) => {
     res.send(`<a href="http://localhost:1800/api/v1/user/auth/facebook">Login with your facebook account</a>`);
 });

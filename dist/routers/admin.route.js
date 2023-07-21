@@ -11,5 +11,6 @@ adminRoute.route("/manager/login").post((0, validates_1.loginValidate)(admin_sch
 adminRoute.route("/manager/forgotten").post(admin_controllers_1.forgetPassword);
 adminRoute.route("/manager/change/:adminId").patch(admin_controllers_1.changePassword);
 adminRoute.route("/manager/details/:adminId").get(authorization_1.authID, admin_controllers_1.allAdminHotels);
-adminRoute.route("/manager/rooms/:adminId").get(authorization_1.authID, admin_controllers_1.allAdminHotels);
+adminRoute.route("/manager/rooms/:adminId").get(authorization_1.authID, admin_controllers_1.getAllRoomsByAdmin);
+adminRoute.route("/manager/booking/:adminId").get(authorization_1.authID, admin_controllers_1.allAdminRoomsBooked);
 exports.default = adminRoute;

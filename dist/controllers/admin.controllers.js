@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllRoomsByAdmin = exports.allAdminHotels = exports.changePassword = exports.forgetPassword = exports.loginAdmin = exports.registerAdmin = void 0;
+exports.allAdminRoomsBooked = exports.getAllRoomsByAdmin = exports.allAdminHotels = exports.changePassword = exports.forgetPassword = exports.loginAdmin = exports.registerAdmin = void 0;
 const admin_model_1 = __importDefault(require("../models/admin.model"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
@@ -21,6 +21,8 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const mailService_1 = __importDefault(require("../middlewares/mailService"));
 const hotel_model_1 = __importDefault(require("../models/hotel.model"));
 const rooms_model_1 = __importDefault(require("../models/rooms.model"));
+const booking_model_1 = __importDefault(require("../models/booking.model"));
+"#2db9ff";
 const registerAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { hotelName, password, email } = req.body;
@@ -112,7 +114,8 @@ const forgetPassword = (req, res) => __awaiter(void 0, void 0, void 0, function*
             from: process.env.EMAIL,
             email: validEmail.email,
             subject: "Forgotten password!",
-            message
+            message,
+            html: ""
         });
         return res.status(200).json({
             message: "A link to change your password have been sent to your email, Please check!."
@@ -176,11 +179,10 @@ exports.allAdminHotels = allAdminHotels;
 const getAllRoomsByAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { adminId } = req.params;
-        const theAdminRoom = yield hotel_model_1.default.findAll({
+        const theAdminRoom = yield rooms_model_1.default.findAll({
             where: {
                 adminId
-            },
-            include: [{ model: rooms_model_1.default, as: "rooms" }]
+            }
         });
         if (!theAdminRoom) {
             return res.status(404).json({
@@ -199,3 +201,30 @@ const getAllRoomsByAdmin = (req, res) => __awaiter(void 0, void 0, void 0, funct
     }
 });
 exports.getAllRoomsByAdmin = getAllRoomsByAdmin;
+const allAdminRoomsBooked = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { adminId } = req.params;
+        const allRooms = yield booking_model_1.default.findAll({
+            where: { adminId },
+            include: [rooms_model_1.default]
+        });
+        if (allRooms.length === 0) {
+            return res.status(404).json({
+                message: `No room booked by this user: ${adminId}`
+            });
+        }
+        else {
+            return res.status(200).json({
+                message: `all the rooms booked ${allRooms.length}`,
+                data: allRooms
+            });
+        }
+    }
+    catch (error) {
+        return res.status(500).json({
+            message: error.message,
+            status: "Failed"
+        });
+    }
+});
+exports.allAdminRoomsBooked = allAdminRoomsBooked;

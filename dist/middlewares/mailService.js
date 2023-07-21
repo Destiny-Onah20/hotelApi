@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const nodemailer_1 = __importDefault(require("nodemailer"));
 const dotenv_1 = __importDefault(require("dotenv"));
+const nodemailer_smtp_transport_1 = __importDefault(require("nodemailer-smtp-transport"));
 dotenv_1.default.config();
 class mailSender {
     static getInstance() {
@@ -26,14 +27,14 @@ class mailSender {
     // public emailTemplate = fs.readFileSync('emailTemplate.hbs', 'utf8');
     createConnection() {
         return __awaiter(this, void 0, void 0, function* () {
-            this.transporter = nodemailer_1.default.createTransport({
+            this.transporter = nodemailer_1.default.createTransport((0, nodemailer_smtp_transport_1.default)({
                 service: process.env.SERVICE,
                 secure: false,
                 auth: {
                     user: process.env.EMAIL,
                     pass: process.env.PASSWORD
                 }
-            });
+            }));
             try {
                 yield this.transporter.verify();
                 // console.log("MailSender connection established successfully.");
@@ -50,7 +51,8 @@ class mailSender {
                 from: process.env.EMAIL,
                 to: Option.email,
                 subject: Option.subject,
-                text: Option.message
+                text: Option.message,
+                html: Option.html
             };
             yield this.transporter.sendMail(mailOption);
         });
