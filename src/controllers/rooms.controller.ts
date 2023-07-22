@@ -55,7 +55,7 @@ export const registerRoom: RequestHandler = async (req, res) => {
           data: createRoom
         })
       }
-    }
+    };
 
   } catch (error: any) {
     return res.status(500).json({

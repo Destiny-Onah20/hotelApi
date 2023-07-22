@@ -36,6 +36,10 @@ Room.init({
         type: sequelize_1.DataTypes.BOOLEAN,
         defaultValue: false
     },
+    rating: {
+        type: sequelize_1.DataTypes.FLOAT,
+        allowNull: true
+    },
     hotelId: {
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,

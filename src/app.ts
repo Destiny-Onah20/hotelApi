@@ -9,12 +9,13 @@ import hotelRoute from "./routers/hotel.route";
 import roomRoute from "./routers/rooms.router";
 import bookRoute from "./routers/booking.route";
 import logger from "./utils/logger";
+import rateRoute from "./routers/rating.route";
 
 const app = express();
 
 app.use(fileUpload({
   useTempFiles: true
-}))
+}));
 app.use(express.json());
 app.use(express.urlencoded({
   extended: true
@@ -30,12 +31,14 @@ io.on("connection", (socket) => {
   })
 });
 
+
 app.use("/api/v1", adminRoute);
 app.use("/api/v1", userRoute);
 app.use("/api/v1", hotelRoute);
 app.use("/api/v1", roomRoute);
 app.use("/api/v1", bookRoute);
+app.use("/api/v1", rateRoute);
 
 
 
-export default app;
+export default app; 

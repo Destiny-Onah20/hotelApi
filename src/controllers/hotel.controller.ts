@@ -4,6 +4,7 @@ import { UploadedFile } from 'express-fileupload';
 import Admin from "../models/admin.model";
 import Cloudinary from "../utils/cloudinary";
 import Room from "../models/rooms.model";
+import Rating from "../models/rating.model";
 
 
 
@@ -90,7 +91,7 @@ export const hotelDetails: RequestHandler = async (req, res) => {
   try {
     const hotelId = req.params.hotelId;
     const hotelInDB = await Hotel.findByPk(hotelId, {
-      include: [Room]
+      include: [Room, Rating]
     });
     if (!hotelInDB) {
       return res.status(404).json({

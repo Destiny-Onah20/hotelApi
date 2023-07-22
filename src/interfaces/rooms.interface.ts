@@ -8,6 +8,7 @@ interface roomAttributes {
   hotelId: number;
   checkIn: Date | null;
   checkOut: Date | null;
+  rating: number;
   adminId: number;
   createdAt: Date;
   updatedAt: Date

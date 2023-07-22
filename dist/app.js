@@ -14,6 +14,7 @@ const hotel_route_1 = __importDefault(require("./routers/hotel.route"));
 const rooms_router_1 = __importDefault(require("./routers/rooms.router"));
 const booking_route_1 = __importDefault(require("./routers/booking.route"));
 const logger_1 = __importDefault(require("./utils/logger"));
+const rating_route_1 = __importDefault(require("./routers/rating.route"));
 const app = (0, express_1.default)();
 app.use((0, express_fileupload_1.default)({
     useTempFiles: true
@@ -35,4 +36,5 @@ app.use("/api/v1", user_route_1.default);
 app.use("/api/v1", hotel_route_1.default);
 app.use("/api/v1", rooms_router_1.default);
 app.use("/api/v1", booking_route_1.default);
+app.use("/api/v1", rating_route_1.default);
 exports.default = app;
