@@ -14,7 +14,7 @@ RUN npm install
 COPY . .
 
 # Build the TypeScript code inside the container
-RUN npm run build
+RUN npm run dist
 
 # Expose the port your Node.js application listens on (change 3000 to the port used in your Node.js app)
 EXPOSE 1100
