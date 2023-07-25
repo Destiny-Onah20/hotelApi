@@ -4,5 +4,6 @@ import Hotel from "./hotel.model";
 
 
 interface equipmant {
-
+  id: number;
+  hotelName: string
 }
