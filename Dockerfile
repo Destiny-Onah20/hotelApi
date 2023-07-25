@@ -14,10 +14,10 @@ RUN npm install
 COPY . .
 
 # Build the TypeScript code inside the container
-RUN start:dist
+RUN npm run start:dist
 
 # Expose the port your Node.js application listens on (change 3000 to the port used in your Node.js app)
 EXPOSE 1100
 
 # Command to start your compiled Node.js application (change 'dist/server.js' to the compiled entry point file of your Node.js app)
-CMD ["npm", "start"]
+CMD ["node", "dist/server.js"]
