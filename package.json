@@ -8,6 +8,10 @@
     "start:run": "nodemon dist/server.js",
     "start": "concurrently npm:start:*"
   },
+  "engines": {
+    "node": ">=16.x",
+    "npm": "8.5.5"
+  },
   "keywords": [
     "hotel",
     "booking"
