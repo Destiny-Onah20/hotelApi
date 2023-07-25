@@ -17,7 +17,7 @@ COPY . .
 RUN npm run build
 
 # Expose the port your Node.js application listens on (change 3000 to the port used in your Node.js app)
-EXPOSE 3000
+EXPOSE 1100
 
 # Command to start your compiled Node.js application (change 'dist/server.js' to the compiled entry point file of your Node.js app)
 CMD ["node", "dist/server.js"]
