@@ -8,7 +8,7 @@ const mailgen_1 = __importDefault(require("mailgen"));
 const generateMail = new mailgen_1.default({
     theme: "default",
     product: {
-        name: "ROOM",
+        name: `ROOM`,
         link: "https://hotel-youngmentor.vercel.app/"
     }
 });

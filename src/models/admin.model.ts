@@ -9,7 +9,7 @@ type optionalAttributes = Optional<AdminAttribute, "id" | "createdAt" | "updated
 
 class Admin extends Model<AdminAttribute, optionalAttributes> implements AdminAttribute {
   public id!: number;
-  public hotelName!: string;
+  public name!: string;
   public password!: string;
   public isAdmin!: boolean;
   public email!: string;
@@ -31,7 +31,7 @@ Admin.init({
     primaryKey: true,
     autoIncrement: true
   },
-  hotelName: {
+  name: {
     type: DataTypes.STRING,
     allowNull: false,
   },
@@ -70,7 +70,7 @@ Admin.init({
 });
 
 
-// Admin.sync().then(() => {
+// Admin.sync({ alter: true }).then(() => {
 //   logger.info("Table created successfully.")
 // }).catch((error) => {
 //   logger.error(error.message)

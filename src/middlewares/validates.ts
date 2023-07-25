@@ -2,7 +2,7 @@ import { ZodType, z } from "zod";
 import { RequestHandler } from "express";
 
 type AdminAttributes = {
-  hotelName: string;
+  name: string;
   password: string;
   email: string
 }

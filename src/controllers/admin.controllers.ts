@@ -7,12 +7,14 @@ import Jwt from "jsonwebtoken";
 import mailSender from "../middlewares/mailService";
 import Hotel from "../models/hotel.model";
 import Room from "../models/rooms.model";
-import Booking from "../models/booking.model"; "#2db9ff"
+import Booking from "../models/booking.model"; import { Content } from "mailgen";
+import generateMail from "../utils/mailGenerator";
+"#2db9ff"
 
 
 export const registerAdmin: RequestHandler = async (req, res): Promise<object> => {
   try {
-    const { hotelName, password, email } = req.body;
+    const { name, password, email } = req.body;
     const checkAdmin = await Admin.findOne({ where: { email: email } });
     if (checkAdmin) {
       return res.status(400).json({
@@ -22,12 +24,12 @@ export const registerAdmin: RequestHandler = async (req, res): Promise<object> =
     const saltPassword = await bcrypt.genSalt(10);
     const hassPassword = await bcrypt.hash(password, saltPassword);
     type AdminAttribute = {
-      hotelName: string,
+      name: string,
       password: string,
       email: string
     }
     const data: AdminAttribute = {
-      hotelName: hotelName.toUpperCase(),
+      name: name.toUpperCase(),
       password: hassPassword,
       email
     };
@@ -40,6 +42,36 @@ export const registerAdmin: RequestHandler = async (req, res): Promise<object> =
     })
     creatingData.token = generateToken;
     await creatingData.save();
+
+    const verifyAccountRoute = `https://hotel-youngmentor.vercel.app/#/adminverify/747747`;
+
+    const emailContent: Content = {
+      body: {
+        name: `${creatingData.name}`,
+        intro: `Welcome to our site! Please verify your account by clicking the button below:`,
+        action: {
+          instructions: 'To verify your account, please click the button below:',
+          button: {
+            color: '#2db9ff',
+            text: 'Verify Account',
+            link: verifyAccountRoute,
+          },
+        },
+        outro: 'If you did not sign up for our site, you can ignore this email.',
+      },
+    };
+    const emailBody = generateMail.generate(emailContent);
+    const emailText = generateMail.generatePlaintext(emailContent);
+
+    const mailservice = new mailSender();
+    mailservice.createConnection();
+    mailservice.mail({
+      from: process.env.EMAIL,
+      email: creatingData.email,
+      subject: "Kindly verify!",
+      message: emailText,
+      html: emailBody
+    });
     return res.status(201).json({
       message: "Admin created successfully.",
       data: creatingData
@@ -87,6 +119,29 @@ export const loginAdmin: RequestHandler = async (req, res): Promise<object> => {
   }
 };
 
+export const verifyAdmin: RequestHandler = async (req, res) => {
+  try {
+    const adminId = req.params.adminId;
+    const authAdmin = await Admin.findOne({ where: { id: adminId } });
+    if (!authAdmin) {
+      return res.status(400).json({
+        message: "This Admin does not exists."
+      })
+    }
+    await Admin.update({
+      verify: true
+    }, { where: { id: adminId } });
+    return res.status(200).json({
+      message: "Account verified"
+    })
+  } catch (error: any) {
+    return res.status(500).json({
+      message: error.message,
+      status: "Failed"
+    })
+  }
+};
+
 
 export const forgetPassword: RequestHandler = async (req, res) => {
   try {
@@ -97,17 +152,36 @@ export const forgetPassword: RequestHandler = async (req, res) => {
         message: "PLease provide a registered Email address."
       })
     }
-    const verify = `${req.protocol}://${req.get("host")}/api/manager/change/${validEmail.id}`;
-    const message = `Hello cheif ${validEmail.hotelName} Kindly use the link to change your password  ${verify}`;
+    const verifyAccountRoute = `https://hotel-youngmentor.vercel.app/#/userverify/747747`;
+
+    const emailContent: Content = {
+      body: {
+        name: `${validEmail.name}`,
+        intro: `You have requested to reset your password. Please click the button below to proceed:`,
+        action: {
+          instructions: 'To reset your password, please click the button below:',
+          button: {
+            color: '#2db9ff',
+            text: 'Reset Password',
+            link: verifyAccountRoute,
+          },
+
+        },
+        outro: 'If you did not sign up for our site, you can ignore this email.',
+      },
+    };
+    const emailBody = generateMail.generate(emailContent);
+    const emailText = generateMail.generatePlaintext(emailContent);
+
     const mailservice = new mailSender();
     mailservice.createConnection();
     mailservice.mail({
       from: process.env.EMAIL,
       email: validEmail.email,
-      subject: "Forgotten password!",
-      message,
-      html: ""
-    })
+      subject: "Reset Password!",
+      message: emailText,
+      html: emailBody
+    });
     return res.status(200).json({
       message: "A link to change your password have been sent to your email, Please check!."
     })

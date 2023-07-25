@@ -18,7 +18,7 @@ Admin.init({
         primaryKey: true,
         autoIncrement: true
     },
-    hotelName: {
+    name: {
         type: sequelize_1.DataTypes.STRING,
         allowNull: false,
     },
@@ -55,7 +55,7 @@ Admin.init({
     sequelize: config_1.default,
     tableName: "admins"
 });
-// Admin.sync().then(() => {
+// Admin.sync({ alter: true }).then(() => {
 //   logger.info("Table created successfully.")
 // }).catch((error) => {
 //   logger.error(error.message)

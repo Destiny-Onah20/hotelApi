@@ -166,17 +166,33 @@ const forgottenPassword = (req, res) => __awaiter(void 0, void 0, void 0, functi
                 message: "Invalid Email format!"
             });
         }
-        const changePasswordRoute = `${req.protocol}://${req.get("host")}/api/v1/change/${validEmail.id}`;
-        const message = `Hello ${validEmail.fullname} you required for a change of password, 
-    here use this link to change your password ${changePasswordRoute}`;
-        const mailServiceInstance = new mailService_1.default();
-        mailServiceInstance.createConnection();
-        mailServiceInstance.mail({
+        const verifyAccountRoute = `https://hotel-youngmentor.vercel.app/#/userverify/747747`;
+        const emailContent = {
+            body: {
+                signature: "Sincerely",
+                name: `${validEmail.fullname}`,
+                intro: `You have requested to reset your password. Please click the button below to proceed:`,
+                action: {
+                    instructions: 'To reset your password, please click the button below:',
+                    button: {
+                        color: '#2db9ff',
+                        text: 'Reset Password',
+                        link: verifyAccountRoute,
+                    },
+                },
+                outro: 'If you did not sign up for our site, you can ignore this email.',
+            },
+        };
+        const emailBody = mailGenerator_1.default.generate(emailContent);
+        const emailText = mailGenerator_1.default.generatePlaintext(emailContent);
+        const mailservice = new mailService_1.default();
+        mailservice.createConnection();
+        mailservice.mail({
             from: process.env.EMAIL,
             email: validEmail.email,
-            subject: "Forgotten Password!",
-            message,
-            html: ""
+            subject: "Reset Password!",
+            message: emailText,
+            html: emailBody
         });
         return res.status(200).json({
             message: "Please check your mail for forgotten password mail!"

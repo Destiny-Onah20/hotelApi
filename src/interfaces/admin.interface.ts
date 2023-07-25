@@ -1,6 +1,6 @@
 export interface AdminAttribute {
   id: number,
-  hotelName: string,
+  name: string,
   password: string,
   email: string,
   isAdmin: boolean,

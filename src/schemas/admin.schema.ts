@@ -1,13 +1,13 @@
 import { ZodSchema, object, string, TypeOf } from "zod";
 
 type adminAttribute = {
-  hotelName: string;
+  name: string;
   password: string;
   email: string
 };
 
 export const adminSchema: ZodSchema<adminAttribute> = object({
-  hotelName: string({
+  name: string({
     required_error: "hotelName is required."
   }).nonempty().min(2),
   password: string({

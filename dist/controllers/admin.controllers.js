@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.allAdminRoomsBooked = exports.getAllRoomsByAdmin = exports.allAdminHotels = exports.changePassword = exports.forgetPassword = exports.loginAdmin = exports.registerAdmin = void 0;
+exports.allAdminRoomsBooked = exports.getAllRoomsByAdmin = exports.allAdminHotels = exports.changePassword = exports.forgetPassword = exports.verifyAdmin = exports.loginAdmin = exports.registerAdmin = void 0;
 const admin_model_1 = __importDefault(require("../models/admin.model"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
@@ -22,10 +22,11 @@ const mailService_1 = __importDefault(require("../middlewares/mailService"));
 const hotel_model_1 = __importDefault(require("../models/hotel.model"));
 const rooms_model_1 = __importDefault(require("../models/rooms.model"));
 const booking_model_1 = __importDefault(require("../models/booking.model"));
+const mailGenerator_1 = __importDefault(require("../utils/mailGenerator"));
 "#2db9ff";
 const registerAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { hotelName, password, email } = req.body;
+        const { name, password, email } = req.body;
         const checkAdmin = yield admin_model_1.default.findOne({ where: { email: email } });
         if (checkAdmin) {
             return res.status(400).json({
@@ -35,7 +36,7 @@ const registerAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         const saltPassword = yield bcrypt_1.default.genSalt(10);
         const hassPassword = yield bcrypt_1.default.hash(password, saltPassword);
         const data = {
-            hotelName: hotelName.toUpperCase(),
+            name: name.toUpperCase(),
             password: hassPassword,
             email
         };
@@ -48,6 +49,33 @@ const registerAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         });
         creatingData.token = generateToken;
         yield creatingData.save();
+        const verifyAccountRoute = `https://hotel-youngmentor.vercel.app/#/adminverify/747747`;
+        const emailContent = {
+            body: {
+                name: `${creatingData.name}`,
+                intro: `Welcome to our site! Please verify your account by clicking the button below:`,
+                action: {
+                    instructions: 'To verify your account, please click the button below:',
+                    button: {
+                        color: '#2db9ff',
+                        text: 'Verify Account',
+                        link: verifyAccountRoute,
+                    },
+                },
+                outro: 'If you did not sign up for our site, you can ignore this email.',
+            },
+        };
+        const emailBody = mailGenerator_1.default.generate(emailContent);
+        const emailText = mailGenerator_1.default.generatePlaintext(emailContent);
+        const mailservice = new mailService_1.default();
+        mailservice.createConnection();
+        mailservice.mail({
+            from: process.env.EMAIL,
+            email: creatingData.email,
+            subject: "Kindly verify!",
+            message: emailText,
+            html: emailBody
+        });
         return res.status(201).json({
             message: "Admin created successfully.",
             data: creatingData
@@ -97,6 +125,30 @@ const loginAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.loginAdmin = loginAdmin;
+const verifyAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const adminId = req.params.adminId;
+        const authAdmin = yield admin_model_1.default.findOne({ where: { id: adminId } });
+        if (!authAdmin) {
+            return res.status(400).json({
+                message: "This Admin does not exists."
+            });
+        }
+        yield admin_model_1.default.update({
+            verify: true
+        }, { where: { id: adminId } });
+        return res.status(200).json({
+            message: "Account verified"
+        });
+    }
+    catch (error) {
+        return res.status(500).json({
+            message: error.message,
+            status: "Failed"
+        });
+    }
+});
+exports.verifyAdmin = verifyAdmin;
 const forgetPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { email } = req.body;
@@ -106,16 +158,32 @@ const forgetPassword = (req, res) => __awaiter(void 0, void 0, void 0, function*
                 message: "PLease provide a registered Email address."
             });
         }
-        const verify = `${req.protocol}://${req.get("host")}/api/manager/change/${validEmail.id}`;
-        const message = `Hello cheif ${validEmail.hotelName} Kindly use the link to change your password  ${verify}`;
+        const verifyAccountRoute = `https://hotel-youngmentor.vercel.app/#/userverify/747747`;
+        const emailContent = {
+            body: {
+                name: `${validEmail.name}`,
+                intro: `You have requested to reset your password. Please click the button below to proceed:`,
+                action: {
+                    instructions: 'To reset your password, please click the button below:',
+                    button: {
+                        color: '#2db9ff',
+                        text: 'Reset Password',
+                        link: verifyAccountRoute,
+                    },
+                },
+                outro: 'If you did not sign up for our site, you can ignore this email.',
+            },
+        };
+        const emailBody = mailGenerator_1.default.generate(emailContent);
+        const emailText = mailGenerator_1.default.generatePlaintext(emailContent);
         const mailservice = new mailService_1.default();
         mailservice.createConnection();
         mailservice.mail({
             from: process.env.EMAIL,
             email: validEmail.email,
-            subject: "Forgotten password!",
-            message,
-            html: ""
+            subject: "Reset Password!",
+            message: emailText,
+            html: emailBody
         });
         return res.status(200).json({
             message: "A link to change your password have been sent to your email, Please check!."
