@@ -2,7 +2,6 @@ import { Sequelize, Options } from "sequelize";
 import dotenv from "dotenv";
 dotenv.config();
 
-console.log(process.env.MYSQL_URL);
 
 const sequelize = new Sequelize(process.env.MYSQL_URL!, {
   database: process.env.MYSQLDATABASE,

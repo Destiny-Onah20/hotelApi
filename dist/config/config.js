@@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_1 = require("sequelize");
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
-console.log(process.env.MYSQL_URL);
 const sequelize = new sequelize_1.Sequelize(process.env.MYSQL_URL, {
     database: process.env.MYSQLDATABASE,
     username: process.env.MYSQLUSER,
