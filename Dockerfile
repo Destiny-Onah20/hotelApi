@@ -20,4 +20,4 @@ RUN npm run dist
 EXPOSE 1100
 
 # Command to start your compiled Node.js application (change 'dist/server.js' to the compiled entry point file of your Node.js app)
-CMD ["node", "start"]
+CMD ["npm", "start"]
