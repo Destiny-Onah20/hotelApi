@@ -6,14 +6,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_1 = require("sequelize");
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
-const sequelize = new sequelize_1.Sequelize({
-    database: process.env.DB_NAME,
-    username: process.env.DB_USER,
-    password: process.env.DB_PASS,
+console.log(process.env.MYSQL_URL);
+const sequelize = new sequelize_1.Sequelize(process.env.MYSQL_URL, {
+    database: process.env.MYSQLDATABASE,
+    username: process.env.MYSQLUSER,
+    password: process.env.MYSQLPASSWORD,
     dialect: "mysql",
-    host: "127.0.0.1",
+    port: process.env.MYSQLPORT,
+    host: process.env.MYSQLHOST,
     define: {
         timestamps: true
-    }
+    },
 });
+// database.ts
+// const sequelize = new Sequelize(process.env.DATABASE_URL!);
 exports.default = sequelize;
