@@ -125,6 +125,7 @@ Hotel.init({
 
 Hotel.belongsTo(Admin, { foreignKey: "adminId" });
 Admin.hasMany(Hotel, { foreignKey: "adminId" })
+
 // Hotel.sync({ alter: true }).then(() => {
 //   logger.info("Table created.")
 // }).catch((err) => {

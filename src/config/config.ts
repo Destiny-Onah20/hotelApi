@@ -15,10 +15,8 @@ const sequelize = new Sequelize(process.env.MYSQL_URL!, {
   },
 });
 
-// database.ts
 
 
-// const sequelize = new Sequelize(process.env.DATABASE_URL!);
 
 
 

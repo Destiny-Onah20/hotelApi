@@ -17,6 +17,4 @@ const sequelize = new sequelize_1.Sequelize(process.env.MYSQL_URL, {
         timestamps: true
     },
 });
-// database.ts
-// const sequelize = new Sequelize(process.env.DATABASE_URL!);
 exports.default = sequelize;

@@ -164,7 +164,7 @@ const updateBookedRoom = async () => {
   }
 };
 
-export const schedular = cron.schedule("* * * * *", updateBookedRoom);
+export const schedular = cron.schedule("10 * * * *", updateBookedRoom);
 
 export const getTheNotification: RequestHandler = async (req, res) => {
   try {
