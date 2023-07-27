@@ -9,6 +9,7 @@ const adminRoute = (0, express_1.Router)();
 adminRoute.route("/manager/register").post((0, validates_1.validates)(admin_schema_1.adminSchema), admin_controllers_1.registerAdmin);
 adminRoute.route("/manager/login").post((0, validates_1.loginValidate)(admin_schema_1.adminLogin), admin_controllers_1.loginAdmin);
 adminRoute.route("/manager/forgotten").post(admin_controllers_1.forgetPassword);
+adminRoute.route("/manager/verify/:adminId").patch(admin_controllers_1.verifyAdmin);
 adminRoute.route("/manager/change/:adminId").patch(admin_controllers_1.changePassword);
 adminRoute.route("/manager/details/:adminId").get(authorization_1.authID, admin_controllers_1.allAdminHotels);
 adminRoute.route("/manager/rooms/:adminId").get(authorization_1.authID, admin_controllers_1.getAllRoomsByAdmin);
