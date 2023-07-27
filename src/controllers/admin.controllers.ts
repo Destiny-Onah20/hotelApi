@@ -194,7 +194,7 @@ export const forgetPassword: RequestHandler = async (req, res) => {
 
 export const changePassword: RequestHandler = async (req, res) => {
   try {
-    const userId = req.params.userId;
+    const adminId = req.params.adminId;
     const { password, confirmPassword } = req.body;
     const matchedPassword = confirmPassword.match(password);
 
@@ -205,7 +205,7 @@ export const changePassword: RequestHandler = async (req, res) => {
     }
     const saltPassword = await bcrypt.genSalt(10);
     const hassPassword = await bcrypt.hash(password, saltPassword)
-    await Admin.update({ password: hassPassword }, { where: { id: userId } });
+    await Admin.update({ password: hassPassword }, { where: { id: adminId } });
     return res.status(200).json({
       message: "Password changed successfully!"
     })

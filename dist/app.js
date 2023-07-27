@@ -79,7 +79,7 @@ const options = {
     },
     servers: [
         {
-            url: "http://localhost:1100/api/v1",
+            url: "https://hotel-api-7wlm.onrender.com/api/v1/",
             description: "Local server", // name
         },
     ],

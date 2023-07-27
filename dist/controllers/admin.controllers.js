@@ -198,7 +198,7 @@ const forgetPassword = (req, res) => __awaiter(void 0, void 0, void 0, function*
 exports.forgetPassword = forgetPassword;
 const changePassword = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const userId = req.params.userId;
+        const adminId = req.params.adminId;
         const { password, confirmPassword } = req.body;
         const matchedPassword = confirmPassword.match(password);
         if (!matchedPassword) {
@@ -208,7 +208,7 @@ const changePassword = (req, res) => __awaiter(void 0, void 0, void 0, function*
         }
         const saltPassword = yield bcrypt_1.default.genSalt(10);
         const hassPassword = yield bcrypt_1.default.hash(password, saltPassword);
-        yield admin_model_1.default.update({ password: hassPassword }, { where: { id: userId } });
+        yield admin_model_1.default.update({ password: hassPassword }, { where: { id: adminId } });
         return res.status(200).json({
             message: "Password changed successfully!"
         });
