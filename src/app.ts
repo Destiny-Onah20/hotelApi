@@ -2,6 +2,9 @@ import express from "express";
 import passport from "passport";
 import fileUpload from "express-fileupload";
 import { Server } from "socket.io";
+import cors from "cors";
+import swaggerUi from "swagger-ui-express";
+import swaggerJson from "swagger-jsdoc";
 import http from "http";
 import adminRoute from "./routers/admin.route";
 import userRoute from "./routers/user.route";
@@ -12,6 +15,7 @@ import logger from "./utils/logger";
 import rateRoute from "./routers/rating.route";
 
 const app = express();
+app.use(cors());
 
 app.use(fileUpload({
   useTempFiles: true
@@ -20,6 +24,74 @@ app.use(express.json());
 app.use(express.urlencoded({
   extended: true
 }));
+
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Admin:
+ *       type: object
+ *       required:
+ *         - name
+ *         - password
+ *         - email
+ *       properties:
+ *         name:
+ *           type: string
+ *           description: The name of the user.
+ *         password:
+ *           type: string
+ *           description: The user's password.
+ *         email:
+ *           type: string
+ *           format: email
+ *           description: The user's email address (must be a valid email).
+ *       example:
+ *         name: John Doe
+ *         password: mysecurepassword
+ *         email: johndoe@example.com
+ */
+
+/**
+ * @swagger
+ * /api/v1/hotel/hotels:
+ *   get:
+ *     summary: Get a list of all hotels.
+ *     responses:
+ *       200:
+ *         description: A list of hotels.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Hotels'
+ */
+
+const options = {
+  swaggerDefinition: {
+    openapi: '3.1.0',
+    info: {
+      title: 'Hotel API',
+      description: 'API documentation for ROOM applications we built while learning TypeScript',
+      version: '1.0.0',
+    },
+  },
+  servers: [
+    {
+      url: "http://localhost:1100/api/v1", // url
+      description: "Local server", // name
+    },
+  ],
+
+  apis: ['./routers/admin.route.ts'],
+};
+
+
+const spec = swaggerJson(options)
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(spec));
 
 const server = http.createServer();
 export const io = new Server(server);

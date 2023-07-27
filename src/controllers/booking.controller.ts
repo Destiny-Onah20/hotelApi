@@ -100,6 +100,7 @@ export const bookAroom: RequestHandler = async (req, res) => {
             { key: "Check-in:", value: bookData.checkIn.toString() },
             { key: "Check-out:", value: bookData.checkOut.toString() },
             { key: "Room Number:", value: bookData.roomNumber.toString() },
+            { key: "Room #Id:", value: bookData.roomId.toString() },
             { key: "price:", value: `₦ ${bookData.price.toString()}` },
           ],
           columns: {

@@ -1,0 +1,10 @@
+{
+    "definition": {
+        "openapi": "3.1.0",
+        "info": {
+            "title": "Hotel Api",
+            "description": "API documentation for ROOM applications we built while learning typescript",
+            "version": "1.0.0"
+        }
+    }
+}
