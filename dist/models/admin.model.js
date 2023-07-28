@@ -38,6 +38,18 @@ Admin.init({
         type: sequelize_1.DataTypes.STRING,
         allowNull: false
     },
+    image: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: true
+    },
+    emailPin: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: true
+    },
+    cloudId: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: true
+    },
     email: {
         type: sequelize_1.DataTypes.STRING,
         unique: true,

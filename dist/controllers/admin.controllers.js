@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.allAdminRoomsBooked = exports.getAllRoomsByAdmin = exports.allAdminHotels = exports.changePassword = exports.forgetPassword = exports.verifyAdmin = exports.loginAdmin = exports.registerAdmin = void 0;
+exports.allAdminRoomsBooked = exports.getAllRoomsByAdmin = exports.allAdminHotels = exports.changeEmailAddress = exports.sendAccessToken = exports.UpdateAdmin = exports.changePassword = exports.forgetPassword = exports.verifyAdmin = exports.loginAdmin = exports.registerAdmin = void 0;
 const admin_model_1 = __importDefault(require("../models/admin.model"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
@@ -23,6 +23,7 @@ const hotel_model_1 = __importDefault(require("../models/hotel.model"));
 const rooms_model_1 = __importDefault(require("../models/rooms.model"));
 const booking_model_1 = __importDefault(require("../models/booking.model"));
 const mailGenerator_1 = __importDefault(require("../utils/mailGenerator"));
+const cloudinary_1 = __importDefault(require("../utils/cloudinary"));
 "#2db9ff";
 const registerAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -220,11 +221,122 @@ const changePassword = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.changePassword = changePassword;
+const UpdateAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    try {
+        const { name } = req.body;
+        const file = (_a = req.files) === null || _a === void 0 ? void 0 : _a.image;
+        if (!file) {
+            throw new Error("No file Uploade");
+        }
+        const upload = Array.isArray(file) ? file : [file];
+        for (const file of upload) {
+            const result = yield cloudinary_1.default.uploader.upload(file.tempFilePath);
+            ;
+            const updateDAta = {
+                name,
+                image: result.secure_url,
+                cloudId: result.public_id
+            };
+            const updateTheAdmin = yield admin_model_1.default.update(updateDAta, { where: { id: req.params.adminId } });
+            if (!updateTheAdmin) {
+                return res.status(400).json({
+                    messge: "An error occured Updating this admin"
+                });
+            }
+            else {
+                return res.status(400).json({
+                    messge: "Update successfull!"
+                });
+            }
+        }
+    }
+    catch (error) {
+        return res.status(500).json({
+            message: error.message
+        });
+    }
+});
+exports.UpdateAdmin = UpdateAdmin;
+const sendAccessToken = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { adminId } = req.params;
+        const theAdmin = yield admin_model_1.default.findByPk(adminId);
+        const validEmail = yield admin_model_1.default.findOne({ where: { email: theAdmin === null || theAdmin === void 0 ? void 0 : theAdmin.email } });
+        if (!validEmail) {
+            return res.status(400).json({
+                message: "This email does not exist!"
+            });
+        }
+        ;
+        const generateToken = () => {
+            const digits = '0123456789';
+            let uniqueNumber = '';
+            while (uniqueNumber.length < 7) {
+                const randomDigit = digits.charAt(Math.floor(Math.random() * digits.length));
+                if (!uniqueNumber.includes(randomDigit)) {
+                    uniqueNumber += randomDigit;
+                }
+            }
+            return uniqueNumber;
+        };
+        console.log(theAdmin);
+        const emailContent = {
+            body: {
+                name: `${validEmail.name}`,
+                intro: `Thank you for your email change request, in order to proceed, please copy and paste the PIN number below to complete the email verification.`,
+                table: {
+                    data: [
+                        {
+                            key: 'To change your email, please use this code :',
+                            value: generateToken(),
+                        },
+                    ],
+                },
+                outro: 'If you did not request for this action, you can ignore this email.',
+            },
+        };
+        const emailBody = mailGenerator_1.default.generate(emailContent);
+        const emailText = mailGenerator_1.default.generatePlaintext(emailContent);
+        const mailservice = new mailService_1.default();
+        mailservice.createConnection();
+        mailservice.mail({
+            from: process.env.EMAIL,
+            email: validEmail.email,
+            subject: "Change email request PIN",
+            message: emailText,
+            html: emailBody
+        });
+        validEmail.emailPin = generateToken();
+        yield validEmail.save();
+        return res.status(200).json({
+            message: "Check your email for accessToken!"
+        });
+    }
+    catch (error) {
+        return res.status(500).json({
+            message: error.message
+        });
+    }
+});
+exports.sendAccessToken = sendAccessToken;
+const changeEmailAddress = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { adminId } = req.params;
+        const { newEmail, accessToken } = req.body;
+    }
+    catch (error) {
+        return res.status(500).json({
+            message: error.message
+        });
+    }
+});
+exports.changeEmailAddress = changeEmailAddress;
 const allAdminHotels = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const adminId = req.params.adminId;
         const adminDetails = yield admin_model_1.default.findByPk(adminId, {
-            include: [hotel_model_1.default]
+            include: [hotel_model_1.default, rooms_model_1.default]
         });
         if (!adminDetails) {
             return res.status(404).json({

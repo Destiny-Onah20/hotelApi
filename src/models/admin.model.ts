@@ -5,7 +5,7 @@ import logger from "../utils/logger";
 import User from "./user.admin"
 import Hotel from "./hotel.model";
 
-type optionalAttributes = Optional<AdminAttribute, "id" | "createdAt" | "updatedAt" | "isAdmin" | "token" | "verify">
+type optionalAttributes = Optional<AdminAttribute, "id" | "createdAt" | "updatedAt" | "isAdmin" | "token" | "verify" | "image" | "cloudId" | "emailPin">
 
 class Admin extends Model<AdminAttribute, optionalAttributes> implements AdminAttribute {
   public id!: number;
@@ -14,6 +14,9 @@ class Admin extends Model<AdminAttribute, optionalAttributes> implements AdminAt
   public isAdmin!: boolean;
   public email!: string;
   public verify!: boolean;
+  public image!: string;
+  public emailPin: string;
+  public cloudId!: string;
   public token!: string;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -50,6 +53,18 @@ Admin.init({
   token: {
     type: DataTypes.STRING,
     allowNull: false
+  },
+  image: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  emailPin: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  cloudId: {
+    type: DataTypes.STRING,
+    allowNull: true
   },
   email: {
     type: DataTypes.STRING,

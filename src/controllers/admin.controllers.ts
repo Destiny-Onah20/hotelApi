@@ -9,6 +9,8 @@ import Hotel from "../models/hotel.model";
 import Room from "../models/rooms.model";
 import Booking from "../models/booking.model"; import { Content } from "mailgen";
 import generateMail from "../utils/mailGenerator";
+import { UploadedFile } from "express-fileupload";
+import Cloudinary from "../utils/cloudinary";
 "#2db9ff"
 
 
@@ -216,12 +218,131 @@ export const changePassword: RequestHandler = async (req, res) => {
   }
 };
 
+export const UpdateAdmin: RequestHandler = async (req, res) => {
+  try {
+    const { name } = req.body;
+    const file = req.files?.image as UploadedFile[];
+    if (!file) {
+      throw new Error("No file Uploade")
+    }
+    const upload = Array.isArray(file) ? file : [file];
+    for (const file of upload) {
+      const result = await Cloudinary.uploader.upload(file.tempFilePath);
+
+      interface admin {
+        name: string;
+        image: string;
+        cloudId: string
+      };
+
+      const updateDAta: admin = {
+        name,
+        image: result.secure_url,
+        cloudId: result.public_id
+      };
+
+      const updateTheAdmin = await Admin.update(updateDAta, { where: { id: req.params.adminId } });
+      if (!updateTheAdmin) {
+        return res.status(400).json({
+          messge: "An error occured Updating this admin"
+        })
+      } else {
+        return res.status(400).json({
+          messge: "Update successfull!"
+        })
+      }
+    }
+
+  } catch (error: any) {
+    return res.status(500).json({
+      message: error.message
+    })
+  }
+};
+
+export const sendAccessToken: RequestHandler = async (req, res) => {
+  try {
+    const { adminId } = req.params;
+    const theAdmin = await Admin.findByPk(adminId)
+    const validEmail = await Admin.findOne({ where: { email: theAdmin?.email } });
+    if (!validEmail) {
+      return res.status(400).json({
+        message: "This email does not exist!"
+      })
+    };
+    const generateToken = (): string => {
+      const digits = '0123456789';
+      let uniqueNumber = '';
+
+      while (uniqueNumber.length < 7) {
+        const randomDigit = digits.charAt(Math.floor(Math.random() * digits.length));
+
+        if (!uniqueNumber.includes(randomDigit)) {
+          uniqueNumber += randomDigit;
+        }
+      }
+      return uniqueNumber;
+    };
+    console.log(theAdmin);
+
+    const emailContent: Content = {
+      body: {
+        name: `${validEmail.name}`,
+        intro: `Thank you for your email change request, in order to proceed, please copy and paste the PIN number below to complete the email verification.`,
+        table: {
+          data: [
+            {
+              key: 'To change your email, please use this code :',
+              value: generateToken(),
+            },
+          ],
+        },
+        outro: 'If you did not request for this action, you can ignore this email.',
+      },
+    };
+    const emailBody = generateMail.generate(emailContent);
+    const emailText = generateMail.generatePlaintext(emailContent);
+
+    const mailservice = new mailSender();
+    mailservice.createConnection();
+    mailservice.mail({
+      from: process.env.EMAIL,
+      email: validEmail.email,
+      subject: "Change email request PIN",
+      message: emailText,
+      html: emailBody
+    });
+    validEmail.emailPin = generateToken();
+    await validEmail.save();
+    return res.status(200).json({
+      message: "Check your email for accessToken!"
+    })
+
+  } catch (error: any) {
+    return res.status(500).json({
+      message: error.message
+    })
+  }
+};
+
+export const changeEmailAddress: RequestHandler = async (req, res) => {
+  try {
+
+    const { adminId } = req.params;
+    const { newEmail, accessToken } = req.body;
+
+  } catch (error: any) {
+    return res.status(500).json({
+      message: error.message
+    })
+  }
+}
 
 export const allAdminHotels: RequestHandler = async (req, res) => {
   try {
     const adminId = req.params.adminId;
     const adminDetails = await Admin.findByPk(adminId, {
-      include: [Hotel]
+      include: [Hotel, Room]
     });
     if (!adminDetails) {
       return res.status(404).json({
