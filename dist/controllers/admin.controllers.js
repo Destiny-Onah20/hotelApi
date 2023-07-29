@@ -280,7 +280,8 @@ const sendAccessToken = (req, res) => __awaiter(void 0, void 0, void 0, function
             }
             return uniqueNumber;
         };
-        console.log(theAdmin);
+        // console.log(theAdmin);
+        const theToken = generateToken();
         const emailContent = {
             body: {
                 name: `${validEmail.name}`,
@@ -289,7 +290,7 @@ const sendAccessToken = (req, res) => __awaiter(void 0, void 0, void 0, function
                     data: [
                         {
                             key: 'To change your email, please use this code :',
-                            value: generateToken(),
+                            value: theToken,
                         },
                     ],
                 },
@@ -307,7 +308,7 @@ const sendAccessToken = (req, res) => __awaiter(void 0, void 0, void 0, function
             message: emailText,
             html: emailBody
         });
-        validEmail.emailPin = generateToken();
+        validEmail.emailPin = theToken;
         yield validEmail.save();
         return res.status(200).json({
             message: "Check your email for accessToken!"
@@ -324,6 +325,7 @@ const changeEmailAddress = (req, res) => __awaiter(void 0, void 0, void 0, funct
     try {
         const { adminId } = req.params;
         const { newEmail, accessToken } = req.body;
+        const theAdmin = yield admin_model_1.default.findByPk(adminId);
     }
     catch (error) {
         return res.status(500).json({

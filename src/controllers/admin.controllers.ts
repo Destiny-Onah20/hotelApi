@@ -283,8 +283,8 @@ export const sendAccessToken: RequestHandler = async (req, res) => {
       }
       return uniqueNumber;
     };
-    console.log(theAdmin);
-
+    // console.log(theAdmin);
+    const theToken = generateToken()
     const emailContent: Content = {
       body: {
         name: `${validEmail.name}`,
@@ -293,7 +293,7 @@ export const sendAccessToken: RequestHandler = async (req, res) => {
           data: [
             {
               key: 'To change your email, please use this code :',
-              value: generateToken(),
+              value: theToken,
             },
           ],
         },
@@ -312,7 +312,7 @@ export const sendAccessToken: RequestHandler = async (req, res) => {
       message: emailText,
       html: emailBody
     });
-    validEmail.emailPin = generateToken();
+    validEmail.emailPin = theToken;
     await validEmail.save();
     return res.status(200).json({
       message: "Check your email for accessToken!"
@@ -330,6 +330,7 @@ export const changeEmailAddress: RequestHandler = async (req, res) => {
 
     const { adminId } = req.params;
     const { newEmail, accessToken } = req.body;
+    const theAdmin = await Admin.findByPk(adminId);
 
   } catch (error: any) {
     return res.status(500).json({
