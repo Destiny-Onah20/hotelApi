@@ -5,6 +5,7 @@ import Admin from "../models/admin.model";
 import Cloudinary from "../utils/cloudinary";
 import Room from "../models/rooms.model";
 import Rating from "../models/rating.model";
+import sequelize from "../config/config";
 
 
 
@@ -69,7 +70,9 @@ export const registerHotel: RequestHandler = async (req, res) => {
 
 export const allHotels: RequestHandler = async (req, res) => {
   try {
-    const hotels = await Hotel.findAll();
+    const hotels = await Hotel.findAll({
+      order: sequelize.random(),
+    });
     if (hotels.length === 0) {
       return res.status(404).json({
         message: "Sorry no hotels for now!"

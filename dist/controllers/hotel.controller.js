@@ -18,6 +18,7 @@ const admin_model_1 = __importDefault(require("../models/admin.model"));
 const cloudinary_1 = __importDefault(require("../utils/cloudinary"));
 const rooms_model_1 = __importDefault(require("../models/rooms.model"));
 const rating_model_1 = __importDefault(require("../models/rating.model"));
+const config_1 = __importDefault(require("../config/config"));
 const registerHotel = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
@@ -70,7 +71,9 @@ const registerHotel = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 exports.registerHotel = registerHotel;
 const allHotels = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const hotels = yield hotel_model_1.default.findAll();
+        const hotels = yield hotel_model_1.default.findAll({
+            order: config_1.default.random(),
+        });
         if (hotels.length === 0) {
             return res.status(404).json({
                 message: "Sorry no hotels for now!"
