@@ -29,7 +29,7 @@ User.init({
         unique: true
     },
     phoneNumber: {
-        type: sequelize_1.DataTypes.DOUBLE,
+        type: sequelize_1.DataTypes.STRING,
         allowNull: false
     },
     verify: {

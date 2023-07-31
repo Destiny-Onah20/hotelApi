@@ -3,7 +3,7 @@ export interface UserAttribute {
   fullname: string,
   password: string,
   email: string,
-  phoneNumber: number,
+  phoneNumber: string,
   token: string,
   verify: boolean,
   updatedAt: Date,

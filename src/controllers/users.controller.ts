@@ -28,7 +28,7 @@ export const registerUser: RequestHandler = async (req, res) => {
       fullname: string,
       password: string,
       email: string,
-      phoneNumber: number
+      phoneNumber: string
     };
     const data: UserAttribute = {
       fullname,
@@ -256,7 +256,7 @@ export const facebookSignUp: RequestHandler = async (req, res) => {
           fullname: string,
           password: string,
           email: string,
-          phoneNumber: number
+          phoneNumber: string
         };
         const data: UserAttribute = {
           fullname: profile.displayName,

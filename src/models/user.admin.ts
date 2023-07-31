@@ -11,7 +11,7 @@ class User extends Model<UserAttribute, optionalUserAttributes> {
   public fullname!: string;
   public email!: string;
   public password!: string;
-  public phoneNumber!: number;
+  public phoneNumber!: string;
   public token!: string;
   public verify!: boolean;
   public readonly createdAt!: Date;
@@ -39,7 +39,7 @@ User.init({
     unique: true
   },
   phoneNumber: {
-    type: DataTypes.DOUBLE,
+    type: DataTypes.STRING,
     allowNull: false
   },
   verify: {
