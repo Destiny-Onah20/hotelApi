@@ -43,6 +43,7 @@ export const registerAdmin: RequestHandler = async (req, res): Promise<object> =
       expiresIn: "1d"
     })
     creatingData.token = generateToken;
+
     await creatingData.save();
 
     const verifyAccountRoute = `https://hotel-youngmentor.vercel.app/#/adminverify/747747`;
@@ -274,7 +275,7 @@ export const sendAccessToken: RequestHandler = async (req, res) => {
       const digits = '0123456789';
       let uniqueNumber = '';
 
-      while (uniqueNumber.length < 7) {
+      while (uniqueNumber.length < 4) {
         const randomDigit = digits.charAt(Math.floor(Math.random() * digits.length));
 
         if (!uniqueNumber.includes(randomDigit)) {
@@ -284,7 +285,7 @@ export const sendAccessToken: RequestHandler = async (req, res) => {
       return uniqueNumber;
     };
     // console.log(theAdmin);
-    const theToken = generateToken()
+    const theToken = generateToken();
     const emailContent: Content = {
       body: {
         name: `${validEmail.name}`,

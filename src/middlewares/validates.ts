@@ -55,7 +55,7 @@ type userAttribute = {
   fullname: string;
   password: string;
   email: string;
-  phoneNumber: number;
+  phoneNumber: string;
 };
 
 

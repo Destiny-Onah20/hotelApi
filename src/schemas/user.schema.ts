@@ -4,7 +4,7 @@ type userAttribute = {
   fullname: string;
   password: string;
   email: string;
-  phoneNumber: number;
+  phoneNumber: string;
 };
 
 export const userSchema: ZodSchema<userAttribute> = object({
@@ -17,7 +17,7 @@ export const userSchema: ZodSchema<userAttribute> = object({
   email: string({
     required_error: "email is required."
   }).nonempty().min(2).email("Invalid email format"),
-  phoneNumber: number({
+  phoneNumber: string({
     required_error: "phone-number is required."
   }).min(2),
   confirmPassword: string({
