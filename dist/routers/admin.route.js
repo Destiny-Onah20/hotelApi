@@ -13,6 +13,7 @@ adminRoute.route("/manager/verify/:adminId").patch(admin_controllers_1.verifyAdm
 adminRoute.route("/manager/change/:adminId").patch(admin_controllers_1.changePassword);
 adminRoute.route("/manager/update/:adminId").patch(admin_controllers_1.UpdateAdmin);
 adminRoute.route("/manager/email/:adminId").post(admin_controllers_1.sendAccessToken);
+adminRoute.route("/manager/changemail/:adminId").put(admin_controllers_1.changeEmailAddress);
 adminRoute.route("/manager/details/:adminId").get(authorization_1.authID, admin_controllers_1.allAdminHotels);
 adminRoute.route("/manager/rooms/:adminId").get(authorization_1.authID, admin_controllers_1.getAllRoomsByAdmin);
 adminRoute.route("/manager/booking/:adminId").get(authorization_1.authID, admin_controllers_1.allAdminRoomsBooked);

@@ -324,8 +324,52 @@ exports.sendAccessToken = sendAccessToken;
 const changeEmailAddress = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { adminId } = req.params;
-        const { newEmail, accessToken } = req.body;
+        const { newEmail, pin } = req.body;
         const theAdmin = yield admin_model_1.default.findByPk(adminId);
+        if (!theAdmin) {
+            return res.status(404).json({
+                message: "No User found"
+            });
+        }
+        ;
+        const Pin = theAdmin.emailPin;
+        const validPin = Pin.match(pin);
+        if (!validPin) {
+            return res.status(400).json({
+                message: "Invalid Pin!"
+            });
+        }
+        yield admin_model_1.default.update({ email: newEmail }, { where: { id: adminId } });
+        const verifyAccountRoute = `https://hotel-youngmentor.vercel.app/#/alllogin/adminlogin`;
+        const emailContent = {
+            body: {
+                name: `${theAdmin.name}`,
+                intro: `You have successfully changed your email address:`,
+                action: {
+                    instructions: 'Continue your great experience with Room.ng , please click the button below:',
+                    button: {
+                        color: '#2db9ff',
+                        text: 'Head to Room',
+                        link: verifyAccountRoute,
+                    },
+                },
+                outro: 'If you did not sign up for our site, you can ignore this email.',
+            },
+        };
+        const emailBody = mailGenerator_1.default.generate(emailContent);
+        const emailText = mailGenerator_1.default.generatePlaintext(emailContent);
+        const mailservice = new mailService_1.default();
+        mailservice.createConnection();
+        mailservice.mail({
+            from: process.env.EMAIL,
+            email: newEmail,
+            subject: "Change of Email!",
+            message: emailText,
+            html: emailBody
+        });
+        return res.status(200).json({
+            message: "Email Updated Success!"
+        });
     }
     catch (error) {
         return res.status(500).json({

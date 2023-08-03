@@ -164,7 +164,7 @@ const updateBookedRoom = () => __awaiter(void 0, void 0, void 0, function* () {
         logger_1.default.error(error.mesage);
     }
 });
-exports.schedular = node_cron_1.default.schedule("10 * * * *", updateBookedRoom);
+exports.schedular = node_cron_1.default.schedule("* * * * *", updateBookedRoom);
 const getTheNotification = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { userId } = req.params;
