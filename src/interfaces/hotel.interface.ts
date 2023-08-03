@@ -8,7 +8,7 @@ export interface hotelAttributes {
   imageId: string,
   cloudId: string,
   email: string,
-  totalRooms: number;
+  totalRooms?: number;
   city: string,
   state: string,
   updatedAt: Date,

@@ -123,7 +123,7 @@ const updateHotel = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     try {
         const hotelId = req.params.hotelId;
         const adminId = req.params.adminId;
-        const { hotelName, address, description, website, email, totalRooms, city, state } = req.body;
+        const { hotelName, address, description, website, email, city, state } = req.body;
         const hotelToUpdate = yield hotel_model_1.default.findOne({ where: { id: hotelId } });
         if ((hotelToUpdate === null || hotelToUpdate === void 0 ? void 0 : hotelToUpdate.adminId) !== parseInt(adminId)) {
             return res.status(401).json({
@@ -144,7 +144,7 @@ const updateHotel = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 email,
                 city,
                 state: state.toLowerCase(),
-                totalRooms,
+                // totalRooms,
                 imageId: result.secure_url
             };
             yield hotel_model_1.default.update(updateData, { where: { id: hotelId } });

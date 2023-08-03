@@ -118,7 +118,7 @@ export const updateHotel: RequestHandler = async (req, res) => {
   try {
     const hotelId = req.params.hotelId;
     const adminId = req.params.adminId;
-    const { hotelName, address, description, website, email, totalRooms, city, state } = req.body;
+    const { hotelName, address, description, website, email, city, state } = req.body;
     const hotelToUpdate = await Hotel.findOne({ where: { id: hotelId } });
     if (hotelToUpdate?.adminId !== parseInt(adminId)) {
       return res.status(401).json({
@@ -138,7 +138,7 @@ export const updateHotel: RequestHandler = async (req, res) => {
         email: string,
         city: string,
         state: string,
-        totalRooms: number;
+        // totalRooms: number;
       };
       const updateData: hotelAttributes = {
         hotelName,
@@ -148,7 +148,7 @@ export const updateHotel: RequestHandler = async (req, res) => {
         email,
         city,
         state: state.toLowerCase(),
-        totalRooms,
+        // totalRooms,
         imageId: result.secure_url
       };
       await Hotel.update(updateData, { where: { id: hotelId } });
