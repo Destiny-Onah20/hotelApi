@@ -23,7 +23,7 @@ const registerHotel = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     var _a;
     try {
         const adminId = req.params.adminId;
-        const { hotelName, address, description, website, totalRooms, email, city, state } = req.body;
+        const { hotelName, address, description, website, email, city, state } = req.body;
         const validAdmin = yield admin_model_1.default.findOne({ where: { id: adminId } });
         if (!validAdmin) {
             return res.status(400).json({
@@ -49,7 +49,6 @@ const registerHotel = (req, res) => __awaiter(void 0, void 0, void 0, function* 
                     email,
                     city,
                     state,
-                    totalRooms,
                     imageId: result.secure_url,
                     cloudId: result.public_id,
                     adminId: Number(adminId)

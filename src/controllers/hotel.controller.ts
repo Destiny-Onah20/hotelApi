@@ -12,7 +12,7 @@ import sequelize from "../config/config";
 export const registerHotel: RequestHandler = async (req, res) => {
   try {
     const adminId = req.params.adminId;
-    const { hotelName, address, description, website, totalRooms, email, city, state } = req.body;
+    const { hotelName, address, description, website, email, city, state } = req.body;
     const validAdmin = await Admin.findOne({ where: { id: adminId } });
     if (!validAdmin) {
       return res.status(400).json({
@@ -39,7 +39,6 @@ export const registerHotel: RequestHandler = async (req, res) => {
           email: string,
           city: string,
           state: string,
-          totalRooms: number;
         };
         const data: hotelAttributes = {
           hotelName: hotelName.toUpperCase(),
@@ -49,7 +48,6 @@ export const registerHotel: RequestHandler = async (req, res) => {
           email,
           city,
           state,
-          totalRooms,
           imageId: result.secure_url,
           cloudId: result.public_id,
           adminId: Number(adminId)
@@ -138,7 +136,6 @@ export const updateHotel: RequestHandler = async (req, res) => {
         email: string,
         city: string,
         state: string,
-        // totalRooms: number;
       };
       const updateData: hotelAttributes = {
         hotelName,

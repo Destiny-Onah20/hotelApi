@@ -100,7 +100,7 @@ Hotel.init({
     },
     totalRooms: {
         type: sequelize_1.DataTypes.INTEGER,
-        allowNull: false
+        allowNull: true
     }
 }, {
     sequelize: config_1.default,
