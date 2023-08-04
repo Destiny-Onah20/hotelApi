@@ -16,6 +16,7 @@ class Room extends Model<roomAttributes, optionalHotelAttributes> implements roo
   public roomDescription!: string;
   public price!: number;
   public image!: string;
+  public cloudId!: string;
   public hotelId!: number;
   public booked!: boolean;
   public checkIn!: Date | null;
@@ -48,6 +49,10 @@ Room.init({
     allowNull: false
   },
   image: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  cloudId: {
     type: DataTypes.STRING,
     allowNull: false
   },

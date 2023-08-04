@@ -34,6 +34,7 @@ export const registerRoom: RequestHandler = async (req, res) => {
         roomDescription: string;
         price: number;
         image: string;
+        cloudId: string;
         hotelId: number;
         adminId: number;
       };
@@ -42,6 +43,7 @@ export const registerRoom: RequestHandler = async (req, res) => {
         roomDescription,
         price,
         image: result.secure_url,
+        cloudId: result.secure_url,
         hotelId: Number(hotelId),
         adminId: Number(adminId)
       };

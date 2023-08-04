@@ -32,6 +32,10 @@ Room.init({
         type: sequelize_1.DataTypes.STRING,
         allowNull: false
     },
+    cloudId: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: false
+    },
     booked: {
         type: sequelize_1.DataTypes.BOOLEAN,
         defaultValue: false
