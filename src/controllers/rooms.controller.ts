@@ -118,7 +118,7 @@ export const fourStarRooms: RequestHandler = async (req, res) => {
   try {
     const niceRoom = await Room.findAll({
       where: {
-        price: { [Op.gte]: 20001 },
+        price: { [Op.gte]: 20000, [Op.lte]: 100000 },
         booked: false
       }
     });

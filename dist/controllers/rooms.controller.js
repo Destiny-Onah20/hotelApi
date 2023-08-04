@@ -128,7 +128,7 @@ const fourStarRooms = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     try {
         const niceRoom = yield rooms_model_1.default.findAll({
             where: {
-                price: { [sequelize_1.Op.gte]: 20001 },
+                price: { [sequelize_1.Op.gte]: 20000, [sequelize_1.Op.lte]: 100000 },
                 booked: false
             }
         });
