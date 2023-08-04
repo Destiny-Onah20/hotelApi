@@ -16,7 +16,7 @@ export const bookAroom: RequestHandler = async (req, res) => {
   try {
     const userId = req.params.userId;
     const roomId = req.params.roomId;
-    const { checkIn, checkOut } = req.body;
+    const { checkIn, checkOut, price } = req.body;
     const theUser = await User.findAll({ where: { id: userId } });
     const bookingRoom = await Room.findByPk(roomId);
     if (!bookingRoom || bookingRoom?.booked) {
@@ -62,7 +62,7 @@ export const bookAroom: RequestHandler = async (req, res) => {
       checkOut: new Date(checkOut),
       userId: Number(userId),
       roomId: Number(roomId),
-      price: bookingRoom.price,
+      price,
       message,
       roomNumber: bookingRoom.roomNumber,
       adminId: bookingRoom.adminId

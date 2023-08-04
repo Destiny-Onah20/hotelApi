@@ -27,7 +27,7 @@ const bookAroom = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userId = req.params.userId;
         const roomId = req.params.roomId;
-        const { checkIn, checkOut } = req.body;
+        const { checkIn, checkOut, price } = req.body;
         const theUser = yield user_admin_1.default.findAll({ where: { id: userId } });
         const bookingRoom = yield rooms_model_1.default.findByPk(roomId);
         if (!bookingRoom || (bookingRoom === null || bookingRoom === void 0 ? void 0 : bookingRoom.booked)) {
@@ -62,7 +62,7 @@ const bookAroom = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             checkOut: new Date(checkOut),
             userId: Number(userId),
             roomId: Number(roomId),
-            price: bookingRoom.price,
+            price,
             message,
             roomNumber: bookingRoom.roomNumber,
             adminId: bookingRoom.adminId

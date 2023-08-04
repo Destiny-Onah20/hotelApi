@@ -389,7 +389,7 @@ export const allAdminHotels: RequestHandler = async (req, res) => {
   try {
     const adminId = req.params.adminId;
     const adminDetails = await Admin.findByPk(adminId, {
-      include: [Hotel, Room]
+      include: [Hotel]
     });
     if (!adminDetails) {
       return res.status(404).json({
@@ -453,6 +453,32 @@ export const allAdminRoomsBooked: RequestHandler = async (req, res) => {
     return res.status(500).json({
       message: error.message,
       status: "Failed"
+    })
+  }
+};
+
+
+export const vacantRoomByAdmin: RequestHandler = async (req, res) => {
+  try {
+    const { adminId } = req.params;
+    const vacantRoom = await Room.findAll({
+      where: {
+        adminId,
+        booked: false
+      }
+    });
+    if (!vacantRoom) {
+      return res.status(404).json({
+        message: 'No room Found!'
+      })
+    }
+    return res.status(200).json({
+      message: `All Vacant rooms Registered by ${adminId}: ${vacantRoom.length} `,
+      data: vacantRoom
+    })
+  } catch (error: any) {
+    return res.status(500).json({
+      message: error.message
     })
   }
 };

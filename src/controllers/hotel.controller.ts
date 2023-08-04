@@ -92,7 +92,7 @@ export const hotelDetails: RequestHandler = async (req, res) => {
   try {
     const hotelId = req.params.hotelId;
     const hotelInDB = await Hotel.findByPk(hotelId, {
-      include: [Room, Rating]
+      include: [Room]
     });
     if (!hotelInDB) {
       return res.status(404).json({

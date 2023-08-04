@@ -17,7 +17,6 @@ const hotel_model_1 = __importDefault(require("../models/hotel.model"));
 const admin_model_1 = __importDefault(require("../models/admin.model"));
 const cloudinary_1 = __importDefault(require("../utils/cloudinary"));
 const rooms_model_1 = __importDefault(require("../models/rooms.model"));
-const rating_model_1 = __importDefault(require("../models/rating.model"));
 const config_1 = __importDefault(require("../config/config"));
 const registerHotel = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
@@ -96,7 +95,7 @@ const hotelDetails = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     try {
         const hotelId = req.params.hotelId;
         const hotelInDB = yield hotel_model_1.default.findByPk(hotelId, {
-            include: [rooms_model_1.default, rating_model_1.default]
+            include: [rooms_model_1.default]
         });
         if (!hotelInDB) {
             return res.status(404).json({

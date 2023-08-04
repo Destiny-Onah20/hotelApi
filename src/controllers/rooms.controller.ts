@@ -165,3 +165,22 @@ export const luxuryRooms: RequestHandler = async (req, res) => {
 };
 
 
+export const roomDetail: RequestHandler = async (req, res) => {
+  try {
+    const roomId = req.params.roomId;
+    const theRoom = await Room.findByPk(roomId);
+    if (!theRoom) {
+      return res.status(404).json({
+        messaege: `Room with this id: ${roomId} not found!`
+      })
+    }
+    return res.status(200).json({
+      mesaage: "the Room",
+      data: theRoom
+    })
+  } catch (error: any) {
+    return res.status(500).json({
+      message: error.mesage
+    })
+  }
+};
