@@ -49,7 +49,7 @@ const registerRoom = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                 roomDescription,
                 price,
                 image: result.secure_url,
-                cloudId: result.secure_url,
+                cloudId: result.public_id,
                 hotelId: Number(hotelId),
                 adminId: Number(adminId)
             };

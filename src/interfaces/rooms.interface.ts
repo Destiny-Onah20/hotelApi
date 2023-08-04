@@ -5,6 +5,7 @@ interface roomAttributes {
   price: number;
   image: string;
   booked: boolean;
+  cloudId: string;
   hotelId: number;
   checkIn: Date | null;
   checkOut: Date | null;
