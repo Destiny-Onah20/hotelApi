@@ -324,3 +324,27 @@ export const roomsBookedByUser: RequestHandler = async (req, res) => {
     })
   }
 };
+
+
+export const updateUser: RequestHandler = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const theUser = await User.findByPk(userId);
+    if (!theUser) {
+      return res.status(404).json({
+        message: "No user found!"
+      })
+    };
+    const existingImage = theUser.image;
+
+    if (existingImage) {
+
+    }
+
+  } catch (error: any) {
+    return res.status(500).json({
+      message: error.message,
+      status: "Failed"
+    })
+  }
+}

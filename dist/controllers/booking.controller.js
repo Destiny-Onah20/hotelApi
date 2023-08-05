@@ -97,6 +97,7 @@ const bookAroom = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 intro: `Thank you for booking a room with us. Attached is your payment receipt.`,
                 table: {
                     data: [
+                        { key: "Fullname:", value: bookData.userId.toString() },
                         { key: "Check-in:", value: bookData.checkIn.toString() },
                         { key: "Check-out:", value: bookData.checkOut.toString() },
                         { key: "Room Number:", value: bookData.roomNumber.toString() },

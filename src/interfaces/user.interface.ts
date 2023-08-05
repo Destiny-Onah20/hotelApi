@@ -3,6 +3,8 @@ export interface UserAttribute {
   fullname: string,
   password: string,
   email: string,
+  image: string,
+  cloudId: string,
   phoneNumber: string,
   token: string,
   verify: boolean,

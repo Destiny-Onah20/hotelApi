@@ -97,6 +97,7 @@ export const bookAroom: RequestHandler = async (req, res) => {
         intro: `Thank you for booking a room with us. Attached is your payment receipt.`,
         table: {
           data: [
+            { key: "Fullname:", value: bookData.userId.toString() },
             { key: "Check-in:", value: bookData.checkIn.toString() },
             { key: "Check-out:", value: bookData.checkOut.toString() },
             { key: "Room Number:", value: bookData.roomNumber.toString() },
@@ -249,4 +250,5 @@ export const notifyAdmind = async (req: Request, res: Response) => {
     })
   }
 };
+
 

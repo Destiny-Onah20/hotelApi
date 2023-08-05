@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.roomsBookedByUser = exports.facebookSignUp = exports.changePasswordUser = exports.forgottenPassword = exports.verifyUser = exports.loginUser = exports.registerUser = void 0;
+exports.updateUser = exports.roomsBookedByUser = exports.facebookSignUp = exports.changePasswordUser = exports.forgottenPassword = exports.verifyUser = exports.loginUser = exports.registerUser = void 0;
 const user_admin_1 = __importDefault(require("../models/user.admin"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
@@ -327,3 +327,25 @@ const roomsBookedByUser = (req, res) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 exports.roomsBookedByUser = roomsBookedByUser;
+const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const userId = req.params.userId;
+        const theUser = yield user_admin_1.default.findByPk(userId);
+        if (!theUser) {
+            return res.status(404).json({
+                message: "No user found!"
+            });
+        }
+        ;
+        const existingImage = theUser.image;
+        if (existingImage) {
+        }
+    }
+    catch (error) {
+        return res.status(500).json({
+            message: error.message,
+            status: "Failed"
+        });
+    }
+});
+exports.updateUser = updateUser;
