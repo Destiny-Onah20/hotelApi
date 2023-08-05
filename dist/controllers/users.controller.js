@@ -24,6 +24,7 @@ const mailService_1 = __importDefault(require("../middlewares/mailService"));
 const booking_model_1 = __importDefault(require("../models/booking.model"));
 const rooms_model_1 = __importDefault(require("../models/rooms.model"));
 const mailGenerator_1 = __importDefault(require("../utils/mailGenerator"));
+const cloudinary_1 = __importDefault(require("../utils/cloudinary"));
 const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { fullname, email, password, phoneNumber } = req.body;
@@ -328,8 +329,10 @@ const roomsBookedByUser = (req, res) => __awaiter(void 0, void 0, void 0, functi
 });
 exports.roomsBookedByUser = roomsBookedByUser;
 const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     try {
         const userId = req.params.userId;
+        const { fullname, email, password, phoneNumber } = req.body;
         const theUser = yield user_admin_1.default.findByPk(userId);
         if (!theUser) {
             return res.status(404).json({
@@ -338,7 +341,40 @@ const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         }
         ;
         const existingImage = theUser.image;
-        if (existingImage) {
+        const file = (_a = req.files) === null || _a === void 0 ? void 0 : _a.image;
+        const upload = Array.isArray(file) ? file : [file];
+        for (const file of upload) {
+            const result = yield cloudinary_1.default.uploader.upload(file.tempFilePath);
+            if (existingImage || result === undefined) {
+                const updateData = {
+                    fullname,
+                    email,
+                    password,
+                    phoneNumber,
+                    image: existingImage,
+                    cloudId: theUser.cloudId
+                };
+                const updateUser = yield user_admin_1.default.update(updateData, { where: { id: userId } });
+                return res.status(200).json({
+                    message: "Updated Successful!",
+                    data: updateUser
+                });
+            }
+            else {
+                const updateUserData = {
+                    fullname,
+                    email,
+                    password,
+                    phoneNumber,
+                    image: result.secure_url,
+                    cloudId: result.public_id
+                };
+                const updateUser = yield user_admin_1.default.update(updateUserData, { where: { id: userId } });
+                return res.status(200).json({
+                    message: "Updated Successful!",
+                    data: updateUser
+                });
+            }
         }
     }
     catch (error) {

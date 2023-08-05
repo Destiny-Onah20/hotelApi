@@ -11,6 +11,8 @@ import Booking from "../models/booking.model";
 import Room from "../models/rooms.model";
 import { Content } from "mailgen";
 import generateMail from "../utils/mailGenerator";
+import { UploadedFile } from "express-fileupload";
+import Cloudinary from "../utils/cloudinary";
 
 
 export const registerUser: RequestHandler = async (req, res) => {
@@ -329,6 +331,7 @@ export const roomsBookedByUser: RequestHandler = async (req, res) => {
 export const updateUser: RequestHandler = async (req, res) => {
   try {
     const userId = req.params.userId;
+    const { fullname, email, password, phoneNumber } = req.body
     const theUser = await User.findByPk(userId);
     if (!theUser) {
       return res.status(404).json({
@@ -336,10 +339,42 @@ export const updateUser: RequestHandler = async (req, res) => {
       })
     };
     const existingImage = theUser.image;
+    const file = req.files?.image as UploadedFile;
+    const upload = Array.isArray(file) ? file : [file];
+    for (const file of upload) {
+      const result = await Cloudinary.uploader.upload(file.tempFilePath);
+      if (existingImage || result === undefined) {
+        const updateData = {
+          fullname,
+          email,
+          password,
+          phoneNumber,
+          image: existingImage,
+          cloudId: theUser.cloudId
+        }
+        const updateUser = await User.update(updateData, { where: { id: userId } });
+        return res.status(200).json({
+          message: "Updated Successful!",
+          data: updateUser
+        })
+      } else {
 
-    if (existingImage) {
-
+        const updateUserData = {
+          fullname,
+          email,
+          password,
+          phoneNumber,
+          image: result.secure_url,
+          cloudId: result.public_id
+        }
+        const updateUser = await User.update(updateUserData, { where: { id: userId } });
+        return res.status(200).json({
+          message: "Updated Successful!",
+          data: updateUser
+        })
+      }
     }
+
 
   } catch (error: any) {
     return res.status(500).json({
