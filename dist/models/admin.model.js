@@ -30,6 +30,10 @@ Admin.init({
         type: sequelize_1.DataTypes.BOOLEAN,
         defaultValue: true
     },
+    logged: {
+        type: sequelize_1.DataTypes.BOOLEAN,
+        defaultValue: false
+    },
     verify: {
         type: sequelize_1.DataTypes.BOOLEAN,
         defaultValue: false

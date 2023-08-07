@@ -43,7 +43,7 @@ export const registerAdmin: RequestHandler = async (req, res): Promise<object> =
       expiresIn: "1d"
     })
     creatingData.token = generateToken;
-
+    creatingData.logged = true
     await creatingData.save();
 
     const verifyAccountRoute = `https://hotel-youngmentor.vercel.app/#/adminverify/747747`;
@@ -102,6 +102,11 @@ export const loginAdmin: RequestHandler = async (req, res): Promise<object> => {
         message: "Email and password does not match."
       })
     } else {
+      if (checkAdmin.logged) {
+        return res.status(400).json({
+          message: "Already logged in!"
+        })
+      }
       const generateToken = Jwt.sign({
         isAdmin: checkAdmin.isAdmin,
         id: checkAdmin.id
@@ -109,6 +114,7 @@ export const loginAdmin: RequestHandler = async (req, res): Promise<object> => {
         expiresIn: "1d"
       })
       checkAdmin.token = generateToken;
+      checkAdmin.logged = true;
       await checkAdmin.save();
       return res.status(201).json({
         message: "Successfully logged in.",
@@ -121,6 +127,28 @@ export const loginAdmin: RequestHandler = async (req, res): Promise<object> => {
     })
   }
 };
+
+
+export const logOut: RequestHandler = async (req, res) => {
+  try {
+    const { adminId } = req.params;
+    const theAdmin = await Admin.findByPk(adminId);
+    if (!theAdmin) {
+      return res.status(404).json({
+        message: "No manager found!"
+      })
+    }
+    await theAdmin.update({ logged: false }, { where: { id: adminId } });
+    return res.status(200).json({
+      message: "Log out success!"
+    });
+  } catch (error: any) {
+    return res.status(500).json({
+      message: error.message
+    })
+  }
+}
+
 
 export const verifyAdmin: RequestHandler = async (req, res) => {
   try {
@@ -155,7 +183,7 @@ export const forgetPassword: RequestHandler = async (req, res) => {
         message: "PLease provide a registered Email address."
       })
     }
-    const verifyAccountRoute = `https://hotel-youngmentor.vercel.app/#/userverify/747747`;
+    const verifyAccountRoute = `https://room-ka5k.onrender.com/#/adminresetpassword/${validEmail.id}`;
 
     const emailContent: Content = {
       body: {

@@ -167,7 +167,7 @@ const forgottenPassword = (req, res) => __awaiter(void 0, void 0, void 0, functi
                 message: "Invalid Email format!"
             });
         }
-        const verifyAccountRoute = `https://hotel-youngmentor.vercel.app/#/userverify/747747`;
+        const verifyAccountRoute = `https://room-ka5k.onrender.com/#/user-resetpassword/${validEmail.id}`;
         const emailContent = {
             body: {
                 signature: "Sincerely",

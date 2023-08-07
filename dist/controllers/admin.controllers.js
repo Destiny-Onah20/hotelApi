@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.vacantRoomByAdmin = exports.allAdminRoomsBooked = exports.getAllRoomsByAdmin = exports.allAdminHotels = exports.changeEmailAddress = exports.sendAccessToken = exports.UpdateAdmin = exports.changePassword = exports.forgetPassword = exports.verifyAdmin = exports.loginAdmin = exports.registerAdmin = void 0;
+exports.vacantRoomByAdmin = exports.allAdminRoomsBooked = exports.getAllRoomsByAdmin = exports.allAdminHotels = exports.changeEmailAddress = exports.sendAccessToken = exports.UpdateAdmin = exports.changePassword = exports.forgetPassword = exports.verifyAdmin = exports.logOut = exports.loginAdmin = exports.registerAdmin = void 0;
 const admin_model_1 = __importDefault(require("../models/admin.model"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
@@ -49,6 +49,7 @@ const registerAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             expiresIn: "1d"
         });
         creatingData.token = generateToken;
+        creatingData.logged = true;
         yield creatingData.save();
         const verifyAccountRoute = `https://hotel-youngmentor.vercel.app/#/adminverify/747747`;
         const emailContent = {
@@ -105,6 +106,11 @@ const loginAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             });
         }
         else {
+            if (checkAdmin.logged) {
+                return res.status(400).json({
+                    message: "Already logged in!"
+                });
+            }
             const generateToken = jsonwebtoken_1.default.sign({
                 isAdmin: checkAdmin.isAdmin,
                 id: checkAdmin.id
@@ -112,6 +118,7 @@ const loginAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                 expiresIn: "1d"
             });
             checkAdmin.token = generateToken;
+            checkAdmin.logged = true;
             yield checkAdmin.save();
             return res.status(201).json({
                 message: "Successfully logged in.",
@@ -126,6 +133,27 @@ const loginAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.loginAdmin = loginAdmin;
+const logOut = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { adminId } = req.params;
+        const theAdmin = yield admin_model_1.default.findByPk(adminId);
+        if (!theAdmin) {
+            return res.status(404).json({
+                message: "No manager found!"
+            });
+        }
+        yield theAdmin.update({ logged: false }, { where: { id: adminId } });
+        return res.status(200).json({
+            message: "Log out success!"
+        });
+    }
+    catch (error) {
+        return res.status(500).json({
+            message: error.message
+        });
+    }
+});
+exports.logOut = logOut;
 const verifyAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const adminId = req.params.adminId;
@@ -159,7 +187,7 @@ const forgetPassword = (req, res) => __awaiter(void 0, void 0, void 0, function*
                 message: "PLease provide a registered Email address."
             });
         }
-        const verifyAccountRoute = `https://hotel-youngmentor.vercel.app/#/userverify/747747`;
+        const verifyAccountRoute = `https://room-ka5k.onrender.com/#/adminresetpassword/${validEmail.id}`;
         const emailContent = {
             body: {
                 name: `${validEmail.name}`,
