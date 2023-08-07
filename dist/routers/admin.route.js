@@ -16,5 +16,6 @@ adminRoute.route("/manager/email/:adminId").post(admin_controllers_1.sendAccessT
 adminRoute.route("/manager/changemail/:adminId").put(admin_controllers_1.changeEmailAddress);
 adminRoute.route("/manager/details/:adminId").get(authorization_1.authID, admin_controllers_1.allAdminHotels);
 adminRoute.route("/manager/rooms/:adminId").get(authorization_1.authID, admin_controllers_1.getAllRoomsByAdmin);
+adminRoute.route("/manager/logout/:adminId").post(authorization_1.authID, admin_controllers_1.logOut);
 adminRoute.route("/manager/booking/:adminId").get(authorization_1.authID, admin_controllers_1.allAdminRoomsBooked);
 exports.default = adminRoute;

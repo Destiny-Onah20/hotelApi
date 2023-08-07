@@ -358,7 +358,7 @@ export const updateUser: RequestHandler = async (req, res) => {
           data: updateUser
         })
       } else {
-
+        await Cloudinary.uploader.destroy(theUser.cloudId)
         const updateUserData = {
           fullname,
           email,
@@ -374,7 +374,17 @@ export const updateUser: RequestHandler = async (req, res) => {
         })
       }
     }
+  } catch (error: any) {
+    return res.status(500).json({
+      message: error.message,
+      status: "Failed"
+    })
+  }
+};
 
+export const logout: RequestHandler = async (req, res) => {
+  try {
+    const { userId } = req.params;
 
   } catch (error: any) {
     return res.status(500).json({
