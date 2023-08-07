@@ -102,11 +102,6 @@ export const loginAdmin: RequestHandler = async (req, res): Promise<object> => {
         message: "Email and password does not match."
       })
     } else {
-      if (checkAdmin.logged) {
-        return res.status(400).json({
-          message: "Already logged in!"
-        })
-      }
       const generateToken = Jwt.sign({
         isAdmin: checkAdmin.isAdmin,
         id: checkAdmin.id

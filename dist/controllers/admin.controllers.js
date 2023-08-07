@@ -106,11 +106,6 @@ const loginAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             });
         }
         else {
-            if (checkAdmin.logged) {
-                return res.status(400).json({
-                    message: "Already logged in!"
-                });
-            }
             const generateToken = jsonwebtoken_1.default.sign({
                 isAdmin: checkAdmin.isAdmin,
                 id: checkAdmin.id
