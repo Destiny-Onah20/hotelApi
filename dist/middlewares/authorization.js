@@ -30,7 +30,9 @@ const authID = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
         const authenticToken = validUser.token;
         jsonwebtoken_1.default.verify(authenticToken, process.env.JWT_TOK, (error, payload) => {
             if (error) {
-                return error.message;
+                return res.status(400).json({
+                    message: "please log in"
+                });
             }
             else {
                 req.user = payload;

@@ -49,7 +49,6 @@ const registerAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             expiresIn: "1d"
         });
         creatingData.token = generateToken;
-        creatingData.logged = true;
         yield creatingData.save();
         const verifyAccountRoute = `https://hotel-youngmentor.vercel.app/#/adminverify/747747`;
         const emailContent = {
@@ -113,7 +112,6 @@ const loginAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                 expiresIn: "1d"
             });
             checkAdmin.token = generateToken;
-            checkAdmin.logged = true;
             yield checkAdmin.save();
             return res.status(201).json({
                 message: "Successfully logged in.",
@@ -137,7 +135,13 @@ const logOut = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 message: "No manager found!"
             });
         }
-        yield theAdmin.update({ logged: false }, { where: { id: adminId } });
+        const genToken = jsonwebtoken_1.default.sign({
+            id: theAdmin.id
+        }, " <string>process.env.JWT_TOK", {
+            expiresIn: "1d"
+        });
+        theAdmin.token = genToken;
+        yield theAdmin.save();
         return res.status(200).json({
             message: "Log out success!"
         });

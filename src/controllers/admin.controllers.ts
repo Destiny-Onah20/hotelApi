@@ -43,7 +43,6 @@ export const registerAdmin: RequestHandler = async (req, res): Promise<object> =
       expiresIn: "1d"
     })
     creatingData.token = generateToken;
-    creatingData.logged = true
     await creatingData.save();
 
     const verifyAccountRoute = `https://hotel-youngmentor.vercel.app/#/adminverify/747747`;
@@ -109,7 +108,6 @@ export const loginAdmin: RequestHandler = async (req, res): Promise<object> => {
         expiresIn: "1d"
       })
       checkAdmin.token = generateToken;
-      checkAdmin.logged = true;
       await checkAdmin.save();
       return res.status(201).json({
         message: "Successfully logged in.",
@@ -133,7 +131,13 @@ export const logOut: RequestHandler = async (req, res) => {
         message: "No manager found!"
       })
     }
-    await theAdmin.update({ logged: false }, { where: { id: adminId } });
+    const genToken = Jwt.sign({
+      id: theAdmin.id
+    }, " <string>process.env.JWT_TOK", {
+      expiresIn: "1d"
+    })
+    theAdmin.token = genToken;
+    await theAdmin.save()
     return res.status(200).json({
       message: "Log out success!"
     });
