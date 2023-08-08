@@ -331,7 +331,7 @@ export const roomsBookedByUser: RequestHandler = async (req, res) => {
 export const updateUser: RequestHandler = async (req, res) => {
   try {
     const userId = req.params.userId;
-    const { fullname, email, password, phoneNumber } = req.body
+    const { fullname, phoneNumber } = req.body
     const theUser = await User.findByPk(userId);
     if (!theUser) {
       return res.status(404).json({
@@ -340,8 +340,6 @@ export const updateUser: RequestHandler = async (req, res) => {
     };
     const updateUserData = {
       fullname,
-      email,
-      password,
       phoneNumber,
     }
     await User.update(updateUserData, { where: { id: userId } });

@@ -331,7 +331,7 @@ exports.roomsBookedByUser = roomsBookedByUser;
 const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userId = req.params.userId;
-        const { fullname, email, password, phoneNumber } = req.body;
+        const { fullname, phoneNumber } = req.body;
         const theUser = yield user_admin_1.default.findByPk(userId);
         if (!theUser) {
             return res.status(404).json({
@@ -341,8 +341,6 @@ const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         ;
         const updateUserData = {
             fullname,
-            email,
-            password,
             phoneNumber,
         };
         yield user_admin_1.default.update(updateUserData, { where: { id: userId } });
