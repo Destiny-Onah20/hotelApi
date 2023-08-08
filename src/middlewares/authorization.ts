@@ -18,7 +18,7 @@ export const authID: RequestHandler = async (req, res, next) => {
     jwt.verify(authenticToken, <string>process.env.JWT_TOK, (error, payload) => {
       if (error) {
         return res.status(400).json({
-          message: "please log in"
+          message: "please log in!"
         })
       } else {
         req.user = payload;
@@ -44,7 +44,9 @@ export const authorizedUser: RequestHandler = async (req, res, next) => {
     const authenticToken = validUser.token;
     jwt.verify(authenticToken, <string>process.env.JWT_TOK, (error, payload) => {
       if (error) {
-        return error.message
+        return res.status(400).json({
+          message: "Please Log in!"
+        })
       } else {
         req.user = payload;
         next();

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.logout = exports.updateUser = exports.roomsBookedByUser = exports.facebookSignUp = exports.changePasswordUser = exports.forgottenPassword = exports.verifyUser = exports.loginUser = exports.registerUser = void 0;
+exports.updateImage = exports.logout = exports.updateUser = exports.roomsBookedByUser = exports.facebookSignUp = exports.changePasswordUser = exports.forgottenPassword = exports.verifyUser = exports.loginUser = exports.registerUser = void 0;
 const user_admin_1 = __importDefault(require("../models/user.admin"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
@@ -329,7 +329,6 @@ const roomsBookedByUser = (req, res) => __awaiter(void 0, void 0, void 0, functi
 });
 exports.roomsBookedByUser = roomsBookedByUser;
 const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
     try {
         const userId = req.params.userId;
         const { fullname, email, password, phoneNumber } = req.body;
@@ -340,43 +339,16 @@ const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             });
         }
         ;
-        const existingImage = theUser.image;
-        const file = (_a = req.files) === null || _a === void 0 ? void 0 : _a.image;
-        const upload = Array.isArray(file) ? file : [file];
-        for (const file of upload) {
-            const result = yield cloudinary_1.default.uploader.upload(file.tempFilePath);
-            if (existingImage || result === undefined) {
-                const updateData = {
-                    fullname,
-                    email,
-                    password,
-                    phoneNumber,
-                    image: existingImage,
-                    cloudId: theUser.cloudId
-                };
-                const updateUser = yield user_admin_1.default.update(updateData, { where: { id: userId } });
-                return res.status(200).json({
-                    message: "Updated Successful!",
-                    data: updateUser
-                });
-            }
-            else {
-                yield cloudinary_1.default.uploader.destroy(theUser.cloudId);
-                const updateUserData = {
-                    fullname,
-                    email,
-                    password,
-                    phoneNumber,
-                    image: result.secure_url,
-                    cloudId: result.public_id
-                };
-                const updateUser = yield user_admin_1.default.update(updateUserData, { where: { id: userId } });
-                return res.status(200).json({
-                    message: "Updated Successful!",
-                    data: updateUser
-                });
-            }
-        }
+        const updateUserData = {
+            fullname,
+            email,
+            password,
+            phoneNumber,
+        };
+        yield user_admin_1.default.update(updateUserData, { where: { id: userId } });
+        return res.status(200).json({
+            message: "Updated Successful!",
+        });
     }
     catch (error) {
         return res.status(500).json({
@@ -389,6 +361,22 @@ exports.updateUser = updateUser;
 const logout = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { userId } = req.params;
+        const theUser = yield user_admin_1.default.findByPk(userId);
+        if (!theUser) {
+            return res.status(404).json({
+                message: "No manager found!"
+            });
+        }
+        const genToken = jsonwebtoken_1.default.sign({
+            id: theUser.id
+        }, " <string>process.env.JWT_TOK", {
+            expiresIn: "1d"
+        });
+        theUser.token = genToken;
+        yield theUser.save();
+        return res.status(200).json({
+            message: "Log out success!"
+        });
     }
     catch (error) {
         return res.status(500).json({
@@ -398,3 +386,52 @@ const logout = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.logout = logout;
+const updateImage = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    try {
+        const { userId } = req.params;
+        const theUser = yield user_admin_1.default.findByPk(userId);
+        if (!theUser) {
+            return res.status(404).json({
+                message: "No user found!"
+            });
+        }
+        ;
+        const existingImage = theUser.image;
+        const file = (_a = req.files) === null || _a === void 0 ? void 0 : _a.image;
+        const upload = Array.isArray(file) ? file : [file];
+        for (const file of upload) {
+            if (req.files && req.files.image) {
+                const result = yield cloudinary_1.default.uploader.upload(file.tempFilePath);
+                if (theUser.cloudId !== null) {
+                    yield cloudinary_1.default.uploader.destroy(theUser.cloudId);
+                }
+                const updateUserData = {
+                    image: result.secure_url,
+                    cloudId: result.public_id
+                };
+                yield user_admin_1.default.update(updateUserData, { where: { id: userId } });
+                return res.status(200).json({
+                    message: "Updated Successful!",
+                });
+            }
+            else {
+                const updateData = {
+                    image: existingImage,
+                    cloudId: theUser.cloudId
+                };
+                yield user_admin_1.default.update(updateData, { where: { id: userId } });
+                return res.status(200).json({
+                    message: "Updated Successful!",
+                });
+            }
+        }
+    }
+    catch (error) {
+        return res.status(500).json({
+            message: error.message,
+            status: "Failed"
+        });
+    }
+});
+exports.updateImage = updateImage;

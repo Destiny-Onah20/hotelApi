@@ -16,7 +16,10 @@ userRoute.route("/user/login").post((0, validates_1.loginValidate)(admin_schema_
 userRoute.route("/user/auth/facebook").get(passport_1.default.authenticate("facebook", { scope: ["email"] }), users_controller_1.facebookSignUp);
 userRoute.route("/user/verify/:userId").patch(users_controller_1.verifyUser);
 userRoute.route("/user/forgot").post(users_controller_1.forgottenPassword);
+userRoute.route("/user/logout/:userId").post(users_controller_1.logout);
 userRoute.route("/user/change/:userId").patch(users_controller_1.changePasswordUser);
+userRoute.route("/user/update/:userId").patch(authorization_1.authorizedUser, users_controller_1.updateUser);
+userRoute.route("/user/image/:userId").patch(authorization_1.authorizedUser, users_controller_1.updateImage);
 userRoute.route("/user/booking/:userId").get(authorization_1.authorizedUser, users_controller_1.roomsBookedByUser);
 userRoute.route("/").get((req, res) => {
     res.send(`<a href="http://localhost:1800/api/v1/user/auth/facebook">Login with your facebook account</a>`);

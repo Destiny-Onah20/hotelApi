@@ -338,42 +338,16 @@ export const updateUser: RequestHandler = async (req, res) => {
         message: "No user found!"
       })
     };
-    const existingImage = theUser.image;
-    const file = req.files?.image as UploadedFile;
-    const upload = Array.isArray(file) ? file : [file];
-    for (const file of upload) {
-      const result = await Cloudinary.uploader.upload(file.tempFilePath);
-      if (existingImage || result === undefined) {
-        const updateData = {
-          fullname,
-          email,
-          password,
-          phoneNumber,
-          image: existingImage,
-          cloudId: theUser.cloudId
-        }
-        const updateUser = await User.update(updateData, { where: { id: userId } });
-        return res.status(200).json({
-          message: "Updated Successful!",
-          data: updateUser
-        })
-      } else {
-        await Cloudinary.uploader.destroy(theUser.cloudId)
-        const updateUserData = {
-          fullname,
-          email,
-          password,
-          phoneNumber,
-          image: result.secure_url,
-          cloudId: result.public_id
-        }
-        const updateUser = await User.update(updateUserData, { where: { id: userId } });
-        return res.status(200).json({
-          message: "Updated Successful!",
-          data: updateUser
-        })
-      }
+    const updateUserData = {
+      fullname,
+      email,
+      password,
+      phoneNumber,
     }
+    await User.update(updateUserData, { where: { id: userId } });
+    return res.status(200).json({
+      message: "Updated Successful!",
+    })
   } catch (error: any) {
     return res.status(500).json({
       message: error.message,
@@ -385,11 +359,72 @@ export const updateUser: RequestHandler = async (req, res) => {
 export const logout: RequestHandler = async (req, res) => {
   try {
     const { userId } = req.params;
-
+    const theUser = await User.findByPk(userId);
+    if (!theUser) {
+      return res.status(404).json({
+        message: "No manager found!"
+      })
+    }
+    const genToken = Jwt.sign({
+      id: theUser.id
+    }, " <string>process.env.JWT_TOK", {
+      expiresIn: "1d"
+    })
+    theUser.token = genToken;
+    await theUser.save()
+    return res.status(200).json({
+      message: "Log out success!"
+    });
   } catch (error: any) {
     return res.status(500).json({
       message: error.message,
       status: "Failed"
     })
   }
-}
+};
+
+
+export const updateImage: RequestHandler = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const theUser = await User.findByPk(userId);
+    if (!theUser) {
+      return res.status(404).json({
+        message: "No user found!"
+      })
+    };
+    const existingImage = theUser.image;
+    const file = req.files?.image as UploadedFile;
+    const upload = Array.isArray(file) ? file : [file];
+    for (const file of upload) {
+      if (req.files && req.files.image) {
+        const result = await Cloudinary.uploader.upload(file.tempFilePath);
+        if (theUser.cloudId !== null) {
+          await Cloudinary.uploader.destroy(theUser.cloudId)
+        }
+        const updateUserData = {
+          image: result.secure_url,
+          cloudId: result.public_id
+        }
+        await User.update(updateUserData, { where: { id: userId } });
+        return res.status(200).json({
+          message: "Updated Successful!",
+        })
+      } else {
+        const updateData = {
+          image: existingImage,
+          cloudId: theUser.cloudId
+        }
+        await User.update(updateData, { where: { id: userId } });
+        return res.status(200).json({
+          message: "Updated Successful!",
+        })
+      }
+    }
+  } catch (error: any) {
+    return res.status(500).json({
+      message: error.message,
+      status: "Failed"
+    })
+  }
+};
