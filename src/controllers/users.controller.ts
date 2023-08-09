@@ -426,3 +426,7 @@ export const updateImage: RequestHandler = async (req, res) => {
     })
   }
 };
+
+const he = () => {
+
+}
