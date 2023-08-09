@@ -8,7 +8,7 @@ type adminAttribute = {
 
 export const adminSchema: ZodSchema<adminAttribute> = object({
   name: string({
-    required_error: "hotelName is required."
+    required_error: "name is required."
   }).nonempty().min(2),
   password: string({
     required_error: "Password is required."
