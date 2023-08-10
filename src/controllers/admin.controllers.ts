@@ -75,8 +75,7 @@ export const registerAdmin: RequestHandler = async (req, res): Promise<object> =
       html: emailBody
     });
     return res.status(201).json({
-      message: "Admin created successfully.",
-      data: creatingData
+      message: "Admin created successfully."
     });
 
   } catch (error: any) {
@@ -118,7 +117,6 @@ export const loginAdmin: RequestHandler = async (req, res): Promise<object> => {
       await checkAdmin.save();
       return res.status(201).json({
         message: "Successfully logged in.",
-        data: checkAdmin
       })
     }
   } catch (error: any) {
@@ -512,14 +510,38 @@ export const vacantRoomByAdmin: RequestHandler = async (req, res) => {
 
 export const deleteAdmin: RequestHandler = async (req, res) => {
   try {
-    const adminId = req.params.adminId;
-    const findAdmin = await Admin.findByPk(adminId);
-    if (!findAdmin) {
-      return res.status(200)
+    const adminIdsToDelete = [1, 2, 3, 4, 5, 30]; // Replace with the actual admin IDs
+
+    for (const adminId of adminIdsToDelete) {
+      await Hotel.update({ adminId: null as any }, { where: { adminId } })
+    }
+    const deleteAllAdmin = await Admin.destroy({ where: { id: adminIdsToDelete } });
+    if (deleteAllAdmin) {
+      return res.status(200).json({
+        message: "success!"
+      });
+    } else {
+      return res.status(400).jsonp({
+        message: "Something went wrong"
+      })
     }
   } catch (error: any) {
     return res.status(500).json({
       message: error.message
     })
   }
-}
+};
+
+
+export const getAllAdmin: RequestHandler = async (req, res) => {
+  try {
+    const all = await Admin.findAll();
+    return res.status(200).json({
+      data: all
+    })
+  } catch (error: any) {
+    return res.status(500).json({
+      message: error.message
+    })
+  }
+};

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteAdmin = exports.vacantRoomByAdmin = exports.allAdminRoomsBooked = exports.getAllRoomsByAdmin = exports.allAdminHotels = exports.changeEmailAddress = exports.sendAccessToken = exports.UpdateAdmin = exports.changePassword = exports.forgetPassword = exports.verifyAdmin = exports.logOut = exports.loginAdmin = exports.registerAdmin = void 0;
+exports.getAllAdmin = exports.deleteAdmin = exports.vacantRoomByAdmin = exports.allAdminRoomsBooked = exports.getAllRoomsByAdmin = exports.allAdminHotels = exports.changeEmailAddress = exports.sendAccessToken = exports.UpdateAdmin = exports.changePassword = exports.forgetPassword = exports.verifyAdmin = exports.logOut = exports.loginAdmin = exports.registerAdmin = void 0;
 const admin_model_1 = __importDefault(require("../models/admin.model"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
@@ -78,8 +78,7 @@ const registerAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             html: emailBody
         });
         return res.status(201).json({
-            message: "Admin created successfully.",
-            data: creatingData
+            message: "Admin created successfully."
         });
     }
     catch (error) {
@@ -121,7 +120,6 @@ const loginAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             yield checkAdmin.save();
             return res.status(201).json({
                 message: "Successfully logged in.",
-                data: checkAdmin
             });
         }
     }
@@ -509,10 +507,20 @@ const vacantRoomByAdmin = (req, res) => __awaiter(void 0, void 0, void 0, functi
 exports.vacantRoomByAdmin = vacantRoomByAdmin;
 const deleteAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const adminId = req.params.adminId;
-        const findAdmin = yield admin_model_1.default.findByPk(adminId);
-        if (!findAdmin) {
-            return res.status(200);
+        const adminIdsToDelete = [1, 2, 3, 4, 5, 30]; // Replace with the actual admin IDs
+        for (const adminId of adminIdsToDelete) {
+            yield hotel_model_1.default.update({ adminId: null }, { where: { adminId } });
+        }
+        const deleteAllAdmin = yield admin_model_1.default.destroy({ where: { id: adminIdsToDelete } });
+        if (deleteAllAdmin) {
+            return res.status(200).json({
+                message: "success!"
+            });
+        }
+        else {
+            return res.status(400).jsonp({
+                message: "Something went wrong"
+            });
         }
     }
     catch (error) {
@@ -522,3 +530,17 @@ const deleteAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.deleteAdmin = deleteAdmin;
+const getAllAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const all = yield admin_model_1.default.findAll();
+        return res.status(200).json({
+            data: all
+        });
+    }
+    catch (error) {
+        return res.status(500).json({
+            message: error.message
+        });
+    }
+});
+exports.getAllAdmin = getAllAdmin;

@@ -18,4 +18,6 @@ adminRoute.route("/manager/details/:adminId").get(authorization_1.authID, admin_
 adminRoute.route("/manager/rooms/:adminId").get(authorization_1.authID, admin_controllers_1.getAllRoomsByAdmin);
 adminRoute.route("/manager/logout/:adminId").post(authorization_1.authID, admin_controllers_1.logOut);
 adminRoute.route("/manager/booking/:adminId").get(authorization_1.authID, admin_controllers_1.allAdminRoomsBooked);
+adminRoute.route("/manager/all").get(admin_controllers_1.getAllAdmin);
+adminRoute.route("/manager/delete").delete(admin_controllers_1.deleteAdmin);
 exports.default = adminRoute;

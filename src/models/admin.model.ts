@@ -18,7 +18,6 @@ class Admin extends Model<AdminAttribute, optionalAttributes> implements AdminAt
   public emailPin: string;
   public cloudId!: string;
   public token!: string;
-  public del!: boolean;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 
@@ -48,10 +47,6 @@ Admin.init({
     defaultValue: true
   },
   verify: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false
-  },
-  del: {
     type: DataTypes.BOOLEAN,
     defaultValue: false
   },
