@@ -106,6 +106,12 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 message: "Email or password doesn't match!"
             });
         }
+        const verified = authEmail.verify;
+        if (!verified) {
+            return res.status(400).json({
+                message: "Please verify your account!"
+            });
+        }
         const generateToken = jsonwebtoken_1.default.sign({
             id: authEmail.id,
             fullname: authEmail.fullname

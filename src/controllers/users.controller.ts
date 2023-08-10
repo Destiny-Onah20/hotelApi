@@ -104,6 +104,12 @@ export const loginUser: RequestHandler = async (req, res) => {
         message: "Email or password doesn't match!"
       })
     }
+    const verified = authEmail.verify
+    if (!verified) {
+      return res.status(400).json({
+        message: "Please verify your account!"
+      })
+    }
     const generateToken = Jwt.sign({
       id: authEmail.id,
       fullname: authEmail.fullname
