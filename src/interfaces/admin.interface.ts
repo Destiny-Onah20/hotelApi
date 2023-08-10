@@ -11,6 +11,5 @@ export interface AdminAttribute {
   token: string,
   updatedAt: Date,
   createdAt: Date,
-  del: boolean
 };
 

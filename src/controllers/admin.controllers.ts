@@ -11,7 +11,8 @@ import Booking from "../models/booking.model"; import { Content } from "mailgen"
 import generateMail from "../utils/mailGenerator";
 import { UploadedFile } from "express-fileupload";
 import Cloudinary from "../utils/cloudinary";
-"#2db9ff"
+import { QueryInterface, Sequelize } from "sequelize";
+import sequelize from "../config/config";
 
 
 export const registerAdmin: RequestHandler = async (req, res): Promise<object> => {
@@ -117,11 +118,12 @@ export const loginAdmin: RequestHandler = async (req, res): Promise<object> => {
       await checkAdmin.save();
       return res.status(201).json({
         message: "Successfully logged in.",
+        accessToken: generateToken
       })
     }
   } catch (error: any) {
     return res.status(500).json({
-      message: error.message
+      message: error.message,
     })
   }
 };
@@ -510,10 +512,11 @@ export const vacantRoomByAdmin: RequestHandler = async (req, res) => {
 
 export const deleteAdmin: RequestHandler = async (req, res) => {
   try {
-    const adminIdsToDelete = [1, 2, 3, 4, 5, 30]; // Replace with the actual admin IDs
+    const adminIdsToDelete = [1, 2, 3, 4, 5, 30, 33, 40]; // Replace with the actual admin IDs
+    const defaultAdminId = 999;
 
     for (const adminId of adminIdsToDelete) {
-      await Hotel.update({ adminId: null as any }, { where: { adminId } })
+      await Hotel.update({ adminId: defaultAdminId }, { where: { adminId } });
     }
     const deleteAllAdmin = await Admin.destroy({ where: { id: adminIdsToDelete } });
     if (deleteAllAdmin) {

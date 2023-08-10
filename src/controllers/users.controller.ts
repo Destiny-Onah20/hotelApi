@@ -112,7 +112,6 @@ export const loginUser: RequestHandler = async (req, res) => {
     }
     const generateToken = Jwt.sign({
       id: authEmail.id,
-      fullname: authEmail.fullname
     }, <string>process.env.JWT_TOK, {
       expiresIn: "1d"
     });
@@ -120,7 +119,7 @@ export const loginUser: RequestHandler = async (req, res) => {
     await authEmail.save();
     return res.status(200).json({
       message: "Loggin Success!",
-      data: authEmail
+      accessToken: generateToken
     })
   } catch (error: any) {
     return res.status(500).json({
@@ -427,6 +426,35 @@ export const updateImage: RequestHandler = async (req, res) => {
   }
 };
 
-const he = () => {
+// const he = () => {
 
+// };
+
+export const getUser: RequestHandler = async (req, res) => {
+  try {
+    const { accessToken } = req.params;
+    const theUser = await User.findOne({ where: { token: accessToken } });
+    if (!theUser) {
+      return res.status(401).json({
+        message: "This user does not exists!"
+      })
+    }
+    const authenticToken = theUser.token;
+    Jwt.verify(authenticToken, <string>process.env.JWT_TOK, (error) => {
+      if (error) {
+        return res.status(400).json({
+          message: "Please Log in!"
+        })
+      }
+    })
+    return res.status(200).json({
+      message: 'THe users data',
+      data: theUser
+    })
+  } catch (error: any) {
+    return res.status(500).json({
+      message: error.message,
+      status: "Failed"
+    })
+  }
 }

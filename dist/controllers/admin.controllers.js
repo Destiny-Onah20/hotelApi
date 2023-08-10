@@ -24,7 +24,6 @@ const rooms_model_1 = __importDefault(require("../models/rooms.model"));
 const booking_model_1 = __importDefault(require("../models/booking.model"));
 const mailGenerator_1 = __importDefault(require("../utils/mailGenerator"));
 const cloudinary_1 = __importDefault(require("../utils/cloudinary"));
-"#2db9ff";
 const registerAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { name, password, email } = req.body;
@@ -120,12 +119,13 @@ const loginAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             yield checkAdmin.save();
             return res.status(201).json({
                 message: "Successfully logged in.",
+                accessToken: generateToken
             });
         }
     }
     catch (error) {
         return res.status(500).json({
-            message: error.message
+            message: error.message,
         });
     }
 });
@@ -507,9 +507,10 @@ const vacantRoomByAdmin = (req, res) => __awaiter(void 0, void 0, void 0, functi
 exports.vacantRoomByAdmin = vacantRoomByAdmin;
 const deleteAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const adminIdsToDelete = [1, 2, 3, 4, 5, 30]; // Replace with the actual admin IDs
+        const adminIdsToDelete = [1, 2, 3, 4, 5, 30, 33, 40]; // Replace with the actual admin IDs
+        const defaultAdminId = 999;
         for (const adminId of adminIdsToDelete) {
-            yield hotel_model_1.default.update({ adminId: null }, { where: { adminId } });
+            yield hotel_model_1.default.update({ adminId: defaultAdminId }, { where: { adminId } });
         }
         const deleteAllAdmin = yield admin_model_1.default.destroy({ where: { id: adminIdsToDelete } });
         if (deleteAllAdmin) {

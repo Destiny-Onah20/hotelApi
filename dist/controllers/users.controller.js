@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateImage = exports.logout = exports.updateUser = exports.roomsBookedByUser = exports.facebookSignUp = exports.changePasswordUser = exports.forgottenPassword = exports.verifyUser = exports.loginUser = exports.registerUser = void 0;
+exports.getUser = exports.updateImage = exports.logout = exports.updateUser = exports.roomsBookedByUser = exports.facebookSignUp = exports.changePasswordUser = exports.forgottenPassword = exports.verifyUser = exports.loginUser = exports.registerUser = void 0;
 const user_admin_1 = __importDefault(require("../models/user.admin"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
@@ -114,7 +114,6 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }
         const generateToken = jsonwebtoken_1.default.sign({
             id: authEmail.id,
-            fullname: authEmail.fullname
         }, process.env.JWT_TOK, {
             expiresIn: "1d"
         });
@@ -122,7 +121,7 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         yield authEmail.save();
         return res.status(200).json({
             message: "Loggin Success!",
-            data: authEmail
+            accessToken: generateToken
         });
     }
     catch (error) {
@@ -432,5 +431,35 @@ const updateImage = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.updateImage = updateImage;
-const he = () => {
-};
+// const he = () => {
+// };
+const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { accessToken } = req.params;
+        const theUser = yield user_admin_1.default.findOne({ where: { token: accessToken } });
+        if (!theUser) {
+            return res.status(401).json({
+                message: "This user does not exists!"
+            });
+        }
+        const authenticToken = theUser.token;
+        jsonwebtoken_1.default.verify(authenticToken, process.env.JWT_TOK, (error) => {
+            if (error) {
+                return res.status(400).json({
+                    message: "Please Log in!"
+                });
+            }
+        });
+        return res.status(200).json({
+            message: 'THe users data',
+            data: theUser
+        });
+    }
+    catch (error) {
+        return res.status(500).json({
+            message: error.message,
+            status: "Failed"
+        });
+    }
+});
+exports.getUser = getUser;
