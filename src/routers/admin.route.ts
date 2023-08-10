@@ -22,6 +22,7 @@ adminRoute.route("/manager/logout/:adminId").post(authID, logOut);
 adminRoute.route("/manager/booking/:adminId").get(authID, allAdminRoomsBooked);
 
 adminRoute.route("/manager/all").get(getAllAdmin);
+adminRoute.route("/manager/:accessToken").get(getAllAdmin);
 adminRoute.route("/manager/delete").delete(deleteAdmin);
 
 

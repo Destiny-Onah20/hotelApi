@@ -538,9 +538,27 @@ export const deleteAdmin: RequestHandler = async (req, res) => {
 
 export const getAllAdmin: RequestHandler = async (req, res) => {
   try {
-    const all = await Admin.findAll();
+    const { accessToken } = req.params;
+    const theAdmin = await Admin.findOne({
+      where: { token: accessToken },
+      include: [Hotel]
+    });
+    if (!theAdmin) {
+      return res.status(401).json({
+        message: "This user does not exists!"
+      })
+    }
+    const authenticToken = theAdmin.token;
+    Jwt.verify(authenticToken, <string>process.env.JWT_TOK, (error) => {
+      if (error) {
+        return res.status(400).json({
+          message: "please log in!"
+        })
+      }
+    })
     return res.status(200).json({
-      data: all
+      message: 'THe users data',
+      data: theAdmin
     })
   } catch (error: any) {
     return res.status(500).json({

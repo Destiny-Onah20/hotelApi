@@ -7,8 +7,8 @@ dotenv.config();
 
 export const authID: RequestHandler = async (req, res, next) => {
   try {
-    const adminId = req.params.adminId;
-    const validUser = await Admin.findOne({ where: { id: adminId } });
+    const accessToken = req.params.adminId;
+    const validUser = await Admin.findOne({ where: { token: accessToken } });
     if (!validUser) {
       return res.status(401).json({
         message: "This id does not exists!"

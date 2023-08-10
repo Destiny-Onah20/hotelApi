@@ -111,7 +111,7 @@ Hotel.init({
     allowNull: false,
     references: {
       model: "admins",
-      key: "id"
+      key: "id",
     }
   },
   totalRooms: {

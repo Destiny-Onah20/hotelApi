@@ -533,9 +533,27 @@ const deleteAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 exports.deleteAdmin = deleteAdmin;
 const getAllAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const all = yield admin_model_1.default.findAll();
+        const { accessToken } = req.params;
+        const theAdmin = yield admin_model_1.default.findOne({
+            where: { token: accessToken },
+            include: [hotel_model_1.default]
+        });
+        if (!theAdmin) {
+            return res.status(401).json({
+                message: "This user does not exists!"
+            });
+        }
+        const authenticToken = theAdmin.token;
+        jsonwebtoken_1.default.verify(authenticToken, process.env.JWT_TOK, (error) => {
+            if (error) {
+                return res.status(400).json({
+                    message: "please log in!"
+                });
+            }
+        });
         return res.status(200).json({
-            data: all
+            message: 'THe users data',
+            data: theAdmin
         });
     }
     catch (error) {
