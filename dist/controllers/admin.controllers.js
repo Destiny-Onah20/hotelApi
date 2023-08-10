@@ -105,6 +105,12 @@ const loginAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             });
         }
         else {
+            const verified = checkAdmin.verify;
+            if (!verified) {
+                return res.status(400).json({
+                    message: "Please verify your account!"
+                });
+            }
             const generateToken = jsonwebtoken_1.default.sign({
                 isAdmin: checkAdmin.isAdmin,
                 id: checkAdmin.id

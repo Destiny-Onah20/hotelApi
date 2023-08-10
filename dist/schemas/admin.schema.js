@@ -4,7 +4,7 @@ exports.adminLogin = exports.adminSchema = void 0;
 const zod_1 = require("zod");
 exports.adminSchema = (0, zod_1.object)({
     name: (0, zod_1.string)({
-        required_error: "hotelName is required."
+        required_error: "name is required."
     }).nonempty().min(2),
     password: (0, zod_1.string)({
         required_error: "Password is required."

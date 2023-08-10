@@ -100,7 +100,14 @@ export const loginAdmin: RequestHandler = async (req, res): Promise<object> => {
       return res.status(400).json({
         message: "Email and password does not match."
       })
-    } else {
+    }
+    else {
+      const verified = checkAdmin.verify
+      if (!verified) {
+        return res.status(400).json({
+          message: "Please verify your account!"
+        })
+      }
       const generateToken = Jwt.sign({
         isAdmin: checkAdmin.isAdmin,
         id: checkAdmin.id
