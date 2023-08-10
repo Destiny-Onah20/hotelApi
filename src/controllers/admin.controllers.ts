@@ -509,3 +509,17 @@ export const vacantRoomByAdmin: RequestHandler = async (req, res) => {
     })
   }
 };
+
+export const deleteAdmin: RequestHandler = async (req, res) => {
+  try {
+    const adminId = req.params.adminId;
+    const findAdmin = await Admin.findByPk(adminId);
+    if (!findAdmin) {
+      return res.status(200)
+    }
+  } catch (error: any) {
+    return res.status(500).json({
+      message: error.message
+    })
+  }
+}

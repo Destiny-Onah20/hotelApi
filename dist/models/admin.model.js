@@ -34,6 +34,10 @@ Admin.init({
         type: sequelize_1.DataTypes.BOOLEAN,
         defaultValue: false
     },
+    del: {
+        type: sequelize_1.DataTypes.BOOLEAN,
+        defaultValue: false
+    },
     token: {
         type: sequelize_1.DataTypes.STRING,
         allowNull: false

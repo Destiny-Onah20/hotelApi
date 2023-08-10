@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.vacantRoomByAdmin = exports.allAdminRoomsBooked = exports.getAllRoomsByAdmin = exports.allAdminHotels = exports.changeEmailAddress = exports.sendAccessToken = exports.UpdateAdmin = exports.changePassword = exports.forgetPassword = exports.verifyAdmin = exports.logOut = exports.loginAdmin = exports.registerAdmin = void 0;
+exports.deleteAdmin = exports.vacantRoomByAdmin = exports.allAdminRoomsBooked = exports.getAllRoomsByAdmin = exports.allAdminHotels = exports.changeEmailAddress = exports.sendAccessToken = exports.UpdateAdmin = exports.changePassword = exports.forgetPassword = exports.verifyAdmin = exports.logOut = exports.loginAdmin = exports.registerAdmin = void 0;
 const admin_model_1 = __importDefault(require("../models/admin.model"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
@@ -507,3 +507,18 @@ const vacantRoomByAdmin = (req, res) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 exports.vacantRoomByAdmin = vacantRoomByAdmin;
+const deleteAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const adminId = req.params.adminId;
+        const findAdmin = yield admin_model_1.default.findByPk(adminId);
+        if (!findAdmin) {
+            return res.status(200);
+        }
+    }
+    catch (error) {
+        return res.status(500).json({
+            message: error.message
+        });
+    }
+});
+exports.deleteAdmin = deleteAdmin;

@@ -10,6 +10,7 @@ export interface AdminAttribute {
   verify: boolean,
   token: string,
   updatedAt: Date,
-  createdAt: Date
+  createdAt: Date,
+  del: boolean
 };
 
