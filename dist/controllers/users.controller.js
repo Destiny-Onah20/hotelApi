@@ -216,14 +216,7 @@ exports.forgottenPassword = forgottenPassword;
 const changePasswordUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userId = req.params.userId;
-        const { password, confirmPassword } = req.body;
-        const matchedPassword = password.match(confirmPassword);
-        if (!matchedPassword) {
-            return res.status(400).json({
-                message: "Password does not match, please check and confirm!"
-            });
-        }
-        ;
+        const { password } = req.body;
         const saltPassword = yield bcrypt_1.default.genSalt(9);
         const hassPassword = yield bcrypt_1.default.hash(password, saltPassword);
         yield user_admin_1.default.update({ password: hassPassword }, {
