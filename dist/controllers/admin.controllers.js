@@ -49,7 +49,7 @@ const registerAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         });
         creatingData.token = generateToken;
         yield creatingData.save();
-        const verifyAccountRoute = `https://hotel-youngmentor.vercel.app/#/adminverify/747747`;
+        const verifyAccountRoute = `https://room-ka5k.onrender.com/#/adminverify/${creatingData.id}`;
         const emailContent = {
             body: {
                 name: `${creatingData.name}`,
@@ -507,22 +507,7 @@ const vacantRoomByAdmin = (req, res) => __awaiter(void 0, void 0, void 0, functi
 exports.vacantRoomByAdmin = vacantRoomByAdmin;
 const deleteAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const adminIdsToDelete = [1, 2, 3, 4, 5, 30, 33, 40]; // Replace with the actual admin IDs
-        const defaultAdminId = 999;
-        for (const adminId of adminIdsToDelete) {
-            yield hotel_model_1.default.update({ adminId: defaultAdminId }, { where: { adminId } });
-        }
-        const deleteAllAdmin = yield admin_model_1.default.destroy({ where: { id: adminIdsToDelete } });
-        if (deleteAllAdmin) {
-            return res.status(200).json({
-                message: "success!"
-            });
-        }
-        else {
-            return res.status(400).jsonp({
-                message: "Something went wrong"
-            });
-        }
+        //  const 
     }
     catch (error) {
         return res.status(500).json({

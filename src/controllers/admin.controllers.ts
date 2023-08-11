@@ -46,7 +46,7 @@ export const registerAdmin: RequestHandler = async (req, res): Promise<object> =
     creatingData.token = generateToken;
     await creatingData.save();
 
-    const verifyAccountRoute = `https://hotel-youngmentor.vercel.app/#/adminverify/747747`;
+    const verifyAccountRoute = `https://room-ka5k.onrender.com/#/adminverify/${creatingData.id}`;
 
     const emailContent: Content = {
       body: {
@@ -512,22 +512,7 @@ export const vacantRoomByAdmin: RequestHandler = async (req, res) => {
 
 export const deleteAdmin: RequestHandler = async (req, res) => {
   try {
-    const adminIdsToDelete = [1, 2, 3, 4, 5, 30, 33, 40]; // Replace with the actual admin IDs
-    const defaultAdminId = 999;
-
-    for (const adminId of adminIdsToDelete) {
-      await Hotel.update({ adminId: defaultAdminId }, { where: { adminId } });
-    }
-    const deleteAllAdmin = await Admin.destroy({ where: { id: adminIdsToDelete } });
-    if (deleteAllAdmin) {
-      return res.status(200).json({
-        message: "success!"
-      });
-    } else {
-      return res.status(400).jsonp({
-        message: "Something went wrong"
-      })
-    }
+    //  const 
   } catch (error: any) {
     return res.status(500).json({
       message: error.message
