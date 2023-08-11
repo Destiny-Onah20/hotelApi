@@ -365,7 +365,7 @@ const changeEmailAddress = (req, res) => __awaiter(void 0, void 0, void 0, funct
             });
         }
         yield admin_model_1.default.update({ email: newEmail }, { where: { id: adminId } });
-        const verifyAccountRoute = `https://hotel-youngmentor.vercel.app/#/alllogin/adminlogin`;
+        const verifyAccountRoute = `https://room-ka5k.onrender.com/#/alllogin/adminlogin`;
         const emailContent = {
             body: {
                 name: `${theAdmin.name}`,
