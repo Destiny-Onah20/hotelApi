@@ -47,7 +47,7 @@ export const registerUser: RequestHandler = async (req, res) => {
     });
     userToCreate.token = generateToken;
     await userToCreate.save();
-    const verifyAccountRoute = `https://hotel-youngmentor.vercel.app/#/userverify/747747`;
+    const verifyAccountRoute = `https://room-ka5k.onrender.com/#/userverify/${userToCreate.id}`;
 
     const emailContent: Content = {
       body: {
