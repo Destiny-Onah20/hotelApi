@@ -1,6 +1,7 @@
 import sequelize from "../config/config";
 import { DataTypes, Model, Optional } from "sequelize";
 import { AdminAttribute } from "../interfaces/admin.interface";
+import { v4 as uuidv4 } from "uuid";
 import logger from "../utils/logger";
 import User from "./user.admin"
 import Hotel from "./hotel.model";
@@ -8,7 +9,7 @@ import Hotel from "./hotel.model";
 type optionalAttributes = Optional<AdminAttribute, "id" | "createdAt" | "updatedAt" | "isAdmin" | "token" | "verify" | "image" | "cloudId" | "emailPin">
 
 class Admin extends Model<AdminAttribute, optionalAttributes> implements AdminAttribute {
-  public id!: number;
+  public id!: string;
   public name!: string;
   public password!: string;
   public isAdmin!: boolean;
@@ -29,10 +30,9 @@ class Admin extends Model<AdminAttribute, optionalAttributes> implements AdminAt
 
 Admin.init({
   id: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
     primaryKey: true,
-    autoIncrement: true
   },
   name: {
     type: DataTypes.STRING,

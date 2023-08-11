@@ -13,10 +13,9 @@ class Admin extends sequelize_1.Model {
 ;
 Admin.init({
     id: {
-        type: sequelize_1.DataTypes.INTEGER,
-        allowNull: false,
+        type: sequelize_1.DataTypes.UUID,
+        defaultValue: sequelize_1.DataTypes.UUIDV4,
         primaryKey: true,
-        autoIncrement: true
     },
     name: {
         type: sequelize_1.DataTypes.STRING,
