@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 dotenv.config();
 import bcrypt from "bcrypt";
 import Jwt from "jsonwebtoken";
+import { v4 as uuidv4 } from 'uuid';
 import mailSender from "../middlewares/mailService";
 import Hotel from "../models/hotel.model";
 import Room from "../models/rooms.model";
@@ -27,11 +28,13 @@ export const registerAdmin: RequestHandler = async (req, res): Promise<object> =
     const saltPassword = await bcrypt.genSalt(10);
     const hassPassword = await bcrypt.hash(password, saltPassword);
     type AdminAttribute = {
+      id: string,
       name: string,
       password: string,
       email: string
     }
     const data: AdminAttribute = {
+      id: uuidv4(),
       name: name.toUpperCase(),
       password: hassPassword,
       email

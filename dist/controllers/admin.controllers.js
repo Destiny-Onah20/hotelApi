@@ -18,6 +18,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const uuid_1 = require("uuid");
 const mailService_1 = __importDefault(require("../middlewares/mailService"));
 const hotel_model_1 = __importDefault(require("../models/hotel.model"));
 const rooms_model_1 = __importDefault(require("../models/rooms.model"));
@@ -36,6 +37,7 @@ const registerAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         const saltPassword = yield bcrypt_1.default.genSalt(10);
         const hassPassword = yield bcrypt_1.default.hash(password, saltPassword);
         const data = {
+            id: (0, uuid_1.v4)(),
             name: name.toUpperCase(),
             password: hassPassword,
             email
