@@ -40,7 +40,10 @@ export default class mailSender {
   };
   async mail(Option: mailInterface) {
     const mailOption = {
-      from: process.env.EMAIL,
+      from: {
+        name: "Room",
+        address: <string>process.env.EMAIL
+      },
       to: Option.email,
       subject: Option.subject,
       text: Option.message,

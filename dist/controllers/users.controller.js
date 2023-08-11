@@ -72,7 +72,9 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         const mailservice = new mailService_1.default();
         mailservice.createConnection();
         mailservice.mail({
-            from: process.env.EMAIL,
+            from: {
+                address: process.env.EMAIL
+            },
             email: userToCreate.email,
             subject: "Kindly verify!",
             message: emailText,
@@ -194,7 +196,9 @@ const forgottenPassword = (req, res) => __awaiter(void 0, void 0, void 0, functi
         const mailservice = new mailService_1.default();
         mailservice.createConnection();
         mailservice.mail({
-            from: process.env.EMAIL,
+            from: {
+                address: process.env.EMAIL
+            },
             email: validEmail.email,
             subject: "Reset Password!",
             message: emailText,
@@ -276,7 +280,9 @@ const facebookSignUp = (req, res) => __awaiter(void 0, void 0, void 0, function*
                         const mailservice = new mailService_1.default();
                         mailservice.createConnection();
                         mailservice.mail({
-                            from: process.env.EMAIL,
+                            from: {
+                                address: process.env.EMAIL
+                            },
                             email: userToCreate.email,
                             subject: "Kindly verify!",
                             message,

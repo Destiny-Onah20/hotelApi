@@ -124,7 +124,9 @@ export const bookAroom: RequestHandler = async (req, res) => {
     const mailservice = new mailSender();
     mailservice.createConnection();
     mailservice.mail({
-      from: process.env.EMAIL,
+      from: {
+        address: process.env.EMAIL
+      },
       email: theUser[0].email,
       subject: "Receipt for payment!",
       message: emailText,

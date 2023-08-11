@@ -18,7 +18,6 @@ const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const uuid_1 = require("uuid");
 const mailService_1 = __importDefault(require("../middlewares/mailService"));
 const hotel_model_1 = __importDefault(require("../models/hotel.model"));
 const rooms_model_1 = __importDefault(require("../models/rooms.model"));
@@ -37,7 +36,6 @@ const registerAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         const saltPassword = yield bcrypt_1.default.genSalt(10);
         const hassPassword = yield bcrypt_1.default.hash(password, saltPassword);
         const data = {
-            id: Buffer.from((0, uuid_1.v4)().replace(/-/g, ''), 'hex'),
             name: name.toUpperCase(),
             password: hassPassword,
             email
@@ -72,7 +70,9 @@ const registerAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         const mailservice = new mailService_1.default();
         mailservice.createConnection();
         mailservice.mail({
-            from: process.env.EMAIL,
+            from: {
+                address: process.env.EMAIL
+            },
             email: creatingData.email,
             subject: "Kindly verify!",
             message: emailText,
@@ -213,7 +213,9 @@ const forgetPassword = (req, res) => __awaiter(void 0, void 0, void 0, function*
         const mailservice = new mailService_1.default();
         mailservice.createConnection();
         mailservice.mail({
-            from: process.env.EMAIL,
+            from: {
+                address: process.env.EMAIL
+            },
             email: validEmail.email,
             subject: "Reset Password!",
             message: emailText,
@@ -329,7 +331,9 @@ const sendAccessToken = (req, res) => __awaiter(void 0, void 0, void 0, function
         const mailservice = new mailService_1.default();
         mailservice.createConnection();
         mailservice.mail({
-            from: process.env.EMAIL,
+            from: {
+                address: process.env.EMAIL
+            },
             email: validEmail.email,
             subject: "Change email request PIN",
             message: emailText,
@@ -388,7 +392,9 @@ const changeEmailAddress = (req, res) => __awaiter(void 0, void 0, void 0, funct
         const mailservice = new mailService_1.default();
         mailservice.createConnection();
         mailservice.mail({
-            from: process.env.EMAIL,
+            from: {
+                address: process.env.EMAIL
+            },
             email: newEmail,
             subject: "Change of Email!",
             message: emailText,

@@ -70,7 +70,9 @@ export const registerUser: RequestHandler = async (req, res) => {
     const mailservice = new mailSender();
     mailservice.createConnection();
     mailservice.mail({
-      from: process.env.EMAIL,
+      from: {
+        address: process.env.EMAIL
+      },
       email: userToCreate.email,
       subject: "Kindly verify!",
       message: emailText,
@@ -193,7 +195,9 @@ export const forgottenPassword: RequestHandler = async (req, res) => {
     const mailservice = new mailSender();
     mailservice.createConnection();
     mailservice.mail({
-      from: process.env.EMAIL,
+      from: {
+        address: process.env.EMAIL
+      },
       email: validEmail.email,
       subject: "Reset Password!",
       message: emailText,
@@ -280,7 +284,9 @@ export const facebookSignUp: RequestHandler = async (req, res) => {
           const mailservice = new mailSender();
           mailservice.createConnection();
           mailservice.mail({
-            from: process.env.EMAIL,
+            from: {
+              address: process.env.EMAIL
+            },
             email: userToCreate.email,
             subject: "Kindly verify!",
             message,

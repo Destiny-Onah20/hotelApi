@@ -4,7 +4,6 @@ import dotenv from "dotenv";
 dotenv.config();
 import bcrypt from "bcrypt";
 import Jwt from "jsonwebtoken";
-import { v4 as uuidv4 } from 'uuid';
 import mailSender from "../middlewares/mailService";
 import Hotel from "../models/hotel.model";
 import Room from "../models/rooms.model";
@@ -28,13 +27,11 @@ export const registerAdmin: RequestHandler = async (req, res): Promise<object> =
     const saltPassword = await bcrypt.genSalt(10);
     const hassPassword = await bcrypt.hash(password, saltPassword);
     type AdminAttribute = {
-      id: Buffer,
       name: string,
       password: string,
       email: string
     }
     const data: AdminAttribute = {
-      id: Buffer.from(uuidv4().replace(/-/g, ''), 'hex'),
       name: name.toUpperCase(),
       password: hassPassword,
       email
@@ -72,7 +69,9 @@ export const registerAdmin: RequestHandler = async (req, res): Promise<object> =
     const mailservice = new mailSender();
     mailservice.createConnection();
     mailservice.mail({
-      from: process.env.EMAIL,
+      from: {
+        address: process.env.EMAIL
+      },
       email: creatingData.email,
       subject: "Kindly verify!",
       message: emailText,
@@ -216,7 +215,9 @@ export const forgetPassword: RequestHandler = async (req, res) => {
     const mailservice = new mailSender();
     mailservice.createConnection();
     mailservice.mail({
-      from: process.env.EMAIL,
+      from: {
+        address: process.env.EMAIL
+      },
       email: validEmail.email,
       subject: "Reset Password!",
       message: emailText,
@@ -337,7 +338,9 @@ export const sendAccessToken: RequestHandler = async (req, res) => {
     const mailservice = new mailSender();
     mailservice.createConnection();
     mailservice.mail({
-      from: process.env.EMAIL,
+      from: {
+        address: process.env.EMAIL
+      },
       email: validEmail.email,
       subject: "Change email request PIN",
       message: emailText,
@@ -399,7 +402,9 @@ export const changeEmailAddress: RequestHandler = async (req, res) => {
     const mailservice = new mailSender();
     mailservice.createConnection();
     mailservice.mail({
-      from: process.env.EMAIL,
+      from: {
+        address: process.env.EMAIL
+      },
       email: newEmail,
       subject: "Change of Email!",
       message: emailText,

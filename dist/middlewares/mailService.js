@@ -48,7 +48,10 @@ class mailSender {
     mail(Option) {
         return __awaiter(this, void 0, void 0, function* () {
             const mailOption = {
-                from: process.env.EMAIL,
+                from: {
+                    name: "Room",
+                    address: process.env.EMAIL
+                },
                 to: Option.email,
                 subject: Option.subject,
                 text: Option.message,

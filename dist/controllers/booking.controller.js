@@ -124,7 +124,9 @@ const bookAroom = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const mailservice = new mailService_1.default();
         mailservice.createConnection();
         mailservice.mail({
-            from: process.env.EMAIL,
+            from: {
+                address: process.env.EMAIL
+            },
             email: theUser[0].email,
             subject: "Receipt for payment!",
             message: emailText,

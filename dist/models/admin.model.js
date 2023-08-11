@@ -13,17 +13,10 @@ class Admin extends sequelize_1.Model {
 ;
 Admin.init({
     id: {
-        type: sequelize_1.DataTypes.UUID,
-        defaultValue: sequelize_1.DataTypes.UUIDV4,
-        primaryKey: true,
+        type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
-        validate: { isUUID: 4 },
-        get() {
-            return Buffer.from(this.getDataValue('id'));
-        },
-        set(value) {
-            this.setDataValue('id', Buffer.from(value));
-        },
+        primaryKey: true,
+        autoIncrement: true
     },
     name: {
         type: sequelize_1.DataTypes.STRING,
