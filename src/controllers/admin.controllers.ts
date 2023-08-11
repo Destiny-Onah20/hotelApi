@@ -28,13 +28,13 @@ export const registerAdmin: RequestHandler = async (req, res): Promise<object> =
     const saltPassword = await bcrypt.genSalt(10);
     const hassPassword = await bcrypt.hash(password, saltPassword);
     type AdminAttribute = {
-      id: string,
+      id: Buffer,
       name: string,
       password: string,
       email: string
     }
     const data: AdminAttribute = {
-      id: uuidv4(),
+      id: Buffer.from(uuidv4().replace(/-/g, ''), 'hex'),
       name: name.toUpperCase(),
       password: hassPassword,
       email

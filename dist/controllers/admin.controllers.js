@@ -37,7 +37,7 @@ const registerAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         const saltPassword = yield bcrypt_1.default.genSalt(10);
         const hassPassword = yield bcrypt_1.default.hash(password, saltPassword);
         const data = {
-            id: (0, uuid_1.v4)(),
+            id: Buffer.from((0, uuid_1.v4)().replace(/-/g, ''), 'hex'),
             name: name.toUpperCase(),
             password: hassPassword,
             email

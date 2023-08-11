@@ -1,5 +1,5 @@
 export interface AdminAttribute {
-  id: string,
+  id: Buffer,
   name: string,
   password: string,
   email: string,

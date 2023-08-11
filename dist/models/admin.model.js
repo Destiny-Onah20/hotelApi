@@ -16,6 +16,14 @@ Admin.init({
         type: sequelize_1.DataTypes.UUID,
         defaultValue: sequelize_1.DataTypes.UUIDV4,
         primaryKey: true,
+        allowNull: false,
+        validate: { isUUID: 4 },
+        get() {
+            return Buffer.from(this.getDataValue('id'));
+        },
+        set(value) {
+            this.setDataValue('id', Buffer.from(value));
+        },
     },
     name: {
         type: sequelize_1.DataTypes.STRING,

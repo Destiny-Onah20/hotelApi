@@ -9,7 +9,7 @@ import Hotel from "./hotel.model";
 type optionalAttributes = Optional<AdminAttribute, "id" | "createdAt" | "updatedAt" | "isAdmin" | "token" | "verify" | "image" | "cloudId" | "emailPin">
 
 class Admin extends Model<AdminAttribute, optionalAttributes> implements AdminAttribute {
-  public id!: string;
+  public id!: Buffer;
   public name!: string;
   public password!: string;
   public isAdmin!: boolean;
@@ -33,6 +33,14 @@ Admin.init({
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
     primaryKey: true,
+    allowNull: false,
+    validate: { isUUID: 4 },
+    get() {
+      return Buffer.from(this.getDataValue('id'));
+    },
+    set(value: string | Buffer) {
+      this.setDataValue('id', Buffer.from(value));
+    },
   },
   name: {
     type: DataTypes.STRING,
