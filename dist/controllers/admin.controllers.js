@@ -515,7 +515,12 @@ const vacantRoomByAdmin = (req, res) => __awaiter(void 0, void 0, void 0, functi
 exports.vacantRoomByAdmin = vacantRoomByAdmin;
 const deleteAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        //  const 
+        const adminId = req.params.admin;
+        yield hotel_model_1.default.destroy({ where: { adminId: adminId } });
+        yield admin_model_1.default.destroy({ where: { id: adminId } });
+        return res.status(200).json({
+            message: "Admin deleted!"
+        });
     }
     catch (error) {
         return res.status(500).json({

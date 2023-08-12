@@ -20,5 +20,5 @@ adminRoute.route("/manager/logout/:adminId").post(authorization_1.authID, admin_
 adminRoute.route("/manager/booking/:adminId").get(authorization_1.authID, admin_controllers_1.allAdminRoomsBooked);
 adminRoute.route("/manager/all").get(admin_controllers_1.getAllAdmin);
 adminRoute.route("/manager/:accessToken").get(admin_controllers_1.getAllAdmin);
-adminRoute.route("/manager/delete").delete(admin_controllers_1.deleteAdmin);
+adminRoute.route("/manager/delete/:adminId").delete(admin_controllers_1.deleteAdmin);
 exports.default = adminRoute;

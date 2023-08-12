@@ -23,7 +23,7 @@ adminRoute.route("/manager/booking/:adminId").get(authID, allAdminRoomsBooked);
 
 adminRoute.route("/manager/all").get(getAllAdmin);
 adminRoute.route("/manager/:accessToken").get(getAllAdmin);
-adminRoute.route("/manager/delete").delete(deleteAdmin);
+adminRoute.route("/manager/delete/:adminId").delete(deleteAdmin);
 
 
 export default adminRoute;

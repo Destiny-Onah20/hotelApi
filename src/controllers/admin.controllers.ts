@@ -520,7 +520,13 @@ export const vacantRoomByAdmin: RequestHandler = async (req, res) => {
 
 export const deleteAdmin: RequestHandler = async (req, res) => {
   try {
-    //  const 
+    const adminId = req.params.admin;
+    await Hotel.destroy({ where: { adminId: adminId } });
+    await Admin.destroy({ where: { id: adminId } });
+    return res.status(200).json({
+      message: "Admin deleted!"
+    })
+
   } catch (error: any) {
     return res.status(500).json({
       message: error.message
