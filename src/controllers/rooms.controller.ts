@@ -4,6 +4,7 @@ import Hotel from "../models/hotel.model";
 import { RequestHandler } from "express";
 import { UploadedFile } from "express-fileupload";
 import { Op } from "sequelize";
+import sequelize from "../config/config";
 
 
 export const registerRoom: RequestHandler = async (req, res) => {
@@ -69,7 +70,9 @@ export const registerRoom: RequestHandler = async (req, res) => {
 
 export const allRooms: RequestHandler = async (req, res) => {
   try {
-    const all = await Room.findAll();
+    const all = await Room.findAll({
+      order: sequelize.random(),
+    });
     if (all.length === 0) {
       return res.status(404).json({
         message: "Sorry no rooms available for the moment!"

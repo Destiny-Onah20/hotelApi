@@ -17,6 +17,7 @@ const rooms_model_1 = __importDefault(require("../models/rooms.model"));
 const cloudinary_1 = __importDefault(require("../utils/cloudinary"));
 const hotel_model_1 = __importDefault(require("../models/hotel.model"));
 const sequelize_1 = require("sequelize");
+const config_1 = __importDefault(require("../config/config"));
 const registerRoom = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
@@ -76,7 +77,9 @@ const registerRoom = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 exports.registerRoom = registerRoom;
 const allRooms = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const all = yield rooms_model_1.default.findAll();
+        const all = yield rooms_model_1.default.findAll({
+            order: config_1.default.random(),
+        });
         if (all.length === 0) {
             return res.status(404).json({
                 message: "Sorry no rooms available for the moment!"
