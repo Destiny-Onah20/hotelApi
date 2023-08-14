@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { allAdminHotels, changePassword, forgetPassword, loginAdmin, registerAdmin, getAllRoomsByAdmin, allAdminRoomsBooked, verifyAdmin, UpdateAdmin, sendAccessToken, changeEmailAddress, logOut, getAllAdmin, deleteAdmin } from "../controllers/admin.controllers";
+import { allAdminHotels, changePassword, forgetPassword, loginAdmin, registerAdmin, getAllRoomsByAdmin, allAdminRoomsBooked, verifyAdmin, UpdateAdmin, sendAccessToken, changeEmailAddress, logOut, getAllAdmin, deleteAdmin, AdminHotel } from "../controllers/admin.controllers";
 import { loginValidate, validates } from "../middlewares/validates";
 import { adminLogin, adminSchema } from "../schemas/admin.schema";
 import { authID } from "../middlewares/authorization";
@@ -22,6 +22,7 @@ adminRoute.route("/manager/logout/:adminId").post(authID, logOut);
 adminRoute.route("/manager/booking/:adminId").get(authID, allAdminRoomsBooked);
 
 adminRoute.route("/manager/all").get(getAllAdmin);
+adminRoute.route("/manager/hotels/:adminId").get(authID, AdminHotel);
 adminRoute.route("/manager/:accessToken").get(getAllAdmin);
 adminRoute.route("/manager/delete/:adminId").delete(deleteAdmin);
 

@@ -565,3 +565,24 @@ export const getAllAdmin: RequestHandler = async (req, res) => {
     })
   }
 };
+
+
+export const AdminHotel: RequestHandler = async (req, res) => {
+  try {
+    const adminId = req.params.adminId;
+    const allHotels = await Hotel.findAll({ where: { adminId } });
+    if (allHotels.length === 0) {
+      return res.status(404).json({
+        message: "No Hotels yet"
+      })
+    }
+    return res.status(200).json({
+      message: "All Hotels",
+      data: allHotels
+    })
+  } catch (error: any) {
+    return res.status(500).json({
+      message: error.message
+    })
+  }
+}
