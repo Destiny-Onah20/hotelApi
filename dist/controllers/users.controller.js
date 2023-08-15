@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUser = exports.updateImage = exports.logout = exports.updateUser = exports.roomsBookedByUser = exports.facebookSignUp = exports.changePasswordUser = exports.forgottenPassword = exports.verifyUser = exports.loginUser = exports.registerUser = void 0;
+exports.getAllUser = exports.getUser = exports.updateImage = exports.logout = exports.updateUser = exports.roomsBookedByUser = exports.facebookSignUp = exports.changePasswordUser = exports.forgottenPassword = exports.verifyUser = exports.loginUser = exports.registerUser = void 0;
 const user_admin_1 = __importDefault(require("../models/user.admin"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
@@ -469,3 +469,25 @@ const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.getUser = getUser;
+const getAllUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const all = yield user_admin_1.default.findAll();
+        if (!all) {
+            return res.status(404).json({
+                message: "No user found!"
+            });
+        }
+        else {
+            return res.status(200).json({
+                data: all
+            });
+        }
+    }
+    catch (error) {
+        return res.status(500).json({
+            message: error.message,
+            status: "Failed"
+        });
+    }
+});
+exports.getAllUser = getAllUser;

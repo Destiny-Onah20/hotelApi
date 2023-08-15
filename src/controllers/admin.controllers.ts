@@ -585,4 +585,5 @@ export const AdminHotel: RequestHandler = async (req, res) => {
       message: error.message
     })
   }
-}
+};
+

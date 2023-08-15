@@ -463,4 +463,24 @@ export const getUser: RequestHandler = async (req, res) => {
       status: "Failed"
     })
   }
+};
+
+export const getAllUser: RequestHandler = async (req, res) => {
+  try {
+    const all = await User.findAll();
+    if (!all) {
+      return res.status(404).json({
+        message: "No user found!"
+      })
+    } else {
+      return res.status(200).json({
+        data: all
+      })
+    }
+  } catch (error: any) {
+    return res.status(500).json({
+      message: error.message,
+      status: "Failed"
+    })
+  }
 }
