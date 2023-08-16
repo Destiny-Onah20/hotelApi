@@ -22,6 +22,8 @@ userRoute.route("/user/update/:userId").patch(authorization_1.authorizedUser, us
 userRoute.route("/user/image/:userId").patch(authorization_1.authorizedUser, users_controller_1.updateImage);
 userRoute.route("/user/booking/:userId").get(authorization_1.authorizedUser, users_controller_1.roomsBookedByUser);
 userRoute.route("/user/:accessToken").get(users_controller_1.getUser);
+// userRoute.route("/user/alluser").get(getAllUser);
+userRoute.route("userss/all").get(users_controller_1.getAllUser);
 userRoute.route("/").get((req, res) => {
     res.send(`<a href="http://localhost:1800/api/v1/user/auth/facebook">Login with your facebook account</a>`);
 });

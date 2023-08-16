@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { loginValidate, validateUser } from "../middlewares/validates";
-import { changePasswordUser, facebookSignUp, forgottenPassword, getUser, loginUser, logout, registerUser, roomsBookedByUser, updateImage, updateUser, verifyUser } from "../controllers/users.controller";
+import { changePasswordUser, facebookSignUp, forgottenPassword, getAllUser, getUser, loginUser, logout, registerUser, roomsBookedByUser, updateImage, updateUser, verifyUser } from "../controllers/users.controller";
 import { userSchema } from "../schemas/user.schema";
 import { adminLogin } from "../schemas/admin.schema";
 import passport from "passport";
@@ -22,7 +22,9 @@ userRoute.route("/user/update/:userId").patch(authorizedUser, updateUser);
 userRoute.route("/user/image/:userId").patch(authorizedUser, updateImage);
 
 userRoute.route("/user/booking/:userId").get(authorizedUser, roomsBookedByUser);
-userRoute.route("/user/:accessToken").get(getUser)
+userRoute.route("/user/:accessToken").get(getUser);
+// userRoute.route("/user/alluser").get(getAllUser);
+userRoute.route("userss/all").get(getAllUser)
 
 userRoute.route("/").get((req, res) => {
   res.send(`<a href="http://localhost:1800/api/v1/user/auth/facebook">Login with your facebook account</a>`)
