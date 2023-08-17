@@ -26,7 +26,8 @@ export const registerRoom: RequestHandler = async (req, res) => {
     const file = req.files?.image as UploadedFile[];
     if (!file) {
       throw new Error("no Image uploaded, Please add an image!")
-    }
+    };
+
     const uploads = Array.isArray(file) ? file : [file];
     for (const file of uploads) {
       const result = await Cloudinary.uploader.upload(file.tempFilePath);
@@ -206,6 +207,27 @@ export const allAdminRooms: RequestHandler = async (req, res) => {
         data: allRooms
       })
     }
+  } catch (error: any) {
+    return res.status(500).json({
+      message: error.mesage
+    })
+  }
+};
+
+export const deleteRoom: RequestHandler = async (req, res) => {
+  try {
+    const roomId = req.params.id;
+    const theRoom = await Room.findByPk(roomId);
+    if (!theRoom) {
+      return res.status(404).json({
+        message: "This room does not found!"
+      })
+    }
+    await Cloudinary.uploader.destroy(theRoom.cloudId);
+    await Room.destroy({ where: { id: roomId } });
+    return res.status(200).json({
+      message: "Deleted success!"
+    })
   } catch (error: any) {
     return res.status(500).json({
       message: error.mesage

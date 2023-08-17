@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.allAdminRooms = exports.roomDetail = exports.luxuryRooms = exports.fourStarRooms = exports.cheapHotelRooms = exports.allRooms = exports.registerRoom = void 0;
+exports.deleteRoom = exports.allAdminRooms = exports.roomDetail = exports.luxuryRooms = exports.fourStarRooms = exports.cheapHotelRooms = exports.allRooms = exports.registerRoom = void 0;
 const rooms_model_1 = __importDefault(require("../models/rooms.model"));
 const cloudinary_1 = __importDefault(require("../utils/cloudinary"));
 const hotel_model_1 = __importDefault(require("../models/hotel.model"));
@@ -41,6 +41,7 @@ const registerRoom = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         if (!file) {
             throw new Error("no Image uploaded, Please add an image!");
         }
+        ;
         const uploads = Array.isArray(file) ? file : [file];
         for (const file of uploads) {
             const result = yield cloudinary_1.default.uploader.upload(file.tempFilePath);
@@ -226,3 +227,25 @@ const allAdminRooms = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 exports.allAdminRooms = allAdminRooms;
+const deleteRoom = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const roomId = req.params.id;
+        const theRoom = yield rooms_model_1.default.findByPk(roomId);
+        if (!theRoom) {
+            return res.status(404).json({
+                message: "This room does not found!"
+            });
+        }
+        yield cloudinary_1.default.uploader.destroy(theRoom.cloudId);
+        yield rooms_model_1.default.destroy({ where: { id: roomId } });
+        return res.status(200).json({
+            message: "Deleted success!"
+        });
+    }
+    catch (error) {
+        return res.status(500).json({
+            message: error.mesage
+        });
+    }
+});
+exports.deleteRoom = deleteRoom;

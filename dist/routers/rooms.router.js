@@ -14,4 +14,5 @@ roomRoute.route("/room/:roomId").get(rooms_controller_1.roomDetail);
 roomRoute.route("/room/admin/:adminId").get(authorization_1.authID, rooms_controller_1.allAdminRooms);
 //admin Rooms
 roomRoute.route("/room/vacant/:adminId").get(admin_controllers_1.vacantRoomByAdmin);
+roomRoute.route("/room/:id").delete(rooms_controller_1.deleteRoom);
 exports.default = roomRoute;

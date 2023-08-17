@@ -18,6 +18,7 @@ const admin_model_1 = __importDefault(require("../models/admin.model"));
 const cloudinary_1 = __importDefault(require("../utils/cloudinary"));
 const rooms_model_1 = __importDefault(require("../models/rooms.model"));
 const config_1 = __importDefault(require("../config/config"));
+const sequelize_1 = require("sequelize");
 const registerHotel = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
@@ -160,7 +161,7 @@ const updateHotel = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 exports.updateHotel = updateHotel;
 const hotelsInLagos = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const lagos = yield hotel_model_1.default.findAll({ where: { state: "lagos" } });
+        const lagos = yield hotel_model_1.default.findAll({ where: { state: { [sequelize_1.Op.like]: `LAGOS` } } });
         if (!lagos) {
             return res.status(404).json({
                 message: "No Hotel found!"

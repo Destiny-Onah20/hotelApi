@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { allAdminRooms, allRooms, cheapHotelRooms, fourStarRooms, luxuryRooms, registerRoom, roomDetail } from "../controllers/rooms.controller";
+import { allAdminRooms, allRooms, cheapHotelRooms, deleteRoom, fourStarRooms, luxuryRooms, registerRoom, roomDetail } from "../controllers/rooms.controller";
 import { authID } from "../middlewares/authorization";
 import { vacantRoomByAdmin } from "../controllers/admin.controllers";
 
@@ -16,6 +16,7 @@ roomRoute.route("/room/admin/:adminId").get(authID, allAdminRooms);
 
 //admin Rooms
 roomRoute.route("/room/vacant/:adminId").get(vacantRoomByAdmin);
+roomRoute.route("/room/:id").delete(deleteRoom);
 
 
 export default roomRoute;

@@ -6,6 +6,7 @@ import Cloudinary from "../utils/cloudinary";
 import Room from "../models/rooms.model";
 import Rating from "../models/rating.model";
 import sequelize from "../config/config";
+import { Op } from "sequelize";
 
 
 
@@ -163,7 +164,7 @@ export const updateHotel: RequestHandler = async (req, res) => {
 
 export const hotelsInLagos: RequestHandler = async (req, res) => {
   try {
-    const lagos = await Hotel.findAll({ where: { state: "lagos" } });
+    const lagos = await Hotel.findAll({ where: { state: { [Op.like]: `LAGOS` } } });
     if (!lagos) {
       return res.status(404).json({
         message: "No Hotel found!"
