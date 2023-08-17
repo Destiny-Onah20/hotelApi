@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { allRooms, cheapHotelRooms, fourStarRooms, luxuryRooms, registerRoom, roomDetail } from "../controllers/rooms.controller";
+import { allAdminRooms, allRooms, cheapHotelRooms, fourStarRooms, luxuryRooms, registerRoom, roomDetail } from "../controllers/rooms.controller";
 import { authID } from "../middlewares/authorization";
 import { vacantRoomByAdmin } from "../controllers/admin.controllers";
 
@@ -12,6 +12,7 @@ roomRoute.route("/room/starrooms").get(fourStarRooms);
 roomRoute.route("/room/luxury").get(luxuryRooms);
 
 roomRoute.route("/room/:roomId").get(roomDetail);
+roomRoute.route("/room/admin/:adminId").get(authID, allAdminRooms);
 
 //admin Rooms
 roomRoute.route("/room/vacant/:adminId").get(vacantRoomByAdmin);

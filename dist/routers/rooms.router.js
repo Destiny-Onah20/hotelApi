@@ -11,6 +11,7 @@ roomRoute.route("/room/cheaprooms").get(rooms_controller_1.cheapHotelRooms);
 roomRoute.route("/room/starrooms").get(rooms_controller_1.fourStarRooms);
 roomRoute.route("/room/luxury").get(rooms_controller_1.luxuryRooms);
 roomRoute.route("/room/:roomId").get(rooms_controller_1.roomDetail);
+roomRoute.route("/room/admin/:adminId").get(authorization_1.authID, rooms_controller_1.allAdminRooms);
 //admin Rooms
 roomRoute.route("/room/vacant/:adminId").get(admin_controllers_1.vacantRoomByAdmin);
 exports.default = roomRoute;

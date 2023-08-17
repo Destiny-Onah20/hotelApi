@@ -187,3 +187,28 @@ export const roomDetail: RequestHandler = async (req, res) => {
     })
   }
 };
+
+
+export const allAdminRooms: RequestHandler = async (req, res) => {
+  try {
+    const adminId = req.params.adminId;
+    const allRooms = await Room.findAll({
+      where: { adminId }
+    });
+    if (!allRooms) {
+      return res.status(404).json({
+        message: "No room found!"
+      })
+    } else {
+      return res.status(200).json({
+        message: "All Admin Rooms",
+        length: allRooms.length,
+        data: allRooms
+      })
+    }
+  } catch (error: any) {
+    return res.status(500).json({
+      message: error.mesage
+    })
+  }
+}

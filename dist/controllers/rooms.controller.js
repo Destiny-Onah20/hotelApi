@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.roomDetail = exports.luxuryRooms = exports.fourStarRooms = exports.cheapHotelRooms = exports.allRooms = exports.registerRoom = void 0;
+exports.allAdminRooms = exports.roomDetail = exports.luxuryRooms = exports.fourStarRooms = exports.cheapHotelRooms = exports.allRooms = exports.registerRoom = void 0;
 const rooms_model_1 = __importDefault(require("../models/rooms.model"));
 const cloudinary_1 = __importDefault(require("../utils/cloudinary"));
 const hotel_model_1 = __importDefault(require("../models/hotel.model"));
@@ -200,3 +200,29 @@ const roomDetail = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.roomDetail = roomDetail;
+const allAdminRooms = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const adminId = req.params.adminId;
+        const allRooms = yield rooms_model_1.default.findAll({
+            where: { adminId }
+        });
+        if (!allRooms) {
+            return res.status(404).json({
+                message: "No room found!"
+            });
+        }
+        else {
+            return res.status(200).json({
+                message: "All Admin Rooms",
+                length: allRooms.length,
+                data: allRooms
+            });
+        }
+    }
+    catch (error) {
+        return res.status(500).json({
+            message: error.mesage
+        });
+    }
+});
+exports.allAdminRooms = allAdminRooms;
