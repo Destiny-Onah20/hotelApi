@@ -36,6 +36,14 @@ Room.init({
         type: sequelize_1.DataTypes.STRING,
         allowNull: false
     },
+    address: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: false
+    },
+    hotelname: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: false
+    },
     booked: {
         type: sequelize_1.DataTypes.BOOLEAN,
         defaultValue: false

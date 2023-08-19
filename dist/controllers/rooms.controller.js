@@ -52,6 +52,8 @@ const registerRoom = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                 price,
                 image: result.secure_url,
                 cloudId: result.public_id,
+                address: hotelExists.address,
+                hotelname: hotelExists.hotelName,
                 hotelId: Number(hotelId),
                 adminId: Number(adminId)
             };

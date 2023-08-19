@@ -37,6 +37,8 @@ export const registerRoom: RequestHandler = async (req, res) => {
         price: number;
         image: string;
         cloudId: string;
+        address: string;
+        hotelname: string;
         hotelId: number;
         adminId: number;
       };
@@ -46,6 +48,8 @@ export const registerRoom: RequestHandler = async (req, res) => {
         price,
         image: result.secure_url,
         cloudId: result.public_id,
+        address: hotelExists.address,
+        hotelname: hotelExists.hotelName,
         hotelId: Number(hotelId),
         adminId: Number(adminId)
       };
