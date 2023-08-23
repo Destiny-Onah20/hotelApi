@@ -60,7 +60,10 @@ const bookAroom = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             // Round up the number of days to handle partial days
             const perNight = Math.ceil(numberOfDays);
             const price = perNight * roomPrice;
-            return price;
+            return {
+                perNight: perNight,
+                totalPrice: price,
+            };
         };
         const totalPrice = calculateTotalPrice(checkOutDate, checkInDate, roomPrice);
         const message = `You have successfully booked room number : ${bookingRoom.roomNumber}.`;
@@ -77,7 +80,7 @@ const bookAroom = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             userId: Number(userId),
             roomId: Number(roomId),
             price: bookingRoom.price,
-            amountToPay: totalPrice,
+            amountToPay: totalPrice.totalPrice,
             message,
             adult,
             children,
@@ -115,12 +118,16 @@ const bookAroom = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 intro: `Thank you for booking a room with us. Attached is your payment receipt.`,
                 table: {
                     data: [
-                        { key: "Fullname:", value: bookData.userId.toString() },
+                        { key: "Fullname:", value: theUser[0].fullname.toString() },
                         { key: "Check-in:", value: bookData.checkIn.toString() },
                         { key: "Check-out:", value: bookData.checkOut.toString() },
                         { key: "Room Number:", value: bookData.roomNumber.toString() },
                         { key: "Room #Id:", value: bookData.roomId.toString() },
                         { key: "price:", value: `₦ ${bookData.price.toString()}` },
+                        { key: "adults:", value: ` ${bookData.adult.toString()}` },
+                        { key: "children:", value: ` ${bookData.children.toString()}` },
+                        { key: "infant:", value: ` ${bookData.infant.toString()}` },
+                        { key: "Nights:", value: ` ${totalPrice.perNight.toString()} Nights` },
                         { key: "Amount To Pay :", value: `₦ ${bookData.amountToPay.toString()}` },
                     ],
                     columns: {

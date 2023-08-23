@@ -42,8 +42,13 @@ export const bookAroom: RequestHandler = async (req, res) => {
       });
     };
     //Calculate total price based on check-in, check-out, and room price
-    const roomPrice = bookingRoom.price
-    const calculateTotalPrice = (checkOutDate: Date, checkInDate: Date, roomPrice: number): number => {
+    const roomPrice = bookingRoom.price;
+    interface PriceDetails {
+      perNight: number;
+      totalPrice: number;
+    }
+
+    const calculateTotalPrice = (checkOutDate: Date, checkInDate: Date, roomPrice: number): PriceDetails => {
       const millisecondsPerDay = 24 * 60 * 60 * 1000;
       const durationInMillis = checkOutDate.getTime() - checkInDate.getTime();
       const numberOfDays = durationInMillis / millisecondsPerDay;
@@ -51,10 +56,14 @@ export const bookAroom: RequestHandler = async (req, res) => {
       // Round up the number of days to handle partial days
       const perNight = Math.ceil(numberOfDays);
       const price = perNight * roomPrice;
-      return price;
+      return {
+        perNight: perNight,
+        totalPrice: price,
+      };
     };
 
     const totalPrice = calculateTotalPrice(checkOutDate, checkInDate, roomPrice);
+
     const message = `You have successfully booked room number : ${bookingRoom.roomNumber}.`;
     const sendNotify = io.emit("booking", { userId, message });
     if (!sendNotify) {
@@ -82,7 +91,7 @@ export const bookAroom: RequestHandler = async (req, res) => {
       userId: Number(userId),
       roomId: Number(roomId),
       price: bookingRoom.price,
-      amountToPay: totalPrice,
+      amountToPay: totalPrice.totalPrice,
       message,
       adult,
       children,
@@ -120,12 +129,16 @@ export const bookAroom: RequestHandler = async (req, res) => {
         intro: `Thank you for booking a room with us. Attached is your payment receipt.`,
         table: {
           data: [
-            { key: "Fullname:", value: bookData.userId.toString() },
+            { key: "Fullname:", value: theUser[0].fullname.toString() },
             { key: "Check-in:", value: bookData.checkIn.toString() },
             { key: "Check-out:", value: bookData.checkOut.toString() },
             { key: "Room Number:", value: bookData.roomNumber.toString() },
             { key: "Room #Id:", value: bookData.roomId.toString() },
             { key: "price:", value: `₦ ${bookData.price.toString()}` },
+            { key: "adults:", value: ` ${bookData.adult.toString()}` },
+            { key: "children:", value: ` ${bookData.children.toString()}` },
+            { key: "infant:", value: ` ${bookData.infant.toString()}` },
+            { key: "Nights:", value: ` ${totalPrice.perNight.toString()} Nights` },
             { key: "Amount To Pay :", value: `₦ ${bookData.amountToPay.toString()}` },
           ],
           columns: {
