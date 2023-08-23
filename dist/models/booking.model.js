@@ -48,6 +48,18 @@ Booking.init({
         type: sequelize_1.DataTypes.DOUBLE,
         allowNull: false
     },
+    adult: {
+        type: sequelize_1.DataTypes.DOUBLE,
+        allowNull: true
+    },
+    children: {
+        type: sequelize_1.DataTypes.DOUBLE,
+        allowNull: true
+    },
+    infant: {
+        type: sequelize_1.DataTypes.DOUBLE,
+        allowNull: true
+    },
     amountToPay: {
         type: sequelize_1.DataTypes.DOUBLE,
         allowNull: false

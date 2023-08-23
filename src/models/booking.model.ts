@@ -15,6 +15,9 @@ interface bookingAttributes {
   adminId: number;
   price: number;
   amountToPay: number;
+  adult: number,
+  children: number,
+  infant: number,
   roomNumber: number,
   userId: number;
   createdAt: Date;
@@ -32,6 +35,9 @@ class Booking extends Model<bookingAttributes, optionalBookingAttributes> implem
   public roomNumber: number;
   public readonly createdAt!: Date;
   public price!: number;
+  public adult: number;
+  public children: number;
+  public infant: number;
   public amountToPay: number;
   public message!: string;
   public adminId!: number;
@@ -75,6 +81,18 @@ Booking.init({
   price: {
     type: DataTypes.DOUBLE,
     allowNull: false
+  },
+  adult: {
+    type: DataTypes.DOUBLE,
+    allowNull: true
+  },
+  children: {
+    type: DataTypes.DOUBLE,
+    allowNull: true
+  },
+  infant: {
+    type: DataTypes.DOUBLE,
+    allowNull: true
   },
   amountToPay: {
     type: DataTypes.DOUBLE,

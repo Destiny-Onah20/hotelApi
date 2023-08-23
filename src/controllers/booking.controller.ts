@@ -16,7 +16,7 @@ export const bookAroom: RequestHandler = async (req, res) => {
   try {
     const userId = req.params.userId;
     const roomId = req.params.roomId;
-    const { checkIn, checkOut, price } = req.body;
+    const { checkIn, checkOut, adult, children, infant } = req.body;
     const theUser = await User.findAll({ where: { id: userId } });
     const bookingRoom = await Room.findByPk(roomId);
     if (!bookingRoom || bookingRoom?.booked) {
@@ -42,22 +42,26 @@ export const bookAroom: RequestHandler = async (req, res) => {
       });
     };
     //Calculate total price based on check-in, check-out, and room price
-    const calculateTotalPrice = (): number => {
+    const roomPrice = bookingRoom.price
+    const calculateTotalPrice = (checkOutDate: Date, checkInDate: Date, roomPrice: number): number => {
       const millisecondsPerDay = 24 * 60 * 60 * 1000;
-      const perNight = Math.floor(checkOutDate.getTime() - checkInDate.getTime() / millisecondsPerDay);
-      console.log(perNight);
+      const durationInMillis = checkOutDate.getTime() - checkInDate.getTime();
+      const numberOfDays = durationInMillis / millisecondsPerDay;
 
-      return perNight * bookingRoom.price;
+      // Round up the number of days to handle partial days
+      const perNight = Math.ceil(numberOfDays);
+      const price = perNight * roomPrice;
+      return price;
     };
 
-
+    const totalPrice = calculateTotalPrice(checkOutDate, checkInDate, roomPrice);
     const message = `You have successfully booked room number : ${bookingRoom.roomNumber}.`;
     const sendNotify = io.emit("booking", { userId, message });
     if (!sendNotify) {
       return res.status(400).json({
         message: "An error occured sending the notification!"
       })
-    }
+    };
     interface book {
       checkIn: Date,
       checkOut: Date,
@@ -65,6 +69,9 @@ export const bookAroom: RequestHandler = async (req, res) => {
       roomId: number,
       adminId: number,
       price: number,
+      adult: number,
+      infant: number,
+      children: number,
       roomNumber: number,
       amountToPay: number,
       message: string
@@ -75,12 +82,15 @@ export const bookAroom: RequestHandler = async (req, res) => {
       userId: Number(userId),
       roomId: Number(roomId),
       price: bookingRoom.price,
-      amountToPay: calculateTotalPrice(),
+      amountToPay: totalPrice,
       message,
+      adult,
+      children,
+      infant,
       roomNumber: bookingRoom.roomNumber,
       adminId: bookingRoom.adminId
     };
-    console.log(bookData);
+    // console.log(bookData);
 
     const bookRoom = await Booking.create(bookData);
     bookingRoom.booked = true;
@@ -116,6 +126,7 @@ export const bookAroom: RequestHandler = async (req, res) => {
             { key: "Room Number:", value: bookData.roomNumber.toString() },
             { key: "Room #Id:", value: bookData.roomId.toString() },
             { key: "price:", value: `₦ ${bookData.price.toString()}` },
+            { key: "Amount To Pay :", value: `₦ ${bookData.amountToPay.toString()}` },
           ],
           columns: {
             customWidth: {
@@ -131,7 +142,7 @@ export const bookAroom: RequestHandler = async (req, res) => {
       }
     }
     const emailBody = generateMail.generate(emailContent);
-    console.log(emailBody);
+    // console.log(emailBody);
     const juicedBody = juice(emailBody)
     const emailText = generateMail.generatePlaintext(emailContent);
     const mailservice = new mailSender();

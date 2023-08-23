@@ -27,7 +27,7 @@ const bookAroom = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userId = req.params.userId;
         const roomId = req.params.roomId;
-        const { checkIn, checkOut, price } = req.body;
+        const { checkIn, checkOut, adult, children, infant } = req.body;
         const theUser = yield user_admin_1.default.findAll({ where: { id: userId } });
         const bookingRoom = yield rooms_model_1.default.findByPk(roomId);
         if (!bookingRoom || (bookingRoom === null || bookingRoom === void 0 ? void 0 : bookingRoom.booked)) {
@@ -52,12 +52,17 @@ const bookAroom = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }
         ;
         //Calculate total price based on check-in, check-out, and room price
-        const calculateTotalPrice = () => {
+        const roomPrice = bookingRoom.price;
+        const calculateTotalPrice = (checkOutDate, checkInDate, roomPrice) => {
             const millisecondsPerDay = 24 * 60 * 60 * 1000;
-            const perNight = Math.floor(checkOutDate.getTime() - checkInDate.getTime() / millisecondsPerDay);
-            console.log(perNight);
-            return perNight * bookingRoom.price;
+            const durationInMillis = checkOutDate.getTime() - checkInDate.getTime();
+            const numberOfDays = durationInMillis / millisecondsPerDay;
+            // Round up the number of days to handle partial days
+            const perNight = Math.ceil(numberOfDays);
+            const price = perNight * roomPrice;
+            return price;
         };
+        const totalPrice = calculateTotalPrice(checkOutDate, checkInDate, roomPrice);
         const message = `You have successfully booked room number : ${bookingRoom.roomNumber}.`;
         const sendNotify = app_1.io.emit("booking", { userId, message });
         if (!sendNotify) {
@@ -65,18 +70,22 @@ const bookAroom = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 message: "An error occured sending the notification!"
             });
         }
+        ;
         const bookData = {
             checkIn: new Date(checkIn),
             checkOut: new Date(checkOut),
             userId: Number(userId),
             roomId: Number(roomId),
             price: bookingRoom.price,
-            amountToPay: calculateTotalPrice(),
+            amountToPay: totalPrice,
             message,
+            adult,
+            children,
+            infant,
             roomNumber: bookingRoom.roomNumber,
             adminId: bookingRoom.adminId
         };
-        console.log(bookData);
+        // console.log(bookData);
         const bookRoom = yield booking_model_1.default.create(bookData);
         bookingRoom.booked = true;
         bookingRoom.checkIn = new Date(checkIn);
@@ -112,6 +121,7 @@ const bookAroom = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                         { key: "Room Number:", value: bookData.roomNumber.toString() },
                         { key: "Room #Id:", value: bookData.roomId.toString() },
                         { key: "price:", value: `₦ ${bookData.price.toString()}` },
+                        { key: "Amount To Pay :", value: `₦ ${bookData.amountToPay.toString()}` },
                     ],
                     columns: {
                         customWidth: {
@@ -127,7 +137,7 @@ const bookAroom = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             }
         };
         const emailBody = mailGenerator_1.default.generate(emailContent);
-        console.log(emailBody);
+        // console.log(emailBody);
         const juicedBody = (0, juice_1.default)(emailBody);
         const emailText = mailGenerator_1.default.generatePlaintext(emailContent);
         const mailservice = new mailService_1.default();
