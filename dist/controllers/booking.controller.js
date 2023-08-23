@@ -82,6 +82,7 @@ const bookAroom = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             price: bookingRoom.price,
             amountToPay: totalPrice.totalPrice,
             message,
+            night: totalPrice.perNight,
             adult,
             children,
             infant,

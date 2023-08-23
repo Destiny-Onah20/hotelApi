@@ -44,6 +44,10 @@ Booking.init({
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false
     },
+    night: {
+        type: sequelize_1.DataTypes.DOUBLE,
+        allowNull: false
+    },
     price: {
         type: sequelize_1.DataTypes.DOUBLE,
         allowNull: false
