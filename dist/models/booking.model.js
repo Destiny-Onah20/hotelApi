@@ -48,6 +48,10 @@ Booking.init({
         type: sequelize_1.DataTypes.DOUBLE,
         allowNull: false
     },
+    amountToPay: {
+        type: sequelize_1.DataTypes.DOUBLE,
+        allowNull: false
+    },
     adminId: {
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false

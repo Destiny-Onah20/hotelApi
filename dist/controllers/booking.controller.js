@@ -44,12 +44,20 @@ const bookAroom = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             });
         }
         const currentDate = new Date();
-        console.log(currentDate);
+        // console.log(currentDate);
         if (checkInDate > checkOutDate || checkInDate < currentDate) {
             return res.status(400).json({
                 message: 'Invalid date range. checkOut date should be after checkIn date!',
             });
         }
+        ;
+        //Calculate total price based on check-in, check-out, and room price
+        const calculateTotalPrice = () => {
+            const millisecondsPerDay = 24 * 60 * 60 * 1000;
+            const perNight = Math.floor(checkOutDate.getTime() - checkInDate.getTime() / millisecondsPerDay);
+            console.log(perNight);
+            return perNight * bookingRoom.price;
+        };
         const message = `You have successfully booked room number : ${bookingRoom.roomNumber}.`;
         const sendNotify = app_1.io.emit("booking", { userId, message });
         if (!sendNotify) {
@@ -62,7 +70,8 @@ const bookAroom = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             checkOut: new Date(checkOut),
             userId: Number(userId),
             roomId: Number(roomId),
-            price,
+            price: bookingRoom.price,
+            amountToPay: calculateTotalPrice(),
             message,
             roomNumber: bookingRoom.roomNumber,
             adminId: bookingRoom.adminId

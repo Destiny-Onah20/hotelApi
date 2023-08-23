@@ -33,13 +33,24 @@ export const bookAroom: RequestHandler = async (req, res) => {
       });
     }
     const currentDate = new Date();
-    console.log(currentDate);
+    // console.log(currentDate);
+
 
     if (checkInDate > checkOutDate || checkInDate < currentDate) {
       return res.status(400).json({
         message: 'Invalid date range. checkOut date should be after checkIn date!',
       });
-    }
+    };
+    //Calculate total price based on check-in, check-out, and room price
+    const calculateTotalPrice = (): number => {
+      const millisecondsPerDay = 24 * 60 * 60 * 1000;
+      const perNight = Math.floor(checkOutDate.getTime() - checkInDate.getTime() / millisecondsPerDay);
+      console.log(perNight);
+
+      return perNight * bookingRoom.price;
+    };
+
+
     const message = `You have successfully booked room number : ${bookingRoom.roomNumber}.`;
     const sendNotify = io.emit("booking", { userId, message });
     if (!sendNotify) {
@@ -55,6 +66,7 @@ export const bookAroom: RequestHandler = async (req, res) => {
       adminId: number,
       price: number,
       roomNumber: number,
+      amountToPay: number,
       message: string
     }
     const bookData: book = {
@@ -62,7 +74,8 @@ export const bookAroom: RequestHandler = async (req, res) => {
       checkOut: new Date(checkOut),
       userId: Number(userId),
       roomId: Number(roomId),
-      price,
+      price: bookingRoom.price,
+      amountToPay: calculateTotalPrice(),
       message,
       roomNumber: bookingRoom.roomNumber,
       adminId: bookingRoom.adminId
