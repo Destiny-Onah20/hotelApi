@@ -38,7 +38,7 @@ export const registerAdmin: RequestHandler = async (req, res): Promise<object> =
     };
     const creatingData = new Admin(data);
     const generateToken = Jwt.sign({
-      isAdmin: creatingData.isAdmin,
+      status: creatingData.status,
       id: creatingData.id
     }, <string>process.env.JWT_TOK, {
       expiresIn: "1d"
@@ -111,7 +111,7 @@ export const loginAdmin: RequestHandler = async (req, res): Promise<object> => {
         })
       }
       const generateToken = Jwt.sign({
-        isAdmin: checkAdmin.isAdmin,
+        status: checkAdmin.status,
         id: checkAdmin.id
       }, <string>process.env.JWT_TOK, {
         expiresIn: "1d"

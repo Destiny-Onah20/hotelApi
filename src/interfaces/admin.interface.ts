@@ -6,7 +6,7 @@ export interface AdminAttribute {
   image: string,
   cloudId: string,
   emailPin: string;
-  isAdmin: boolean,
+  status: boolean,
   verify: boolean,
   token: string,
   updatedAt: Date,

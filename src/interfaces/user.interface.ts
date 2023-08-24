@@ -4,6 +4,7 @@ export interface UserAttribute {
   password: string,
   email: string,
   image: string,
+  status: boolean,
   cloudId: string,
   phoneNumber: string,
   token: string,

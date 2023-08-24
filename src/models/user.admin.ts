@@ -3,7 +3,7 @@ import { Model, Optional, DataTypes } from "sequelize";
 import { UserAttribute } from "../interfaces/user.interface";
 import logger from "../utils/logger";
 
-type optionalUserAttributes = Optional<UserAttribute, "id" | "createdAt" | "verify" | "updatedAt" | "token" | "cloudId" | "image">
+type optionalUserAttributes = Optional<UserAttribute, "id" | "createdAt" | "verify" | "updatedAt" | "token" | "cloudId" | "image" | "status">
 
 
 class User extends Model<UserAttribute, optionalUserAttributes> {
@@ -16,6 +16,7 @@ class User extends Model<UserAttribute, optionalUserAttributes> {
   public cloudId!: string
   public token!: string;
   public verify!: boolean;
+  public status!: boolean;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 };
@@ -43,6 +44,10 @@ User.init({
   phoneNumber: {
     type: DataTypes.STRING,
     allowNull: false
+  },
+  status: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
   },
   verify: {
     type: DataTypes.BOOLEAN,

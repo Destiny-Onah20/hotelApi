@@ -42,7 +42,7 @@ const registerAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         };
         const creatingData = new admin_model_1.default(data);
         const generateToken = jsonwebtoken_1.default.sign({
-            isAdmin: creatingData.isAdmin,
+            status: creatingData.status,
             id: creatingData.id
         }, process.env.JWT_TOK, {
             expiresIn: "1d"
@@ -112,7 +112,7 @@ const loginAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                 });
             }
             const generateToken = jsonwebtoken_1.default.sign({
-                isAdmin: checkAdmin.isAdmin,
+                status: checkAdmin.status,
                 id: checkAdmin.id
             }, process.env.JWT_TOK, {
                 expiresIn: "1d"

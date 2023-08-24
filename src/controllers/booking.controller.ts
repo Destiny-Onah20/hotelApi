@@ -236,11 +236,21 @@ export const allBooked: RequestHandler = async (req, res) => {
   try {
     const { adminId } = req.params;
     const notify = await Booking.findAll({
-      where: { adminId: adminId },
+      where: {
+        adminId: adminId
+      },
       include: [{ model: Room }]
     });
+    // const notify = await Room.findAll({
+    //   where: {
+    //     adminId,
+    //     booked: true
+    //   },
+    //   include: [Booking]
+    // })
+
     if (notify.length === 0) {
-      return res.status(404).json({
+      return res.status(400).json({
         message: "No notifications for now!"
       });
     }

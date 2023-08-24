@@ -26,7 +26,7 @@ Admin.init({
         type: sequelize_1.DataTypes.STRING,
         allowNull: false,
     },
-    isAdmin: {
+    status: {
         type: sequelize_1.DataTypes.BOOLEAN,
         defaultValue: true
     },
