@@ -95,7 +95,7 @@ const loginAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         const checkAdmin = yield admin_model_1.default.findOne({ where: { email: email } });
         if (!checkAdmin) {
             return res.status(400).json({
-                message: "Email and password does not match."
+                message: "This email does not exist, please check again or <a href=\"https://room-ka5k.onrender.com/#/allsignup/adminsignup\">Create an Account</a>!"
             });
         }
         const verifyPassword = yield bcrypt_1.default.compare(password, checkAdmin.password);
