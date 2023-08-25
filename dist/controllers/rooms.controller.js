@@ -111,7 +111,8 @@ const cheapHotelRooms = (req, res) => __awaiter(void 0, void 0, void 0, function
                     [sequelize_1.Op.lte]: 20000
                 },
                 booked: false
-            }
+            },
+            order: config_1.default.random()
         });
         if (cheapRoom.length === 0) {
             return res.status(404).json({
@@ -137,7 +138,8 @@ const fourStarRooms = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             where: {
                 price: { [sequelize_1.Op.gte]: 20000, [sequelize_1.Op.lte]: 100000 },
                 booked: false
-            }
+            },
+            order: config_1.default.random()
         });
         if (niceRoom.length === 0) {
             return res.status(404).json({
@@ -162,7 +164,8 @@ const luxuryRooms = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             where: {
                 price: { [sequelize_1.Op.gte]: 80000 },
                 booked: false
-            }
+            },
+            order: config_1.default.random()
         });
         if (luxury.length === 0) {
             return res.status(400).json({
