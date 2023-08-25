@@ -80,7 +80,6 @@ export const registerUser: RequestHandler = async (req, res) => {
     });
     res.status(201).json({
       message: "Created Successfully.",
-      data: userToCreate
     })
   } catch (error: any) {
     return res.status(500).json({

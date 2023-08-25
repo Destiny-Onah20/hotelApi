@@ -82,6 +82,7 @@ const allRooms = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const all = yield rooms_model_1.default.findAll({
             order: config_1.default.random(),
+            where: { booked: false }
         });
         if (all.length === 0) {
             return res.status(404).json({
@@ -188,7 +189,7 @@ const roomDetail = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         const theRoom = yield rooms_model_1.default.findByPk(roomId);
         if (!theRoom) {
             return res.status(404).json({
-                messaege: `Room with this id: ${roomId} not found!`
+                data: theRoom
             });
         }
         return res.status(200).json({
@@ -235,7 +236,7 @@ const deleteRoom = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         const theRoom = yield rooms_model_1.default.findByPk(roomId);
         if (!theRoom) {
             return res.status(404).json({
-                message: "This room does not found!"
+                message: "This room does not Exist!"
             });
         }
         yield cloudinary_1.default.uploader.destroy(theRoom.cloudId);

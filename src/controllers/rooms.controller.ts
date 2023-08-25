@@ -77,6 +77,7 @@ export const allRooms: RequestHandler = async (req, res) => {
   try {
     const all = await Room.findAll({
       order: sequelize.random(),
+      where: { booked: false }
     });
     if (all.length === 0) {
       return res.status(404).json({
@@ -179,7 +180,7 @@ export const roomDetail: RequestHandler = async (req, res) => {
     const theRoom = await Room.findByPk(roomId);
     if (!theRoom) {
       return res.status(404).json({
-        messaege: `Room with this id: ${roomId} not found!`
+        data: theRoom
       })
     }
     return res.status(200).json({
@@ -224,7 +225,7 @@ export const deleteRoom: RequestHandler = async (req, res) => {
     const theRoom = await Room.findByPk(roomId);
     if (!theRoom) {
       return res.status(404).json({
-        message: "This room does not found!"
+        message: "This room does not Exist!"
       })
     }
     await Cloudinary.uploader.destroy(theRoom.cloudId);

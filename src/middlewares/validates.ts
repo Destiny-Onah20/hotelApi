@@ -1,4 +1,4 @@
-import { ZodType, z } from "zod";
+import { ZodError, ZodType, z } from "zod";
 import { RequestHandler } from "express";
 
 type AdminAttributes = {
@@ -12,17 +12,22 @@ const schemaObj = z.object({
   params: z.object({}),
 });
 
-export const validates = (schema: ZodType<AdminAttributes>): RequestHandler => (req, res, next) => {
+export const validates = (schema: ZodType<AdminAttributes>): RequestHandler => async (req, res, next) => {
   try {
     schemaObj.parse({
       body: req.body,
       query: req.query,
       params: req.params
     });
-    schema.parse(req.body);
-
+    await schema.parseAsync(req.body);
     next()
   } catch (error: any) {
+    if (error instanceof ZodError) {
+      const errorMessages = error.errors.map((error) => error.message);
+      return res.status(400).json({
+        message: errorMessages[0]
+      });
+    }
     return res.status(500).json({
       message: error.message
     })
@@ -34,17 +39,22 @@ type adminLogin = {
   email: string
 }
 
-export const loginValidate = (schema: ZodType<adminLogin>): RequestHandler => (req, res, next) => {
+export const loginValidate = (schema: ZodType<adminLogin>): RequestHandler => async (req, res, next) => {
   try {
     schemaObj.parse({
       body: req.body,
       query: req.query,
       params: req.params
     });
-    schema.parse(req.body);
-
+    await schema.parseAsync(req.body);
     next()
   } catch (error: any) {
+    if (error instanceof ZodError) {
+      const errorMessages = error.errors.map((err) => err.message);
+      return res.status(400).json({
+        message: errorMessages[0]
+      });
+    }
     return res.status(500).json({
       message: error.message
     })
@@ -59,17 +69,22 @@ type userAttribute = {
 };
 
 
-export const validateUser = (Userschema: ZodType<userAttribute>): RequestHandler => (req, res, next) => {
+export const validateUser = (Userschema: ZodType<userAttribute>): RequestHandler => async (req, res, next) => {
   try {
     schemaObj.parse({
       body: req.body,
       query: req.query,
       params: req.params
     });
-    Userschema.parse(req.body);
-
+    await Userschema.parseAsync(req.body);
     next()
   } catch (error: any) {
+    if (error instanceof ZodError) {
+      const errorMessages = error.errors.map((err) => err.message);
+      return res.status(400).json({
+        message: errorMessages[0]
+      });
+    }
     return res.status(500).json({
       message: error.message
     })

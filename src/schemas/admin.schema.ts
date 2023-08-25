@@ -1,4 +1,4 @@
-import { ZodSchema, object, string, TypeOf } from "zod";
+import { ZodSchema, object, string, TypeOf, ZodError } from "zod";
 
 type adminAttribute = {
   name: string;
@@ -21,6 +21,23 @@ type adminLogin = {
   password: string;
   email: string
 };
+
+// const validateAdminData = async (adminData: adminAttribute): Promise<string[] | null> => {
+//   try {
+//     await adminSchema.parseAsync(adminData);
+//     return null; // No errors
+//   } catch (error) {
+//     if (error instanceof ZodError) {
+//       const errorMessages = error.errors.map((err) => err.message);
+//       return errorMessages;
+//     }
+//     throw error;
+//   }
+// };
+
+
+
+
 
 export const adminLogin: ZodSchema<adminLogin> = object({
   password: string({

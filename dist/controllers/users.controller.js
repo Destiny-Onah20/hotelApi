@@ -82,7 +82,6 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         });
         res.status(201).json({
             message: "Created Successfully.",
-            data: userToCreate
         });
     }
     catch (error) {
