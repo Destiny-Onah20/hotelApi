@@ -94,7 +94,7 @@ export const loginAdmin: RequestHandler = async (req, res): Promise<object> => {
     const checkAdmin = await Admin.findOne({ where: { email: email } });
     if (!checkAdmin) {
       return res.status(400).json({
-        message: "This email does not exist, please check again or <a href=\"https://room-ka5k.onrender.com/#/allsignup/adminsignup\">Create an Account</a>!"
+        message: "This email does not exist, please check again or Create an Account!"
       })
     }
     const verifyPassword = await bcrypt.compare(password, checkAdmin.password);
