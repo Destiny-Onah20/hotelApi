@@ -12,6 +12,7 @@ interface bookingAttributes {
   checkOut: Date;
   roomId: number;
   message: string;
+  adminMessage: string;
   adminId: number;
   price: number;
   amountToPay: number;
@@ -25,7 +26,7 @@ interface bookingAttributes {
   updatedAt: Date
 };
 
-type optionalBookingAttributes = Optional<bookingAttributes, "id" | "updatedAt" | "createdAt">;
+type optionalBookingAttributes = Optional<bookingAttributes, "id" | "updatedAt" | "createdAt" | "adminMessage">;
 
 class Booking extends Model<bookingAttributes, optionalBookingAttributes> implements bookingAttributes {
   public id!: number;
@@ -42,6 +43,7 @@ class Booking extends Model<bookingAttributes, optionalBookingAttributes> implem
   public infant: number;
   public amountToPay: number;
   public message!: string;
+  public adminMessage!: string;
   public adminId!: number;
   public readonly updatedAt!: Date;
   public static associate(models: any): void {
@@ -109,6 +111,10 @@ Booking.init({
     allowNull: false
   },
   message: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  adminMessage: {
     type: DataTypes.STRING,
     allowNull: false
   },

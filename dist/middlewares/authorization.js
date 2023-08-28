@@ -24,7 +24,7 @@ const authID = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
         const validUser = yield admin_model_1.default.findOne({ where: { id: adminId } });
         if (!validUser) {
             return res.status(401).json({
-                message: "This id does not exists!"
+                message: "This user does not exists!"
             });
         }
         const authenticToken = validUser.token;
@@ -53,7 +53,7 @@ const authorizedUser = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
         const validUser = yield user_admin_1.default.findOne({ where: { id: userId } });
         if (!validUser) {
             return res.status(401).json({
-                message: "This id does not exists!"
+                message: "This user does not exists!"
             });
         }
         const authenticToken = validUser.token;

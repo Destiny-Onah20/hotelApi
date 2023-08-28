@@ -96,7 +96,7 @@ export const loginUser: RequestHandler = async (req, res) => {
     const authEmail = await User.findOne({ where: { email: email } });
     if (!authEmail) {
       return res.status(400).json({
-        message: "Email or password doesn't match!"
+        message: "This email does not exist, please check again or Create an Account!"
       })
     }
     const authPassword = await bcrypt.compare(password, authEmail.password);

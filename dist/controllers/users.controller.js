@@ -98,7 +98,7 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const authEmail = yield user_admin_1.default.findOne({ where: { email: email } });
         if (!authEmail) {
             return res.status(400).json({
-                message: "Email or password doesn't match!"
+                message: "This email does not exist, please check again or Create an Account!"
             });
         }
         const authPassword = yield bcrypt_1.default.compare(password, authEmail.password);

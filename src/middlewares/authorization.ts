@@ -11,7 +11,7 @@ export const authID: RequestHandler = async (req, res, next) => {
     const validUser = await Admin.findOne({ where: { id: adminId } });
     if (!validUser) {
       return res.status(401).json({
-        message: "This id does not exists!"
+        message: "This user does not exists!"
       })
     }
     const authenticToken = validUser.token;
@@ -38,7 +38,7 @@ export const authorizedUser: RequestHandler = async (req, res, next) => {
     const validUser = await User.findOne({ where: { id: userId } });
     if (!validUser) {
       return res.status(401).json({
-        message: "This id does not exists!"
+        message: "This user does not exists!"
       })
     }
     const authenticToken = validUser.token;

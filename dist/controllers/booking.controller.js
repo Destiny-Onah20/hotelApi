@@ -23,6 +23,7 @@ const user_admin_1 = __importDefault(require("../models/user.admin"));
 const mailService_1 = __importDefault(require("../middlewares/mailService"));
 const mailGenerator_1 = __importDefault(require("../utils/mailGenerator"));
 const juice_1 = __importDefault(require("juice"));
+const admin_model_1 = __importDefault(require("../models/admin.model"));
 const bookAroom = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userId = req.params.userId;
@@ -32,10 +33,9 @@ const bookAroom = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const bookingRoom = yield rooms_model_1.default.findByPk(roomId);
         if (!bookingRoom || (bookingRoom === null || bookingRoom === void 0 ? void 0 : bookingRoom.booked)) {
             return res.status(400).json({
-                message: 'This room has already been booked! Or does not exists!'
+                message: 'This room has already been booked! Or does not exist!'
             });
         }
-        ;
         const checkInDate = new Date(checkIn);
         const checkOutDate = new Date(checkOut);
         if (isNaN(checkInDate.getTime()) || isNaN(checkOutDate.getTime())) {
@@ -44,13 +44,12 @@ const bookAroom = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             });
         }
         const currentDate = new Date();
-        // console.log(currentDate);
-        if (checkInDate > checkOutDate || checkInDate < currentDate) {
+        currentDate.setHours(0, 0, 0, 0);
+        if (checkInDate >= checkOutDate || checkInDate < currentDate) {
             return res.status(400).json({
-                message: 'Invalid date range. checkOut date should be after checkIn date!',
+                message: 'Invalid date range. Check-out date should be after or equal to check-in date, and check-in date should not be in the past!',
             });
         }
-        ;
         //Calculate total price based on check-in, check-out, and room price
         const roomPrice = bookingRoom.price;
         const calculateTotalPrice = (checkOutDate, checkInDate, roomPrice) => {
@@ -94,16 +93,17 @@ const bookAroom = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         bookingRoom.booked = true;
         bookingRoom.checkIn = new Date(checkIn);
         bookingRoom.checkOut = new Date(checkOut);
-        yield bookingRoom.save();
         const notifyAdmin = (booking) => __awaiter(void 0, void 0, void 0, function* () {
             try {
-                const admin = yield user_admin_1.default.findByPk(booking.adminId);
+                const admin = yield admin_model_1.default.findByPk(booking.adminId);
                 if (!admin) {
                     return logger_1.default.error("No Admin found!");
                 }
                 ;
                 //customize the notification message!
                 const message = `A user has booked your room (${booking.roomId}) from ${booking.checkIn} to ${booking.checkOut}.`;
+                bookRoom.adminMessage = message;
+                yield bookRoom.save();
                 //send the notifications to the admin!
                 app_1.io.to(admin.id.toString()).emit("Booked notification", { booking, message });
             }

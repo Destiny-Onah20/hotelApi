@@ -10,6 +10,7 @@ import mailSender from "../middlewares/mailService";
 import { Content } from "mailgen";
 import generateMail from "../utils/mailGenerator";
 import juice from "juice";
+import Admin from "../models/admin.model";
 
 
 export const bookAroom: RequestHandler = async (req, res) => {
@@ -19,11 +20,13 @@ export const bookAroom: RequestHandler = async (req, res) => {
     const { checkIn, checkOut, adult, children, infant } = req.body;
     const theUser = await User.findAll({ where: { id: userId } });
     const bookingRoom = await Room.findByPk(roomId);
+
     if (!bookingRoom || bookingRoom?.booked) {
       return res.status(400).json({
-        message: 'This room has already been booked! Or does not exists!'
-      })
-    };
+        message: 'This room has already been booked! Or does not exist!'
+      });
+    }
+
     const checkInDate = new Date(checkIn);
     const checkOutDate = new Date(checkOut);
 
@@ -32,15 +35,17 @@ export const bookAroom: RequestHandler = async (req, res) => {
         message: 'Invalid checkIn or checkOut date format',
       });
     }
+
     const currentDate = new Date();
-    // console.log(currentDate);
+    currentDate.setHours(0, 0, 0, 0);
 
-
-    if (checkInDate > checkOutDate || checkInDate < currentDate) {
+    if (checkInDate >= checkOutDate || checkInDate < currentDate) {
       return res.status(400).json({
-        message: 'Invalid date range. checkOut date should be after checkIn date!',
+        message: 'Invalid date range. Check-out date should be after or equal to check-in date, and check-in date should not be in the past!',
       });
-    };
+    }
+
+
     //Calculate total price based on check-in, check-out, and room price
     const roomPrice = bookingRoom.price;
     interface PriceDetails {
@@ -82,6 +87,7 @@ export const bookAroom: RequestHandler = async (req, res) => {
       adult: number,
       infant: number,
       children: number,
+      adminMessage?: string,
       roomNumber: number,
       amountToPay: number,
       message: string
@@ -107,15 +113,16 @@ export const bookAroom: RequestHandler = async (req, res) => {
     bookingRoom.booked = true;
     bookingRoom.checkIn = new Date(checkIn);
     bookingRoom.checkOut = new Date(checkOut);
-    await bookingRoom.save();
     const notifyAdmin = async (booking: Booking) => {
       try {
-        const admin = await User.findByPk(booking.adminId)
+        const admin = await Admin.findByPk(booking.adminId)
         if (!admin) {
           return logger.error("No Admin found!");
         };
         //customize the notification message!
         const message = `A user has booked your room (${booking.roomId}) from ${booking.checkIn} to ${booking.checkOut}.`;
+        bookRoom.adminMessage = message;
+        await bookRoom.save()
         //send the notifications to the admin!
         io.to(admin.id.toString()).emit("Booked notification", { booking, message });
       } catch (error: any) {
@@ -123,6 +130,7 @@ export const bookAroom: RequestHandler = async (req, res) => {
       }
     };
     notifyAdmin(bookRoom);
+
 
     //send receipt to the customers registered email!
     const emailContent: Content = {
