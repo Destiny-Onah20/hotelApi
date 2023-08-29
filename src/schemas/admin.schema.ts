@@ -12,7 +12,7 @@ export const adminSchema: ZodSchema<adminAttribute> = object({
   }).nonempty().min(2),
   password: string({
     required_error: "Password is required."
-  }).nonempty().min(6),
+  }).nonempty().min(6, "Password must be atleast six (6) characters long"),
   email: string({
     required_error: "email is required."
   }).nonempty().min(2).email("Invalid email format"),
