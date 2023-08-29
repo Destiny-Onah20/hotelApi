@@ -76,6 +76,7 @@ export const bookAroom: RequestHandler = async (req, res) => {
         message: "An error occured sending the notification!"
       })
     };
+
     interface book {
       checkIn: Date,
       checkOut: Date,
@@ -87,7 +88,6 @@ export const bookAroom: RequestHandler = async (req, res) => {
       adult: number,
       infant: number,
       children: number,
-      adminMessage?: string,
       roomNumber: number,
       amountToPay: number,
       message: string
@@ -113,24 +113,28 @@ export const bookAroom: RequestHandler = async (req, res) => {
     bookingRoom.booked = true;
     bookingRoom.checkIn = new Date(checkIn);
     bookingRoom.checkOut = new Date(checkOut);
+    await bookingRoom.save();
     const notifyAdmin = async (booking: Booking) => {
       try {
-        const admin = await Admin.findByPk(booking.adminId)
+        const admin = await Admin.findByPk(booking.adminId);
         if (!admin) {
-          return logger.error("No Admin found!");
-        };
-        //customize the notification message!
+          return logger.error('No Admin found!');
+        }
+
         const message = `A user has booked your room (${booking.roomId}) from ${booking.checkIn} to ${booking.checkOut}.`;
-        bookRoom.adminMessage = message;
-        await bookRoom.save()
-        //send the notifications to the admin!
-        io.to(admin.id.toString()).emit("Booked notification", { booking, message });
+
+        // Save the notification message to the booking model
+        booking.adminMessage = message;
+        await booking.save();
+
+        // Send the notifications to the admin!
+        io.to(admin.id.toString()).emit('Booked notification', { booking, message });
       } catch (error: any) {
-        logger.error(error.mesage)
+        logger.error(error.message);
       }
     };
-    notifyAdmin(bookRoom);
 
+    notifyAdmin(bookRoom);
 
     //send receipt to the customers registered email!
     const emailContent: Content = {

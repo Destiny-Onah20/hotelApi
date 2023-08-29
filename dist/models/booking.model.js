@@ -78,7 +78,7 @@ Booking.init({
     },
     adminMessage: {
         type: sequelize_1.DataTypes.STRING,
-        allowNull: false
+        allowNull: true
     },
     createdAt: {
         type: sequelize_1.DataTypes.DATE,

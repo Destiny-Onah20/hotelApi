@@ -93,22 +93,22 @@ const bookAroom = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         bookingRoom.booked = true;
         bookingRoom.checkIn = new Date(checkIn);
         bookingRoom.checkOut = new Date(checkOut);
+        yield bookingRoom.save();
         const notifyAdmin = (booking) => __awaiter(void 0, void 0, void 0, function* () {
             try {
                 const admin = yield admin_model_1.default.findByPk(booking.adminId);
                 if (!admin) {
-                    return logger_1.default.error("No Admin found!");
+                    return logger_1.default.error('No Admin found!');
                 }
-                ;
-                //customize the notification message!
                 const message = `A user has booked your room (${booking.roomId}) from ${booking.checkIn} to ${booking.checkOut}.`;
-                bookRoom.adminMessage = message;
-                yield bookRoom.save();
-                //send the notifications to the admin!
-                app_1.io.to(admin.id.toString()).emit("Booked notification", { booking, message });
+                // Save the notification message to the booking model
+                booking.adminMessage = message;
+                yield booking.save();
+                // Send the notifications to the admin!
+                app_1.io.to(admin.id.toString()).emit('Booked notification', { booking, message });
             }
             catch (error) {
-                logger_1.default.error(error.mesage);
+                logger_1.default.error(error.message);
             }
         });
         notifyAdmin(bookRoom);
