@@ -81,6 +81,7 @@ const bookAroom = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             price: bookingRoom.price,
             amountToPay: totalPrice.totalPrice,
             message,
+            username: theUser[0].fullname.split(" ")[0],
             night: totalPrice.perNight,
             adult,
             children,

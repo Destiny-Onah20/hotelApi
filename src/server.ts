@@ -24,3 +24,7 @@ process.on('SIGINT', async () => {
   logger.info('Server closed');
   process.exit(0);
 });
+
+
+const currentDate = new Date().getDate();
+console.log(currentDate);

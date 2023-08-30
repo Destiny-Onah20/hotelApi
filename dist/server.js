@@ -35,3 +35,5 @@ process.on('SIGINT', () => __awaiter(void 0, void 0, void 0, function* () {
     logger_1.default.info('Server closed');
     process.exit(0);
 }));
+const currentDate = new Date().getDate();
+console.log(currentDate);

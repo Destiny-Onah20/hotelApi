@@ -76,6 +76,10 @@ Booking.init({
         type: sequelize_1.DataTypes.STRING,
         allowNull: false
     },
+    username: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: false
+    },
     adminMessage: {
         type: sequelize_1.DataTypes.STRING,
         allowNull: true
