@@ -8,8 +8,8 @@ import Admin from "./admin.model";
 
 interface bookingAttributes {
   id: number;
-  checkIn: string;
-  checkOut: string;
+  checkIn: Date;
+  checkOut: Date;
   roomId: number;
   message: string;
   adminMessage: string;
@@ -31,8 +31,8 @@ type optionalBookingAttributes = Optional<bookingAttributes, "id" | "updatedAt" 
 
 class Booking extends Model<bookingAttributes, optionalBookingAttributes> implements bookingAttributes {
   public id!: number;
-  public checkIn!: string;
-  public checkOut!: string;
+  public checkIn!: Date;
+  public checkOut!: Date;
   public roomId!: number;
   public userId!: number;
   public roomNumber: number;
@@ -61,11 +61,11 @@ Booking.init({
     autoIncrement: true
   },
   checkIn: {
-    type: DataTypes.STRING,
+    type: DataTypes.DATE,
     allowNull: false
   },
   checkOut: {
-    type: DataTypes.STRING,
+    type: DataTypes.DATE,
     allowNull: false
   },
   roomId: {
@@ -140,10 +140,10 @@ Booking.init({
 Booking.associate({ Room });
 Room.hasMany(Booking, { foreignKey: "roomId" });
 
-// Booking.sync({ alter: true }).then(() => {
-//   logger.info("Booking Table created!")
-// }).catch((error) => {
-//   logger.error(error.mesage)
-// })
+Booking.sync({ alter: true }).then(() => {
+  logger.info("Booking Table created!")
+}).catch((error) => {
+  logger.error(error.mesage)
+})
 
 export default Booking;

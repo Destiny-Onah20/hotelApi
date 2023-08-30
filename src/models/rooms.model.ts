@@ -21,9 +21,9 @@ class Room extends Model<roomAttributes, optionalHotelAttributes> implements roo
   public hotelname!: string;
   public hotelId!: number;
   public booked!: boolean;
-  public checkIn!: string | null;
+  public checkIn!: Date | null;
   public rating!: number;
-  public checkOut!: string | null;
+  public checkOut!: Date | null;
   public adminId!: number;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -95,11 +95,11 @@ Room.init({
     allowNull: false
   },
   checkIn: {
-    type: DataTypes.STRING,
+    type: DataTypes.DATE,
     allowNull: true
   },
   checkOut: {
-    type: DataTypes.STRING,
+    type: DataTypes.DATE,
     allowNull: true
   }
 }, {
@@ -110,9 +110,9 @@ Room.init({
 Room.belongsTo(Hotel, { foreignKey: "hotelId" as "rooms" });
 Hotel.hasMany(Room, { foreignKey: "hotelId" })
 
-// Room.sync({ alter: true }).then(() => {
-//   logger.info("Room table created!");
-// }).catch((error) => {
-//   logger.error(error.mesage);
-// });
+Room.sync({ alter: true }).then(() => {
+  logger.info("Room table created!");
+}).catch((error) => {
+  logger.error(error.mesage);
+});
 export default Room;
