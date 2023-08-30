@@ -21,9 +21,9 @@ class Room extends Model<roomAttributes, optionalHotelAttributes> implements roo
   public hotelname!: string;
   public hotelId!: number;
   public booked!: boolean;
-  public checkIn!: Date | null;
+  public checkIn!: string | null;
   public rating!: number;
-  public checkOut!: Date | null;
+  public checkOut!: string | null;
   public adminId!: number;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -95,11 +95,11 @@ Room.init({
     allowNull: false
   },
   checkIn: {
-    type: DataTypes.DATE,
+    type: DataTypes.STRING,
     allowNull: true
   },
   checkOut: {
-    type: DataTypes.DATE,
+    type: DataTypes.STRING,
     allowNull: true
   }
 }, {

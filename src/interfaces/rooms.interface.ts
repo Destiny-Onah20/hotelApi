@@ -9,8 +9,8 @@ interface roomAttributes {
   address: string;
   hotelname: string;
   hotelId: number;
-  checkIn: Date | null;
-  checkOut: Date | null;
+  checkIn: string | null;
+  checkOut: string | null;
   rating: number;
   adminId: number;
   createdAt: Date;

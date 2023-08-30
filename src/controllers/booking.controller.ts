@@ -76,10 +76,23 @@ export const bookAroom: RequestHandler = async (req, res) => {
         message: "An error occured sending the notification!"
       })
     };
+    const today = new Date(checkOut);
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+
+    const formattedCheckoutDate = `${year}-${month}-${day}`;
+
+    const ttoday = new Date(checkIn);
+    const yyear = ttoday.getFullYear();
+    const mmonth = String(today.getMonth() + 1).padStart(2, '0');
+    const dday = String(today.getDate()).padStart(2, '0');
+
+    const formattedCheckinDate = `${yyear}-${mmonth}-${dday}`;
 
     interface book {
-      checkIn: Date,
-      checkOut: Date,
+      checkIn: string,
+      checkOut: string,
       userId: number,
       roomId: number,
       adminId: number,
@@ -94,8 +107,8 @@ export const bookAroom: RequestHandler = async (req, res) => {
       message: string
     }
     const bookData: book = {
-      checkIn: new Date(checkIn),
-      checkOut: new Date(checkOut),
+      checkIn: formattedCheckinDate,
+      checkOut: formattedCheckoutDate,
       userId: Number(userId),
       roomId: Number(roomId),
       price: bookingRoom.price,
@@ -111,10 +124,11 @@ export const bookAroom: RequestHandler = async (req, res) => {
     };
     // console.log(bookData);
 
+
     const bookRoom = await Booking.create(bookData);
     bookingRoom.booked = true;
-    bookingRoom.checkIn = new Date(checkIn);
-    bookingRoom.checkOut = new Date(checkOut);
+    bookingRoom.checkIn = formattedDate;
+    bookingRoom.checkOut = formattedCheckoutDate;
     await bookingRoom.save();
     const notifyAdmin = async (booking: Booking) => {
       try {

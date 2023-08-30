@@ -26,5 +26,4 @@ process.on('SIGINT', async () => {
 });
 
 
-const currentDate = new Date().getDate();
-console.log(currentDate);
+

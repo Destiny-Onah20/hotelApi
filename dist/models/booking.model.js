@@ -21,11 +21,11 @@ Booking.init({
         autoIncrement: true
     },
     checkIn: {
-        type: sequelize_1.DataTypes.DATE,
+        type: sequelize_1.DataTypes.STRING,
         allowNull: false
     },
     checkOut: {
-        type: sequelize_1.DataTypes.DATE,
+        type: sequelize_1.DataTypes.STRING,
         allowNull: false
     },
     roomId: {

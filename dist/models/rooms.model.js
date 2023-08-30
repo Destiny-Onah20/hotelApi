@@ -73,11 +73,11 @@ Room.init({
         allowNull: false
     },
     checkIn: {
-        type: sequelize_1.DataTypes.DATE,
+        type: sequelize_1.DataTypes.STRING,
         allowNull: true
     },
     checkOut: {
-        type: sequelize_1.DataTypes.DATE,
+        type: sequelize_1.DataTypes.STRING,
         allowNull: true
     }
 }, {

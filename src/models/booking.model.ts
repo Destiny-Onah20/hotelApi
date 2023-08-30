@@ -8,8 +8,8 @@ import Admin from "./admin.model";
 
 interface bookingAttributes {
   id: number;
-  checkIn: Date;
-  checkOut: Date;
+  checkIn: string;
+  checkOut: string;
   roomId: number;
   message: string;
   adminMessage: string;
@@ -31,8 +31,8 @@ type optionalBookingAttributes = Optional<bookingAttributes, "id" | "updatedAt" 
 
 class Booking extends Model<bookingAttributes, optionalBookingAttributes> implements bookingAttributes {
   public id!: number;
-  public checkIn!: Date;
-  public checkOut!: Date;
+  public checkIn!: string;
+  public checkOut!: string;
   public roomId!: number;
   public userId!: number;
   public roomNumber: number;
@@ -61,11 +61,11 @@ Booking.init({
     autoIncrement: true
   },
   checkIn: {
-    type: DataTypes.DATE,
+    type: DataTypes.STRING,
     allowNull: false
   },
   checkOut: {
-    type: DataTypes.DATE,
+    type: DataTypes.STRING,
     allowNull: false
   },
   roomId: {
