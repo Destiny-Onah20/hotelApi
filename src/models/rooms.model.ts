@@ -115,4 +115,5 @@ Hotel.hasMany(Room, { foreignKey: "hotelId" })
 // }).catch((error) => {
 //   logger.error(error.mesage);
 // });
+
 export default Room;
