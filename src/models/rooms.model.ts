@@ -110,9 +110,9 @@ Room.init({
 Room.belongsTo(Hotel, { foreignKey: "hotelId" as "rooms" });
 Hotel.hasMany(Room, { foreignKey: "hotelId" })
 
-Room.sync({ alter: true }).then(() => {
-  logger.info("Room table created!");
-}).catch((error) => {
-  logger.error(error.mesage);
-});
+// Room.sync({ alter: true }).then(() => {
+//   logger.info("Room table created!");
+// }).catch((error) => {
+//   logger.error(error.mesage);
+// });
 export default Room;

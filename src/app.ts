@@ -24,7 +24,7 @@ app.use(express.urlencoded({
 }));
 
 
-const server = http.createServer();
+const server = http.createServer(app);
 export const io = new Server(server);
 
 io.on("connection", (socket) => {

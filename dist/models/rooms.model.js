@@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_1 = require("sequelize");
 const config_1 = __importDefault(require("../config/config"));
 const hotel_model_1 = __importDefault(require("./hotel.model"));
-const logger_1 = __importDefault(require("../utils/logger"));
 class Room extends sequelize_1.Model {
 }
 ;
@@ -87,9 +86,9 @@ Room.init({
 });
 Room.belongsTo(hotel_model_1.default, { foreignKey: "hotelId" });
 hotel_model_1.default.hasMany(Room, { foreignKey: "hotelId" });
-Room.sync({ alter: true }).then(() => {
-    logger_1.default.info("Room table created!");
-}).catch((error) => {
-    logger_1.default.error(error.mesage);
-});
+// Room.sync({ alter: true }).then(() => {
+//   logger.info("Room table created!");
+// }).catch((error) => {
+//   logger.error(error.mesage);
+// });
 exports.default = Room;

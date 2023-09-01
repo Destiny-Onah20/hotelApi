@@ -73,19 +73,9 @@ const bookAroom = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             });
         }
         ;
-        const today = new Date(checkOut);
-        const year = today.getFullYear();
-        const month = String(today.getMonth() + 1).padStart(2, '0');
-        const day = String(today.getDate()).padStart(2, '0');
-        const formattedCheckoutDate = `${year}-${month}-${day}`;
-        const ttoday = new Date(checkIn);
-        const yyear = ttoday.getFullYear();
-        const mmonth = String(today.getMonth() + 1).padStart(2, '0');
-        const dday = String(today.getDate()).padStart(2, '0');
-        const formattedCheckinDate = `${yyear}-${mmonth}-${dday}`;
         const bookData = {
-            checkIn: formattedCheckinDate,
-            checkOut: formattedCheckoutDate,
+            checkIn: new Date(checkIn),
+            checkOut: new Date(checkOut),
             userId: Number(userId),
             roomId: Number(roomId),
             price: bookingRoom.price,
@@ -102,8 +92,8 @@ const bookAroom = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         // console.log(bookData);
         const bookRoom = yield booking_model_1.default.create(bookData);
         bookingRoom.booked = true;
-        bookingRoom.checkIn = formattedDate;
-        bookingRoom.checkOut = formattedCheckoutDate;
+        bookingRoom.checkIn = new Date(checkIn);
+        bookingRoom.checkOut = new Date(checkOut);
         yield bookingRoom.save();
         const notifyAdmin = (booking) => __awaiter(void 0, void 0, void 0, function* () {
             try {
@@ -111,7 +101,17 @@ const bookAroom = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 if (!admin) {
                     return logger_1.default.error('No Admin found!');
                 }
-                const message = `A user has booked your room (${booking.roomId}) from ${booking.checkIn} to ${booking.checkOut}.`;
+                const today = new Date(checkIn);
+                const year = today.getFullYear();
+                const month = String(today.getMonth() + 1).padStart(2, '0');
+                const day = String(today.getDate()).padStart(2, '0');
+                const formattedDate = `${year}-${month}-${day}`;
+                const ttoday = new Date(checkOut);
+                const yyear = ttoday.getFullYear();
+                const mmonth = String(today.getMonth() + 1).padStart(2, '0');
+                const dday = String(today.getDate()).padStart(2, '0');
+                const formattedcheckDate = `${yyear}-${mmonth}-${dday}`;
+                const message = `A user has booked your room (${formattedDate}) from ${formattedcheckDate} to ${booking.checkOut}.`;
                 // Save the notification message to the booking model
                 booking.adminMessage = message;
                 yield booking.save();

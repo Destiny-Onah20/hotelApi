@@ -140,10 +140,10 @@ Booking.init({
 Booking.associate({ Room });
 Room.hasMany(Booking, { foreignKey: "roomId" });
 
-Booking.sync({ alter: true }).then(() => {
-  logger.info("Booking Table created!")
-}).catch((error) => {
-  logger.error(error.mesage)
-})
+// Booking.sync({ alter: true }).then(() => {
+//   logger.info("Booking Table created!")
+// }).catch((error) => {
+//   logger.error(error.mesage)
+// })
 
 export default Booking;

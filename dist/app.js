@@ -25,7 +25,7 @@ app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({
     extended: true
 }));
-const server = http_1.default.createServer();
+const server = http_1.default.createServer(app);
 exports.io = new socket_io_1.Server(server);
 exports.io.on("connection", (socket) => {
     logger_1.default.info("A user connected!");
