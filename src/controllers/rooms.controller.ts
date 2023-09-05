@@ -25,7 +25,7 @@ export const registerRoom: RequestHandler = async (req, res) => {
     };
     const file = req.files?.image as UploadedFile[];
     if (!file) {
-      throw new Error("no Image uploaded, Please add an image!")
+      return res.status(400).json({ message: "no Image uploaded, Please add an image!" })
     };
 
     const uploads = Array.isArray(file) ? file : [file];

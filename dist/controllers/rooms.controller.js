@@ -39,7 +39,7 @@ const registerRoom = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         ;
         const file = (_a = req.files) === null || _a === void 0 ? void 0 : _a.image;
         if (!file) {
-            throw new Error("no Image uploaded, Please add an image!");
+            return res.status(400).json({ message: "no Image uploaded, Please add an image!" });
         }
         ;
         const uploads = Array.isArray(file) ? file : [file];
