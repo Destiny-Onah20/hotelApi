@@ -79,7 +79,7 @@ export const registerUser: RequestHandler = async (req, res) => {
       html: emailBody
     });
     res.status(201).json({
-      message: "Created Successfully.",
+      message: "Account created Successfully.",
     })
   } catch (error: any) {
     return res.status(500).json({

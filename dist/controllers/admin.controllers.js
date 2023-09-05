@@ -79,7 +79,7 @@ const registerAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             html: emailBody
         });
         return res.status(201).json({
-            message: "Admin created successfully."
+            message: "Account created Successfully.."
         });
     }
     catch (error) {

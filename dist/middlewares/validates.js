@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.validateUser = exports.loginValidate = exports.validates = void 0;
+exports.validateRoom = exports.validateUser = exports.loginValidate = exports.validates = void 0;
 const zod_1 = require("zod");
 const schemaObj = zod_1.z.object({
     body: zod_1.z.object({}),
@@ -85,3 +85,26 @@ const validateUser = (Userschema) => (req, res, next) => __awaiter(void 0, void 
     }
 });
 exports.validateUser = validateUser;
+const validateRoom = (roomSchema) => (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        schemaObj.parse({
+            body: req.body,
+            query: req.query,
+            params: req.params
+        });
+        yield roomSchema.parseAsync(req.body);
+        next();
+    }
+    catch (error) {
+        if (error instanceof zod_1.ZodError) {
+            const errorMessages = error.errors.map((err) => err.message);
+            return res.status(400).json({
+                message: errorMessages[0]
+            });
+        }
+        return res.status(500).json({
+            message: error.message
+        });
+    }
+});
+exports.validateRoom = validateRoom;

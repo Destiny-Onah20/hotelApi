@@ -78,7 +78,7 @@ export const registerAdmin: RequestHandler = async (req, res): Promise<object> =
       html: emailBody
     });
     return res.status(201).json({
-      message: "Admin created successfully."
+      message: "Account created Successfully.."
     });
 
   } catch (error: any) {

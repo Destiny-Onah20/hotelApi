@@ -81,7 +81,7 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             html: emailBody
         });
         res.status(201).json({
-            message: "Created Successfully.",
+            message: "Account created Successfully.",
         });
     }
     catch (error) {

@@ -91,3 +91,34 @@ export const validateUser = (Userschema: ZodType<userAttribute>): RequestHandler
   }
 };
 
+
+
+type roomAttribute = {
+  roomNumber: number;
+  roomDescription: string;
+  price: number;
+  image: string;
+};
+
+
+export const validateRoom = (roomSchema: ZodType<roomAttribute>): RequestHandler => async (req, res, next) => {
+  try {
+    schemaObj.parse({
+      body: req.body,
+      query: req.query,
+      params: req.params
+    });
+    await roomSchema.parseAsync(req.body);
+    next()
+  } catch (error: any) {
+    if (error instanceof ZodError) {
+      const errorMessages = error.errors.map((err) => err.message);
+      return res.status(400).json({
+        message: errorMessages[0]
+      });
+    }
+    return res.status(500).json({
+      message: error.message
+    })
+  }
+};

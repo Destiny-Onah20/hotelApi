@@ -28,7 +28,7 @@ exports.adminSchema = (0, zod_1.object)({
 exports.adminLogin = (0, zod_1.object)({
     password: (0, zod_1.string)({
         required_error: "Password is required."
-    }).nonempty().min(6),
+    }).nonempty().min(6, "Password must be atleast six (6) characters long"),
     email: (0, zod_1.string)({
         required_error: "email is required."
     }).nonempty().min(2).email("Invalid email format"),

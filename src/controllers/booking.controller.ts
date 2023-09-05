@@ -137,7 +137,7 @@ export const bookAroom: RequestHandler = async (req, res) => {
 
         const formattedcheckDate = `${yyear}-${mmonth}-${dday}`;
 
-        const message = `A user has booked your room (${formattedDate}) from ${formattedcheckDate} to ${booking.checkOut}.`;
+        const message = `A user has booked your room number(${bookingRoom.roomNumber}) from ${formattedDate} to ${formattedcheckDate}.`;
 
         // Save the notification message to the booking model
         booking.adminMessage = message;

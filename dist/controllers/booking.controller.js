@@ -111,7 +111,7 @@ const bookAroom = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 const mmonth = String(today.getMonth() + 1).padStart(2, '0');
                 const dday = String(today.getDate()).padStart(2, '0');
                 const formattedcheckDate = `${yyear}-${mmonth}-${dday}`;
-                const message = `A user has booked your room (${formattedDate}) from ${formattedcheckDate} to ${booking.checkOut}.`;
+                const message = `A user has booked your room number(${bookingRoom.roomNumber}) from ${formattedDate} to ${formattedcheckDate}.`;
                 // Save the notification message to the booking model
                 booking.adminMessage = message;
                 yield booking.save();
