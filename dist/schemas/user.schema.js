@@ -14,7 +14,7 @@ exports.userSchema = (0, zod_1.object)({
     }).nonempty().min(2).email("Invalid email format"),
     phoneNumber: (0, zod_1.string)({
         required_error: "phone-number is required."
-    }).min(9, "Phone number must be a valid number please"),
+    }).min(10, "Phone number must be a valid number please"),
     confirmPassword: (0, zod_1.string)({
         required_error: "required."
     })
