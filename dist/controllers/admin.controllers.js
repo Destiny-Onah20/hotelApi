@@ -497,7 +497,7 @@ const vacantRoomByAdmin = (req, res) => __awaiter(void 0, void 0, void 0, functi
             }
         });
         if (!vacantRoom) {
-            return res.status(404).json({
+            return res.status(200).json({
                 message: 'No room Found!'
             });
         }

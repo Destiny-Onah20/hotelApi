@@ -503,7 +503,7 @@ export const vacantRoomByAdmin: RequestHandler = async (req, res) => {
       }
     });
     if (!vacantRoom) {
-      return res.status(404).json({
+      return res.status(200).json({
         message: 'No room Found!'
       })
     }

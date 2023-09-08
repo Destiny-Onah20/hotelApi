@@ -19,7 +19,7 @@ export const userSchema: ZodSchema<userAttribute> = object({
   }).nonempty().min(2).email("Invalid email format"),
   phoneNumber: string({
     required_error: "phone-number is required."
-  }).min(2),
+  }).min(9, "Phone number must be a valid number please"),
   confirmPassword: string({
     required_error: "required."
   })
