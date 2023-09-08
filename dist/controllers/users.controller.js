@@ -36,6 +36,22 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         }
         const saltPassword = yield bcrypt_1.default.genSalt(10);
         const hassPassword = yield bcrypt_1.default.hash(password, saltPassword);
+        const regex = /^[A-Za-z]+$/;
+        const validName = regex.test(fullname);
+        if (!validName) {
+            return res.status(400).json({
+                message: "Please input a valid fullname!"
+            });
+        }
+        ;
+        const regexNum = /^[0-9]+$/;
+        const validNum = regexNum.test(fullname);
+        if (!validNum) {
+            return res.status(400).json({
+                message: "Please input a valid phone number!"
+            });
+        }
+        ;
         const data = {
             fullname,
             email,

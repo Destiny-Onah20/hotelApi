@@ -31,6 +31,13 @@ export const registerAdmin: RequestHandler = async (req, res): Promise<object> =
       password: string,
       email: string
     }
+    const regex = /^[A-Za-z]+$/;
+    const validName = regex.test(name);
+    if (!validName) {
+      return res.status(400).json({
+        message: "Please input a valid name!"
+      })
+    };
     const data: AdminAttribute = {
       name: name.toUpperCase(),
       password: hassPassword,

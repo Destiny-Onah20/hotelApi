@@ -26,6 +26,20 @@ export const registerUser: RequestHandler = async (req, res) => {
     }
     const saltPassword = await bcrypt.genSalt(10);
     const hassPassword = await bcrypt.hash(password, saltPassword);
+    const regex = /^[A-Za-z]+$/;
+    const validName = regex.test(fullname);
+    if (!validName) {
+      return res.status(400).json({
+        message: "Please input a valid fullname!"
+      })
+    };
+    const regexNum = /^[0-9]+$/;
+    const validNum = regexNum.test(fullname);
+    if (!validNum) {
+      return res.status(400).json({
+        message: "Please input a valid phone number!"
+      })
+    };
     type UserAttribute = {
       fullname: string,
       password: string,

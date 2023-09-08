@@ -35,6 +35,14 @@ const registerAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         }
         const saltPassword = yield bcrypt_1.default.genSalt(10);
         const hassPassword = yield bcrypt_1.default.hash(password, saltPassword);
+        const regex = /^[A-Za-z]+$/;
+        const validName = regex.test(name);
+        if (!validName) {
+            return res.status(400).json({
+                message: "Please input a valid name!"
+            });
+        }
+        ;
         const data = {
             name: name.toUpperCase(),
             password: hassPassword,
