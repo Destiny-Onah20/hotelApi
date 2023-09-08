@@ -26,7 +26,7 @@ export const registerUser: RequestHandler = async (req, res) => {
     }
     const saltPassword = await bcrypt.genSalt(10);
     const hassPassword = await bcrypt.hash(password, saltPassword);
-    const regex = /^[A-Za-z]+$/;
+    const regex = /^[A-Za-z\s]+$/;
     const validName = regex.test(fullname);
     if (!validName) {
       return res.status(400).json({
