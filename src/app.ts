@@ -34,7 +34,9 @@ io.on("connection", (socket) => {
   })
 });
 
-
+app.get("/", (req, res) => {
+  res.send("Welcome to Hotel-Api")
+})
 app.use("/api/v1", adminRoute);
 app.use("/api/v1", userRoute);
 app.use("/api/v1", hotelRoute);
