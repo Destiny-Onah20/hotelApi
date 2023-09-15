@@ -33,6 +33,9 @@ exports.io.on("connection", (socket) => {
         logger_1.default.info("A user disconnected!");
     });
 });
+app.get("/", (req, res) => {
+    res.send("Welcome to Hotel-Api");
+});
 app.use("/api/v1", admin_route_1.default);
 app.use("/api/v1", user_route_1.default);
 app.use("/api/v1", hotel_route_1.default);

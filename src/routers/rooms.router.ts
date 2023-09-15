@@ -7,7 +7,7 @@ import { roomSchema } from "../schemas/room.schema";
 
 const roomRoute = Router();
 
-roomRoute.route("/room/register/:adminId/:hotelId").post(authID, validateRoom(roomSchema), registerRoom);
+roomRoute.route("/room/register/:adminId/:hotelId").post(authID, registerRoom);
 roomRoute.route("/room/rooms").get(allRooms);
 roomRoute.route("/room/cheaprooms").get(cheapHotelRooms);
 roomRoute.route("/room/starrooms").get(fourStarRooms);
